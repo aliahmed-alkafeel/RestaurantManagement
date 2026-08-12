@@ -2,7 +2,7 @@
 
 namespace RestaurantManagement.Models
 {
-    public class Employee : BaseSoftDelete
+    public class Employee : BaseModel
     {
         public Guid Id { get; set; }
         public Guid GroupId { get; set; }

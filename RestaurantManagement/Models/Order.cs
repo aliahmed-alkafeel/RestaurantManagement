@@ -2,9 +2,9 @@
 
 namespace RestaurantManagement.Models
 {
-    public class Order : BaseSoftDelete
+    public class Order : BaseModel
     {
-        public Guid OrderId { get; set; }
+        public Guid Id { get; set; }
         public DateTime OrderDate { get; set; }
         [Required]
         public string OrderStatus { get; set; } = null!;

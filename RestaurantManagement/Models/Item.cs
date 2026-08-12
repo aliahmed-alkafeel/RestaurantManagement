@@ -2,9 +2,9 @@
 
 namespace RestaurantManagement.Models
 {
-    public class Item : BaseSoftDelete
+    public class Item : BaseModel
     {
-        public Guid ItemId { get; set; }
+        public Guid Id { get; set; }
         public Guid CategoryId { get; set; }
         public decimal Price { get; set; }
         [Required]

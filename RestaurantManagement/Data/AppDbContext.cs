@@ -31,9 +31,9 @@ namespace RestaurantManagement.Data
             modelBuilder.Entity<Employee>().HasIndex(e => e.Email).IsUnique();
             modelBuilder.Entity<Employee>().HasIndex(e => e.Username).IsUnique();
 
-            modelBuilder.Entity<Employee>().Property(e => e.Email).HasPrecision(18,5);
-            modelBuilder.Entity<Employee>().Property(e => e.Username).HasPrecision(18, 5);
-            modelBuilder.Entity<Discount>().Property(d => d.DiscountPercentage).HasPrecision(3, 2);
+            modelBuilder.Entity<Item>().Property(i => i.Price).HasPrecision(18,5);
+            modelBuilder.Entity<ItemOrder>().Property(i => i.Price).HasPrecision(18, 5);
+            modelBuilder.Entity<Discount>().Property(d => d.DiscountPercentage).HasPrecision(3, 3);
 
         }
     }

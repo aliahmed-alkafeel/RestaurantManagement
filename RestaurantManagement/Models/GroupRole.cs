@@ -1,6 +1,6 @@
 ﻿namespace RestaurantManagement.Models
 {
-    public class GroupRole : BaseSoftDelete
+    public class GroupRole : BaseModel
     {
         public Guid RoleId { get; set; }
         public Guid GroupId { get; set; }

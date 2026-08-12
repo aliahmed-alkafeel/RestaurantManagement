@@ -1,8 +1,8 @@
 ﻿namespace RestaurantManagement.Models
 {
-    public class BaseSoftDelete
+    public abstract class BaseModel
     {
-        public int Id { get; set; }
+        public Guid? DeletedId { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? DeletedAt { get; set; }
         public string? DeletedBy { get; set; }

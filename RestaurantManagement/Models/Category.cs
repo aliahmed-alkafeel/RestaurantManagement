@@ -3,16 +3,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RestaurantManagement.Models
 {
-    public class Category : BaseSoftDelete
+    public class Category : BaseModel
     {
         public Guid Id { get; set; }
-        [Required]
-        [MaxLength(50)]
         public CategoryType Type { get; set; }
         [Required]
         [MaxLength(100)]
         public string CategoryName { get; set; } = null!;
-        public ICollection<Item>? Items { get; set; } = [];
+        public ICollection<Item> Items { get; set; } = [];
     }
     public enum CategoryType
     {
