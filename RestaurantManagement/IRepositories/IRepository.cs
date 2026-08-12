@@ -1,16 +1,14 @@
 ﻿using RestaurantManagement.Models;
 
-namespace RestaurantManagement.IRepository
+namespace RestaurantManagement.IRepositories
 {
     public interface IRepository<T>
     {
-        Task<IEnumerable<T>> GetAllAsync();
-        Task<T> GetById(int id);
-        Task AddAsync(T obj);
-        void Update(T obj);
-        void Delete(T obj);
-        Task<bool> ExistsAsync(int id);
-
-
+        Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        Task AddAsync(T obj, CancellationToken cancellationToken = default);
+        void Update(T obj, CancellationToken cancellationToken = default);
+        void Delete(T obj, CancellationToken cancellationToken = default);
+        Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default);
     }
 }
