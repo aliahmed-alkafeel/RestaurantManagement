@@ -214,9 +214,9 @@ namespace RestaurantManagement.Migrations
 
                     b.HasIndex("ItemOrderOrderId", "ItemOrderItemId");
 
-                    b.ToTable("Items", t =>
+                    b.ToTable("Items", obj =>
                         {
-                            t.HasCheckConstraint("CK_Item_Price_Positive", "Price >0");
+                            obj.HasCheckConstraint("CK_Item_Price_Positive", "Price >0");
                         });
                 });
 
@@ -241,9 +241,9 @@ namespace RestaurantManagement.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("ItemsOrders", t =>
+                    b.ToTable("ItemsOrders", obj =>
                         {
-                            t.HasCheckConstraint("CK_ItemOrder_Price_Positive", "Price >0");
+                            obj.HasCheckConstraint("CK_ItemOrder_Price_Positive", "Price >0");
                         });
                 });
 

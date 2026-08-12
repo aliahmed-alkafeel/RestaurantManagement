@@ -2,7 +2,7 @@
 
 namespace RestaurantManagement.Models
 {
-    public class Role
+    public class Role : BaseSoftDelete
     {
         public Guid RoleId { get; set; }
         [Required]

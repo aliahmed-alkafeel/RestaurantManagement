@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RestaurantManagement.Models
 {
-    public class Category
+    public class Category : BaseSoftDelete
     {
         public Guid Id { get; set; }
         [Required]

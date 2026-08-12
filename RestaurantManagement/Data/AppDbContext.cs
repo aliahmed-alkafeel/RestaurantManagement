@@ -23,10 +23,10 @@ namespace RestaurantManagement.Data
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<GroupRole>().HasKey(gr => new { gr.GroupId, gr.RoleId });
             modelBuilder.Entity<ItemOrder>()
-                .ToTable(t => t.HasCheckConstraint("CK_ItemOrder_Price_Positive","Price >0"))
+                .ToTable(obj => obj.HasCheckConstraint("CK_ItemOrder_Price_Positive","Price >0"))
                 .HasKey(it => new { it.OrderId, it.ItemId });
             modelBuilder.Entity<Item>()
-                .ToTable(t => t.HasCheckConstraint("CK_Item_Price_Positive", "Price >0"));
+                .ToTable(obj => obj.HasCheckConstraint("CK_Item_Price_Positive", "Price >0"));
 
             modelBuilder.Entity<Employee>().HasIndex(e => e.Email).IsUnique();
             modelBuilder.Entity<Employee>().HasIndex(e => e.Username).IsUnique();
