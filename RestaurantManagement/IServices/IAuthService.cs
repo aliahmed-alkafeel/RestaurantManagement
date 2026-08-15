@@ -4,6 +4,6 @@ namespace RestaurantManagement.IServices
 {
     public interface IAuthService
     {
-        Task<bool> LoginAsync(RegisterViewModel model);
+        Task<bool> LoginAsync(LoginViewModel model);
     }
 }

@@ -16,27 +16,25 @@ namespace RestaurantManagement.Controllers
             _passwordHasher = passwordHasher;
             _authService = authService;
         }
+        [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
-        [HttpGet]
-        public IActionResult Register()
-        {
 
-            return View();
-        }
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Register(RegisterViewModel registerModel)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) return View(model);
+            var success = await _authService.LoginAsync(model);
+            if (!success)
             {
-                return View(registerModel);
+                ModelState.AddModelError("", "Invalid username or password");
+                return View(model);
             }
-            
-            return Redirect(nameof(Login));
+            return RedirectToAction("Index", "Home");
         }
+        [HttpGet]
         public IActionResult AccessDenied()
         {
             return View();

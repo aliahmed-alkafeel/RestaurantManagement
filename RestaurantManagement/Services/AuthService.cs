@@ -22,14 +22,14 @@ namespace RestaurantManagement.Services
         }
 
 
-        public async Task<bool> LoginAsync(RegisterViewModel regesterModel)
+        public async Task<bool> LoginAsync(LoginViewModel loginViewModel)
         {
-            var employee = await _unitOfWork.Employees.GetEmployeeByUsernameAsync(regesterModel.Username);
+            var employee = await _unitOfWork.Employees.GetEmployeeByUsernameAsync(loginViewModel.Username);
             if (employee is null)
             {
                 return false;
             }
-            var result = _passwordHasher.VerifyHashedPassword(employee, employee.PasswordHash, regesterModel.Password);
+            var result = _passwordHasher.VerifyHashedPassword(employee, employee.PasswordHash, loginViewModel.Password);
             if(result == PasswordVerificationResult.Failed)
             {
                 return false;

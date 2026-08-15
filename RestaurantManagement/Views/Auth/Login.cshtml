@@ -1,4 +1,7 @@
-﻿@{
+﻿@using RestaurantManagement.ViewModels
+@model LoginViewModel
+
+@{
     Layout = null;
 }
 
@@ -27,19 +30,19 @@
                                     <h4 class="logo mb-0">Restaument</h4>
                                 </a>
                                 <p class="text-center">Your Restaurant Management System</p>
-                                <form>
+                                <form asp-controller="Auth" asp-action="Login" method="post">
                                     <div class="mb-3">
-                                        <label for="exampleInputEmail1" class="form-label">Username</label>
-                                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                                        <label asp-for="Username" class="form-label">Username</label>
+                                        <input type="email" class="form-control" asp-for="Username">
                                     </div>
                                     <div class="mb-4">
-                                        <label for="exampleInputPassword1" class="form-label">Password</label>
-                                        <input type="password" class="form-control" id="exampleInputPassword1">
+                                        <label asp-for="Password" class="form-label">Password</label>
+                                        <input type="password" class="form-control" asp-for="Password">
                                     </div>
                                     <div class="d-flex align-items-center justify-content-between mb-4">
                                         <div class="form-check">
-                                            <input class="form-check-input primary" type="checkbox" value="" id="flexCheckChecked" checked>
-                                            <label class="form-check-label text-dark" for="flexCheckChecked">
+                                            <input class="form-check-input primary" type="checkbox" value="" asp-for="RememberMe" checked>
+                                            <label class="form-check-label text-dark"asp-for="RememberMe">
                                                 Remeber this Device
                                             </label>
                                         </div>
