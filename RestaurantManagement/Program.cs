@@ -33,6 +33,8 @@ builder.Services.AddScoped<IPasswordHasher<Employee>, PasswordHasher<Employee>>(
 builder.Services.AddScoped<IAuthService, AuthService>();
 var app = builder.Build();
 
+await DbInitializer.SeedAsync(app.Services);
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

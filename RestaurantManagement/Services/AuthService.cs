@@ -30,7 +30,7 @@ namespace RestaurantManagement.Services
                 return false;
             }
             var result = _passwordHasher.VerifyHashedPassword(employee, employee.PasswordHash, loginViewModel.Password);
-            if(result == PasswordVerificationResult.Failed)
+            if (result == PasswordVerificationResult.Failed)
             {
                 return false;
             }

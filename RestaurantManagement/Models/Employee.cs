@@ -24,7 +24,7 @@ namespace RestaurantManagement.Models
         [MaxLength(50)]
         public string Username { get; set; } = null!;
         [Required]
-        [MaxLength(50)]
+        [MaxLength(512)]
         public string PasswordHash { get; set; } = null!;
         public Group? Group { get; set; }
     }
