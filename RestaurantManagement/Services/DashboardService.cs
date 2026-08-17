@@ -1,27 +1,46 @@
 ﻿using RestaurantManagement.IRepositories;
 using RestaurantManagement.IServices;
+using RestaurantManagement.Models;
 using RestaurantManagement.Repositories;
+using RestaurantManagement.ViewModels;
 
 namespace RestaurantManagement.Services
 {
-    public class DashboardService<T> : IDashboardService<T>
+    public class DashboardService : IDashboardService
     {
         private readonly IUnitOfWork _unitOfWork;
-        public DashboardService(UnitOfWork unitOfWork)
+        public DashboardService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
-        public Task DeleteAsync(T t)
+
+        public Task DeleteEmployeeAsync(Employee emp)
         {
+            //_unitOfWork.Employees.Delete(emp,)
             throw new NotImplementedException();
         }
 
-        public Task<List<T>> GetAllAsync()
+        public async Task<List<EmployeeViewModel>> GetAllEmployeesAsync()
         {
-            throw new NotImplementedException();
+            var emps = await _unitOfWork.Employees.GetAllEmployeesWithGroupsAsync();
+            List<EmployeeViewModel> empvm = [];
+            foreach(Employee emp in emps)
+            {
+                empvm.Add(new EmployeeViewModel
+                {
+                    FirstName = emp.FirstName,
+                    PhoneNumber = emp.PhoneNumber,
+                    EmployeeStartingDate = emp.EmployeeStartingDate,
+                    EmployeeEndingDate = emp.EmployeeEndingDate,
+                    Username = emp.Username,
+                    Email = emp.Email,
+                    Group = emp.Group!.GroupName
+                });
+            }
+            return empvm; 
         }
 
-        public Task UpdateAsync(T t)
+        public Task UpdateEmployeeAsync(Employee emp)
         {
             throw new NotImplementedException();
         }

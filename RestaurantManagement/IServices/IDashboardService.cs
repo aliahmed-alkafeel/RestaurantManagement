@@ -3,10 +3,10 @@ using RestaurantManagement.ViewModels;
 
 namespace RestaurantManagement.IServices
 {
-    public interface IDashboardService<T>
+    public interface IDashboardService
     {
-        Task<List<T>> GetAllAsync();
-        Task UpdateAsync(T t);
-        Task DeleteAsync(T t);
+        Task<List<EmployeeViewModel>> GetAllEmployeesAsync();
+        Task UpdateEmployeeAsync(Employee emp);
+        Task DeleteEmployeeAsync(Employee emp);
     }
 }

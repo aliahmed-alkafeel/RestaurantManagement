@@ -10,7 +10,10 @@ namespace RestaurantManagement.Repositories
         public EmployeeRepository(AppDbContext context) : base(context)
         {
         }
-
+        public async Task<List<Employee>> GetAllEmployeesWithGroupsAsync()
+        {
+            return await _dbSet.Include(e => e.Group).ToListAsync();
+        }
         public async Task<Employee?> GetEmployeeByEmailAsync(string email)
         {
             return await _dbSet.FirstOrDefaultAsync(e => e.Email == email);

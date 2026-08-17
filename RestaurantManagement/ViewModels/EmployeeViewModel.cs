@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using RestaurantManagement.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace RestaurantManagement.ViewModels
 {
@@ -21,7 +22,7 @@ namespace RestaurantManagement.ViewModels
         public string Username { get; set; } = null!;
         [Required]
         [MaxLength(50)]
-        public Guid Group { get; set; }
+        public UserGroup Group { get; set; }
 
     }
 }

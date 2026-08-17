@@ -31,6 +31,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IPasswordHasher<Employee>, PasswordHasher<Employee>>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 var app = builder.Build();
 
 await DbInitializer.SeedAsync(app.Services);
