@@ -8,12 +8,10 @@ namespace RestaurantManagement.Controllers
 {
     public class AuthController : Controller
     {
-        private readonly IPasswordHasher<Employee> _passwordHasher;
         private readonly IAuthService _authService;
 
         public AuthController(IPasswordHasher<Employee> passwordHasher, IAuthService authService)
         {
-            _passwordHasher = passwordHasher;
             _authService = authService;
         }
         [HttpGet]

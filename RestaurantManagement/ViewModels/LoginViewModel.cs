@@ -8,11 +8,11 @@ namespace RestaurantManagement.ViewModels
         [Required(ErrorMessage = "Username is required")]
         [MaxLength(100,ErrorMessage ="The Length is more than allowd")]
         public string Username { get; set; } = null!;
-
+        [Required(ErrorMessage = "Password is required")]
         [DataType(DataType.Password)]
-        [Length(2, 50,ErrorMessage = "The Length must be between {1} and {2}")]
+        [StringLength(50,MinimumLength =2,ErrorMessage = "The Length must be between {1} and {2}")]
         public string Password { get; set; } = null!;
 
-        public bool RememberMe { get; set; }
+        public bool RememberMe { get; set; } = true;
     }
 }

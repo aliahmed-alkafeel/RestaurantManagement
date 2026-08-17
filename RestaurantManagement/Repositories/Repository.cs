@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Data;
 using RestaurantManagement.IRepositories;
+using RestaurantManagement.Models;
 
 namespace RestaurantManagement.Repositories
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public class Repository<T> : IRepository<T> where T : BaseModel
     {
         protected readonly DbSet<T> _dbSet;
         private readonly AppDbContext _context;
@@ -31,14 +33,20 @@ namespace RestaurantManagement.Repositories
             await _dbSet.AddAsync(obj);
         }
 
-        public void Update(T obj, CancellationToken cancellationToken = default)
+        public void Update(T obj,Guid createdById, CancellationToken cancellationToken = default)
         {
+            obj.IsUpdated = true;
+            obj.UpdatedAt = DateTime.UtcNow;
+            obj.UpdatedById = createdById;
             _dbSet.Update(obj);
         }
 
-        public void Delete(T obj, CancellationToken cancellationToken = default)
+        public void Delete(T obj,Guid createdById, CancellationToken cancellationToken = default)
         {
-            _dbSet.Remove(obj);
+            obj.IsDeleted = true;
+            obj.DeletedAt = DateTime.UtcNow;
+            obj.DeletedById = createdById;
+            _dbSet.Update(obj);
         }
 
         public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default)

@@ -43,7 +43,8 @@ namespace RestaurantManagement.Services
                 claims,
                 CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
-            await _httpContextAccessor.HttpContext!.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,principal);
+            var properties = new AuthenticationProperties { IsPersistent = loginViewModel.RememberMe };
+            await _httpContextAccessor.HttpContext!.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,principal,properties);
             return true;
         }
     }
