@@ -28,6 +28,7 @@ namespace RestaurantManagement.Services
             {
                 empvm.Add(new EmployeeViewModel
                 {
+                    Id = emp.Id,
                     FirstName = emp.FirstName,
                     PhoneNumber = emp.PhoneNumber,
                     EmployeeStartingDate = emp.EmployeeStartingDate,

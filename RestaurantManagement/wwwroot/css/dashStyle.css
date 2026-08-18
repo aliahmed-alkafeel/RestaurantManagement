@@ -4,7 +4,7 @@
     --surface-2: #EEF2F0;
     --sidebar: #ffffff;
     --sidebar-hover: #655dfd;
-    --sidebar-active: #3075ce;
+    --sidebar-active: #635bff;
     --sidebar-text: #4b4a4a;
     --sidebar-text-active: #FFFFFF;
     --accent: #E3A63E;
@@ -190,7 +190,7 @@ img {
     }
 
     .side-link.active {
-        background: var(--sidebar-active);
+        background: var(--sidebar-active) !important;
         color: var(--sidebar-text-active);
     }
 
@@ -884,4 +884,227 @@ tbody tr {
         transition-duration: .001ms !important;
     }
 }
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
+.action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+/* Details */
+.details-action {
+    background-color: #5d87ff;
+    color: white;
+}
+
+.details-action:hover {
+    background-color: #4a73e8;
+    color: white;
+}
+
+/* Edit */
+/* Edit */
+.edit-action {
+    background-color: var(--accent);
+    color: white;
+}
+
+    .edit-action:hover {
+        background-color: #d97706;
+        color: white;
+    }
+
+/* Delete */
+.delete-action {
+    background-color: #fa896b;
+    color: white;
+}
+
+.delete-action:hover {
+    background-color: #e87558;
+    color: white;
+}
+
+/* Add */
+.add-btn {
+    display: inline-flex !important;
+    width: fit-content !important;
+    height: auto !important;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 15px 15px;
+    padding: 7px 12px;
+    border: none;
+    border-radius: 6px;
+    background: #635bff;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.add-btn:hover {
+    color: #fff;
+    background: #5149e6;
+}
+
+.add-btn svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+}
+/* ========================================
+           Employee Page
+           ======================================== */
+
+.employee-page {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+
+/* ========================================
+           Center Form
+           ======================================== */
+
+.employee-form-wrapper {
+    min-height: calc(100vh - 140px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+
+/* ========================================
+           Card
+           ======================================== */
+
+.employee-card {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+
+/* ========================================
+           Header Icon
+           ======================================== */
+
+.employee-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(93, 135, 255, 0.1);
+    color: #5d87ff;
+    font-size: 23px;
+    flex-shrink: 0;
+}
+
+
+/* ========================================
+           Section Title
+           ======================================== */
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #2a3547;
+}
+
+    .section-title i {
+        font-size: 20px;
+        color: #5d87ff;
+    }
+
+
+/* ========================================
+           Form Labels
+           ======================================== */
+
+.form-label {
+    color: #2a3547;
+    margin-bottom: 7px;
+}
+
+
+/* ========================================
+           Inputs
+           ======================================== */
+
+.form-control {
+    min-height: 42px;
+    border-radius: 7px;
+    border: 1px solid #dfe5ef;
+    transition: all 0.2s ease;
+}
+
+    .form-control:focus {
+        border-color: #5d87ff;
+        box-shadow: 0 0 0 3px rgba(93, 135, 255, 0.1);
+    }
+
+
+/* ========================================
+           Buttons
+           ======================================== */
+
+.btn {
+    border-radius: 7px;
+}
+
+
+/* ========================================
+           Responsive
+           ======================================== */
+
+@media (max-width: 767.98px) {
+
+    .employee-page {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .employee-form-wrapper {
+        min-height: auto;
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+    .employee-card .card-header,
+    .employee-card .card-body {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+
+    .employee-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 20px;
+    }
+
+    .section-title {
+        margin-bottom: 15px;
+    }
+}

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RestaurantManagement.ViewModels
 {
-    public class EmployeeViewModel
+    public class ManageEmployeeViewModel
     {
         [Required]
         public Guid Id { get; set; }
@@ -29,6 +29,19 @@ namespace RestaurantManagement.ViewModels
         [Required]
         [MaxLength(50)]
         public UserGroup Group { get; set; }
+
+        [Required(ErrorMessage = "Password is required")]
+        [DataType(DataType.Password)]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "The Length must be between {1} and {2}")]
+        public string Password { get; set; } = null!;
+
+
+        [Required(ErrorMessage = "Confirm Password is required")]
+        [DataType(DataType.Password)]
+        [Compare(nameof(Password), ErrorMessage = "Confirm password is not identical to the password")]
+        [Length(2, 50, ErrorMessage = "The Length must be between {1} and {2}")]
+        public string ConfirmPassword { get; set; } = null!;
+
 
     }
 }

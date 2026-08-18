@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restaument — Dashboard</title>
     <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/RestaurantManagement.styles.css" asp-append-version="true" />
     <link rel="shortcut icon" type="image/png" href="~/images/logos/favicon.png" />
@@ -37,25 +37,25 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
         Employees
       </a> -->
-                <a href="#" class="side-link">
+                <a class="side-link" asp-controller="Dashboard" asp-action="Details">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V10M12 19V4M20 19v-6" /></svg>
                     Details
                 </a>
-                <a href="#" class="side-link">
+                <a class="side-link" asp-controller="Dashboard" asp-action="Orders">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16l-1.5 12.5a1 1 0 0 1-1 .9H6.5a1 1 0 0 1-1-.9L4 7Z" /><path d="M8 7V5a4 4 0 0 1 8 0v2" /></svg>
                     Orders
                 </a>
-                <a href="#" class="side-link">
+                <a class="side-link" asp-controller="Dashboard" asp-action="Employees">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2" /><path d="M2.5 20c1-3.6 3.6-5.5 6.5-5.5s5.5 1.9 6.5 5.5" /><path d="M16 8.3a3 3 0 1 1 3.7 2.9" /><path d="M16.5 14.7c2.4.3 4.2 2 5 5.3" /></svg>
                     Employees
                 </a>
-                <a href="#" class="side-link">
+                <a class="side-link" asp-controller="Dashboard" asp-action="Categories">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5" />
                     </svg>
                     Categories
                 </a>
-                <a href="#" class="side-link">
+                <a class="side-link" asp-controller="Dashboard" asp-action="Items">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-egg-fried" viewBox="0 0 16 16">
                         <path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
                         <path d="M13.997 5.17a5 5 0 0 0-8.101-4.09A5 5 0 0 0 1.28 9.342a5 5 0 0 0 8.336 5.109 3.5 3.5 0 0 0 5.201-4.065 3.001 3.001 0 0 0-.822-5.216zm-1-.034a1 1 0 0 0 .668.977 2.001 2.001 0 0 1 .547 3.478 1 1 0 0 0-.341 1.113 2.5 2.5 0 0 1-3.715 2.905 1 1 0 0 0-1.262.152 4 4 0 0 1-6.67-4.087 1 1 0 0 0-.2-1 4 4 0 0 1 3.693-6.61 1 1 0 0 0 .8-.2 4 4 0 0 1 6.48 3.273z" />
@@ -91,214 +91,109 @@
     </div>
     <script>
             (function() {
-                const root = document.documentElement;
-                const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-                /* ---------- Theme toggle ---------- */
-                const themeToggle = document.getElementById('themeToggle');
-                const themeIcon = document.getElementById('themeIcon');
-                function setTheme(t) {
-                    root.setAttribute('data-theme', t);
-                    themeIcon.innerHTML = t === 'dark'
-                        ? '<path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/>'
-                        : '<circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/>';
-                }
-                themeToggle.addEventListener('click', () => {
-                    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                    setTheme(next);
-                    drawChart(currentPeriod);
-                    refreshSparklines();
-                });
 
                 /* ---------- Sidebar (mobile drawer) ---------- */
+
                 const sidebar = document.getElementById('sidebar');
                 const overlay = document.getElementById('overlay');
                 const hamburger = document.getElementById('hamburger');
                 const sidebarClose = document.getElementById('sidebarClose');
+
 
                 function openSidebar() {
                     sidebar.classList.add('open');
                     overlay.classList.add('show');
                     document.body.style.overflow = 'hidden';
                 }
+
+
                 function closeSidebar() {
                     sidebar.classList.remove('open');
                     overlay.classList.remove('show');
                     document.body.style.overflow = '';
                 }
+
+
                 hamburger.addEventListener('click', openSidebar);
+
                 sidebarClose.addEventListener('click', closeSidebar);
+
                 overlay.addEventListener('click', closeSidebar);
-                window.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSidebar(); });
-                window.addEventListener('resize', () => { if (window.innerWidth > 900) closeSidebar(); });
 
-                document.querySelectorAll('.side-link').forEach(link => {
-                    link.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        document.querySelectorAll('.side-link').forEach(l => l.classList.remove('active'));
+
+                window.addEventListener('keydown', function(e) {
+
+                    if (e.key === 'Escape') {
+                        closeSidebar();
+                    }
+
+                });
+
+
+                window.addEventListener('resize', function() {
+
+                    if (window.innerWidth > 900) {
+                        closeSidebar();
+                    }
+
+                });
+
+
+                /* ---------- Active Sidebar Link ---------- */
+
+                const currentPath = window.location.pathname
+                    .toLowerCase()
+                    .replace(/\/$/, '');
+
+
+                document.querySelectorAll('.side-link').forEach(function(link) {
+
+                    const linkUrl = new URL(
+                        link.href,
+                        window.location.origin
+                    );
+
+
+                    const linkParts = linkUrl.pathname
+                        .toLowerCase()
+                        .split('/')
+                        .filter(Boolean);
+
+
+                    if (linkParts.length === 0) {
+                        return;
+                    }
+
+
+                    /*
+                     * آخر جزء من رابط الـ Sidebar
+                     *
+                     * /Dashboard/Employees
+                     *              ↑
+                     *          employees
+                     */
+
+                    const linkName = linkParts[linkParts.length - 1];
+
+
+                    /*
+                     * نبحث عن الصفحة داخل الـ URL الحالي
+                     *
+                     * /employees
+                     * /employees/edit/123
+                     * /employees/details/123
+                     *
+                     * كلها ستطابق employees
+                     */
+
+                    if (currentPath.includes('/' + linkName)) {
+
                         link.classList.add('active');
-                        if (window.innerWidth <= 900) closeSidebar();
-                    });
+
+                    }
+
                 });
 
-                /* ---------- Animated counters ---------- */
-                function formatNumber(n, decimals) {
-                    return decimals !== undefined ? n.toFixed(decimals) : Math.round(n).toLocaleString('en-US');
-                }
-                document.querySelectorAll('[data-count]').forEach(el => {
-                    const target = parseFloat(el.getAttribute('data-count'));
-                    const decimals = el.hasAttribute('data-decimals') ? parseInt(el.getAttribute('data-decimals')) : undefined;
-                    if (reduceMotion) { el.textContent = formatNumber(target, decimals); return; }
-                    const duration = 1100;
-                    const start = performance.now();
-                    function tick(now) {
-                        const p = Math.min((now - start) / duration, 1);
-                        const eased = 1 - Math.pow(1 - p, 3);
-                        el.textContent = formatNumber(target * eased, decimals);
-                        if (p < 1) requestAnimationFrame(tick);
-                    }
-                    requestAnimationFrame(tick);
-                });
-
-                /* ---------- Sparklines ---------- */
-                function refreshSparklines() {
-                    document.querySelectorAll('canvas.spark').forEach(canvas => {
-                        const ctx = canvas.getContext('2d');
-                        const data = canvas.getAttribute('data-spark').split(',').map(Number);
-                        const w = canvas.width, h = canvas.height;
-                        const max = Math.max(...data), min = Math.min(...data);
-                        ctx.clearRect(0, 0, w, h);
-                        ctx.beginPath();
-                        data.forEach((v, i) => {
-                            const x = (i / (data.length - 1)) * (w - 4) + 2;
-                            const y = h - 4 - ((v - min) / (max - min || 1)) * (h - 8);
-                            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-                        });
-                        const styles = getComputedStyle(document.documentElement);
-                        ctx.strokeStyle = styles.getPropertyValue('--accent-2').trim();
-                        ctx.lineWidth = 1.8;
-                        ctx.lineJoin = 'round';
-                        ctx.lineCap = 'round';
-                        ctx.stroke();
-                    });
-                }
-                refreshSparklines();
-
-                /* ---------- Main chart ---------- */
-                const chartCanvas = document.getElementById('mainChart');
-                const chartCtx = chartCanvas.getContext('2d');
-                let currentPeriod = 'week';
-
-                function genData(period) {
-                    if (period === 'week') {
-                        return {
-                            labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-                            revenue: [42, 55, 48, 63, 58, 72, 66],
-                            orders: [22, 30, 26, 34, 31, 40, 36]
-                        };
-                    }
-                    if (period === 'month') {
-                        const labels = [], revenue = [], orders = [];
-                        for (let i = 1; i <= 30; i++) {
-                            labels.push(i % 5 === 0 ? String(i) : '');
-                            revenue.push(40 + Math.sin(i / 3) * 14 + i * 0.9);
-                            orders.push(20 + Math.cos(i / 4) * 8 + i * 0.5);
-                        }
-                        return { labels, revenue, orders };
-                    }
-                    return {
-                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                        revenue: [210, 240, 225, 260, 255, 290, 310, 300, 330, 345, 360, 395],
-                        orders: [120, 132, 128, 140, 138, 150, 160, 155, 168, 172, 180, 196]
-                    };
-                }
-
-                function roundRect(ctx, x, y, w, h, r) {
-                    if (h < r * 2) r = Math.max(h / 2, 0);
-                    ctx.beginPath();
-                    ctx.moveTo(x, y + r);
-                    ctx.arcTo(x, y + h, x + r, y + h, r);
-                    ctx.arcTo(x + w, y + h, x + w, y + h - r, r);
-                    ctx.arcTo(x + w, y, x + w - r, y, r);
-                    ctx.arcTo(x, y, x, y + r, r);
-                    ctx.closePath();
-                }
-
-                function drawChart(period) {
-                    currentPeriod = period;
-                    const { labels, revenue, orders } = genData(period);
-                    const dpr = window.devicePixelRatio || 1;
-                    const cssW = chartCanvas.clientWidth || chartCanvas.parentElement.clientWidth;
-                    const cssH = 230;
-                    chartCanvas.width = cssW * dpr;
-                    chartCanvas.height = cssH * dpr;
-                    chartCanvas.style.height = cssH + 'px';
-                    chartCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-                    chartCtx.clearRect(0, 0, cssW, cssH);
-
-                    const styles = getComputedStyle(document.documentElement);
-                    const accent = styles.getPropertyValue('--accent').trim();
-                    const accent2 = styles.getPropertyValue('--accent-2').trim();
-                    const muted = styles.getPropertyValue('--text-muted').trim();
-                    const border = styles.getPropertyValue('--border').trim();
-
-                    const padL = 8, padR = 8, padT = 10, padB = 26;
-                    const plotW = cssW - padL - padR;
-                    const plotH = cssH - padT - padB;
-                    const max = Math.max(...revenue) * 1.15;
-
-                    chartCtx.strokeStyle = border;
-                    chartCtx.lineWidth = 1;
-                    for (let g = 0; g < 4; g++) {
-                        const y = padT + plotH * (g / 3);
-                        chartCtx.beginPath();
-                        chartCtx.moveTo(padL, y);
-                        chartCtx.lineTo(padL + plotW, y);
-                        chartCtx.stroke();
-                    }
-
-                    const n = labels.length;
-                    const groupW = plotW / n;
-                    const barW = Math.max(2, Math.min(16, groupW * 0.28));
-
-                    const grad = chartCtx.createLinearGradient(0, padT, 0, padT + plotH);
-                    grad.addColorStop(0, accent);
-                    grad.addColorStop(1, accent2);
-
-                    for (let i = 0; i < n; i++) {
-                        const cx = padL + groupW * i + groupW / 2;
-                        const rH = (revenue[i] / max) * plotH;
-                        const oH = (orders[i] / max) * plotH;
-
-                        chartCtx.fillStyle = grad;
-                        roundRect(chartCtx, cx - barW - 1.5, padT + plotH - rH, barW, rH, 3);
-                        chartCtx.fill();
-
-                        chartCtx.fillStyle = accent2;
-                        chartCtx.globalAlpha = 0.55;
-                        roundRect(chartCtx, cx + 1.5, padT + plotH - oH, barW, oH, 3);
-                        chartCtx.fill();
-                        chartCtx.globalAlpha = 1;
-
-                        if (labels[i]) {
-                            chartCtx.fillStyle = muted;
-                            chartCtx.font = '11px Inter, sans-serif';
-                            chartCtx.textAlign = 'center';
-                            chartCtx.fillText(labels[i], cx, cssH - 8);
-                        }
-                    }
-                }
-
-                document.getElementById('periodToggle').addEventListener('click', (e) => {
-                    const btn = e.target.closest('button');
-                    if (!btn) return;
-                    document.querySelectorAll('#periodToggle button').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    drawChart(btn.getAttribute('data-period'));
-                });
-
-                window.addEventListener('resize', () => drawChart(currentPeriod));
-                drawChart('week');
             })();
     </script>
 </body>
