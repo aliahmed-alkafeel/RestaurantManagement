@@ -14,7 +14,7 @@ namespace RestaurantManagement.Data
             
             var exsistingRoles = await context.Roles.Select(r => r.RoleName).ToListAsync();
             var rolesToAdd = Enum.GetValues<UserRole>().
-                Where(r => r != UserRole.Unclassified && !exsistingRoles.Contains(r)).Select(r => new Role
+                Where(r => !exsistingRoles.Contains(r)).Select(r => new Role
                 {
                     Id = new Guid(),
                     RoleName = r
@@ -25,6 +25,18 @@ namespace RestaurantManagement.Data
                 await context.SaveChangesAsync();
             }
 
+            var exsistingGroups = await context.Groups.Select(r => r.GroupName).ToListAsync();
+            var GroupsToAdd = Enum.GetValues<UserGroup>().
+                Where(r => !exsistingGroups.Contains(r)).Select(r => new Group
+                {
+                    Id = new Guid(),
+                    GroupName = r
+                }).ToList();
+            if (GroupsToAdd.Count > 0)
+            {
+                await context.AddRangeAsync(GroupsToAdd);
+                await context.SaveChangesAsync();
+            }
 
             var AdminGroup = await context.Groups.FirstOrDefaultAsync(g => g.GroupName == UserGroup.Administrator);
             if(AdminGroup is null)
@@ -38,7 +50,7 @@ namespace RestaurantManagement.Data
                 await context.SaveChangesAsync();
             }
 
-            var allRoles = await context.Roles.Where(r => r.RoleName != UserRole.Unclassified).ToListAsync();
+            var allRoles = await context.Roles.ToListAsync();
             var existingRoleIds = await context.GroupsRoles.Where(gr => gr.GroupId == AdminGroup.Id)
                 .Select(gr => gr.RoleId).ToListAsync();
             var groupRolesToAdd = allRoles.Where(r => !existingRoleIds.Contains(r.Id)).Select(r => new GroupRole

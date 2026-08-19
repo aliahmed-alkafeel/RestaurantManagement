@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using RestaurantManagement.Models;
 using RestaurantManagement.IServices;
 using RestaurantManagement.Services;
+using RestaurantManagement.Areas.Dashboard.Services;
+using RestaurantManagement.Areas.Dashboard.IServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,13 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     options.ExpireTimeSpan = TimeSpan.FromHours(8);
     options.SlidingExpiration = true;
 });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ManageEmployees", policy => policy.RequireClaim(nameof(UserGroup), UserGroup.Administrator.ToString()));
+    options.AddPolicy()
+});
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -26,12 +35,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IPasswordHasher<Employee>, PasswordHasher<Employee>>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IEmployeesService, EmployeesService>();
 var app = builder.Build();
 
 await DbInitializer.SeedAsync(app.Services);
@@ -50,11 +60,13 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
-
+app.MapControllers();
+//app.MapControllerRoute(
+//    name: "areas",
+//    pattern: "{area:exists}/{Controller}/{Action}");
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();

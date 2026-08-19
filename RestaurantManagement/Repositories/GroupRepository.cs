@@ -1,0 +1,28 @@
+﻿using Microsoft.EntityFrameworkCore;
+using RestaurantManagement.Data;
+using RestaurantManagement.IRepositories;
+using RestaurantManagement.Models;
+
+namespace RestaurantManagement.Repositories
+{
+    public class GroupRepository : Repository<Group>, IGroupRepository
+    {
+        public GroupRepository(AppDbContext context) : base(context)
+        {
+        }
+
+        public async Task<Guid> GetIdByNameAsync(UserGroup group)
+        {
+            Console.WriteLine(group);
+            var dbGroup = await _dbSet.FirstOrDefaultAsync(g => g.GroupName == group);
+            Console.WriteLine(dbGroup);
+            Console.WriteLine(dbGroup?.Id);
+            if(dbGroup is null)
+            {
+                throw new KeyNotFoundException($"Group {group.ToString()} is not found");
+            }
+            return dbGroup.Id;
+
+        }
+    }
+}

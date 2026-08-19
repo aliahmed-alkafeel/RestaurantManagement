@@ -1,7 +1,7 @@
 ﻿using RestaurantManagement.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace RestaurantManagement.ViewModels
+namespace RestaurantManagement.Areas.Dashboard.ViewModels
 {
     public class EmployeeViewModel
     {
@@ -27,7 +27,6 @@ namespace RestaurantManagement.ViewModels
         [MaxLength(50)]
         public string Username { get; set; } = null!;
         [Required]
-        [MaxLength(50)]
         public UserGroup Group { get; set; }
 
     }

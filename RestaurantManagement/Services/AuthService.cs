@@ -24,7 +24,7 @@ namespace RestaurantManagement.Services
 
         public async Task<bool> LoginAsync(LoginViewModel loginViewModel)
         {
-            var employee = await _unitOfWork.Employees.GetEmployeeByUsernameAsync(loginViewModel.Username);
+            var employee = await _unitOfWork.Employees.GetEmployeeWithGroupByUsernameAsync(loginViewModel.Username);
             if (employee is null)
             {
                 return false;
@@ -38,6 +38,7 @@ namespace RestaurantManagement.Services
             {
                 new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString()),
                 new Claim(ClaimTypes.Name, employee.Username),
+                new Claim(nameof(UserGroup), employee.Group!.GroupName.ToString())
             };
             var identity = new ClaimsIdentity(
                 claims,

@@ -8,6 +8,7 @@ namespace RestaurantManagement.Repositories
     {
         private readonly AppDbContext _context;
         public IEmployeeRepository Employees { get; }
+        public IGroupRepository Groups { get; }
 
         public IRepository<Item> Items { get; }
 
@@ -21,8 +22,6 @@ namespace RestaurantManagement.Repositories
 
         public IRepository<Role> Roles { get; }
 
-        public IRepository<Group> Groups { get; }
-
         public IRepository<GroupRole> GroupsRoles { get; }
         public UnitOfWork(
             AppDbContext context,
@@ -33,7 +32,7 @@ namespace RestaurantManagement.Repositories
             IRepository<Discount> discounts,
             IRepository<ItemOrder> itemOrders,
             IRepository<Role> roles,
-            IRepository<Group> groups,
+            IGroupRepository groups,
             IRepository<GroupRole> groupsRoles)
             {
             _context = context;

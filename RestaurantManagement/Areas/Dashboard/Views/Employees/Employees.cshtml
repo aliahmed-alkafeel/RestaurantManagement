@@ -3,7 +3,6 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    Layout = "~/Views/Shared/DashLayout.cshtml";
 }
 <table class="table text-nowrap mb-0 align-middle">
     <thead class="text-dark fs-4">
@@ -61,15 +60,16 @@
                 @emp.EmployeeEndingDate
             </td>
             <td>
-                    <a class="action edit-action" asp-controller="Dashboard" asp-action="Edit-Employee" asp-route-id="@emp.Id">Edit</a>
-                    <a class="action delete-action" asp-controller="Dashboard" asp-action="Delete-Employee" asp-route-id="@emp.Id">Delete</a>
+                    <a class="action edit-action" asp-area="Dashboard" asp-controller="Employees" asp-action="EditEmployee" asp-route-id="@emp.Id">Edit</a>
+                    <a  class="action delete-action" asp-area="Dashboard" asp-controller="Employees"
+                    asp-action="TerminateEmployee" asp-route-id="@emp.Id">Terminate</a>
             </td>
         </tr>
-            }
+        }
     </tbody>
 </table>
-<a asp-controller="Dashboard"
-   asp-action="Create-Employee"
+<a asp-area="Dashboard" asp-controller="Employees"
+   asp-action="CreateEmployee"
    class="add-btn">
 
     <svg viewBox="0 0 24 24"

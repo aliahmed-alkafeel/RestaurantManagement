@@ -21,10 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Controllers\" />
-    <Folder Include="Areas\ViewModels\" />
-    <Folder Include="Areas\Views\" />
-    <Folder Include="Areas\Services\" />
+    <Folder Include="Views\Dashboard\" />
   </ItemGroup>
 
 </Project>
