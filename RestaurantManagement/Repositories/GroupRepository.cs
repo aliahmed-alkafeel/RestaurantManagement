@@ -11,6 +11,18 @@ namespace RestaurantManagement.Repositories
         {
         }
 
+        public async Task<List<Group>> GetAllGroupsWithRolesAsync()
+        {
+            var groups = await _dbSet.Include(g => g.GroupRoles).ThenInclude(gr => gr.Role).ToListAsync();
+            return groups;
+        }
+        public async Task<Group> GetGroupWithRolesByIdAsync(Guid id)
+        {
+            var group = await _dbSet.Include(g => g.GroupRoles).ThenInclude(gr => gr.Role).FirstOrDefaultAsync(g => g.Id == id);
+            if (group is null) throw new KeyNotFoundException();
+            return group;
+        }
+
         public async Task<Guid> GetIdByNameAsync(UserGroup group)
         {
             Console.WriteLine(group);

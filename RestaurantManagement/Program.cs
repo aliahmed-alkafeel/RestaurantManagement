@@ -22,12 +22,6 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     options.SlidingExpiration = true;
 });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("ManageEmployees", policy => policy.RequireClaim(nameof(UserGroup), UserGroup.Administrator.ToString()));
-    options.AddPolicy()
-});
-
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -42,6 +36,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IPasswordHasher<Employee>, PasswordHasher<Employee>>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmployeesService, EmployeesService>();
+builder.Services.AddScoped<IGroupsService, GroupsService>();
 var app = builder.Build();
 
 await DbInitializer.SeedAsync(app.Services);
