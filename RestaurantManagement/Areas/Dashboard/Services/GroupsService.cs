@@ -41,9 +41,23 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             return (groupVm);
         }
 
-        public Task<bool> UpdateGroupAsync(GroupViewModel model, Guid ModifierId)
+        public async Task<bool> UpdateGroupAsync(GroupViewModel model, Guid ModifierId)
         {
-            throw new NotImplementedException();
+            var group = await _unitOfWork.Groups.GetByIdAsync(model.Id);
+            if (group is null) throw new KeyNotFoundException("There is no such group");
+            var roles = await _unitOfWork.Roles.GetRolesByNamesAsync(model.Roles);
+            await _unitOfWork.GroupsRoles.DeleteByGroupIdAsync(model.Id);
+            foreach(var role in roles)
+            {
+                group.GroupRoles.Add(new GroupRole
+                {
+                    GroupId = group.Id,
+                    RoleId = role.Id
+                });
+            }
+            _unitOfWork.Groups.Update(group, ModifierId);
+            await _unitOfWork.SaveChangesAsync();
+            return true;
         }
     }
 }

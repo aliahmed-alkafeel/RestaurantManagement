@@ -20,9 +20,9 @@ namespace RestaurantManagement.Repositories
 
         public IRepository<ItemOrder> ItemOrders { get; }
 
-        public IRepository<Role> Roles { get; }
+        public IRoleRepository Roles { get; }
 
-        public IRepository<GroupRole> GroupsRoles { get; }
+        public IGroupRoleRepository GroupsRoles { get; }
         public UnitOfWork(
             AppDbContext context,
             IEmployeeRepository employees,
@@ -31,9 +31,9 @@ namespace RestaurantManagement.Repositories
             IRepository<Order> orders,
             IRepository<Discount> discounts,
             IRepository<ItemOrder> itemOrders,
-            IRepository<Role> roles,
+            IRoleRepository roles,
             IGroupRepository groups,
-            IRepository<GroupRole> groupsRoles)
+            IGroupRoleRepository groupsRoles)
             {
             _context = context;
             Employees = employees;

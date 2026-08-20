@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.Areas.Dashboard.IServices;
 using RestaurantManagement.Areas.Dashboard.ViewModels;
+using System.Security.Claims;
 
 namespace RestaurantManagement.Areas.Dashboard.Controllers
 {
@@ -21,6 +22,14 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         {
             var groupVm = await groupsService.GetGroupByIdAsync(id);
             return View(groupVm);
+        }
+        
+        [HttpPost("EditGroup/{id:guid}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditGroup(GroupViewModel model)
+        {
+            var groupVm = await groupsService.UpdateGroupAsync(model,Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
+            return RedirectToAction(nameof(Groups));
         }
     }
 }

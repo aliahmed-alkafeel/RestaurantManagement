@@ -10,5 +10,6 @@ namespace RestaurantManagement.Areas.Dashboard.ViewModels
         [Required]
         public UserGroup GroupName { get; set; }
         public ICollection<GroupRole> GroupRoles { get; set; } = [];
+        public List<UserRole> Roles { get; set; } = [];
     }
 }
