@@ -1,6 +1,27 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-    Layout = null;
+﻿@{
+    ViewData["Title"] = "Access Denied";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+<div class="container d-flex justify-content-center align-items-center"
+     style="min-height: 70vh;">
+
+    <div class="text-center">
+
+        <h1 class="display-3 fw-bold mb-3">
+            Access Denied
+        </h1>
+
+        <p class="text-muted fs-5 mb-4">
+            You don't have permission to access this page.
+        </p>
+        <a asp-controller="Home"
+           asp-action="Index"
+           class="btn btn-primary px-4">
+            <i class="bi bi-house-door me-2"></i>
+            Back to Home
+        </a>
+
+    </div>
+
+</div>

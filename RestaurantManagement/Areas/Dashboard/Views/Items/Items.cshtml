@@ -1,0 +1,97 @@
+﻿@model List<ItemViewModel>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="table-responsive">
+
+<table class="table text-nowrap mb-0 align-middle">
+    <thead class="text-dark fs-4">
+        <tr>
+            <th>
+                <h6 class="fs-4 fw-semibold mb-0">Item Name</h6>
+            </th>
+            <th>
+                <h6 class="fs-4 fw-semibold mb-0">Category Name</h6>
+            </th>
+            <th>
+                <h6 class="fs-4 fw-semibold mb-0">Type</h6>
+            </th>
+
+            <th>
+                <h6 class="fs-4 fw-semibold mb-0">Price</h6>
+            </th>
+            <th>
+                <h6 class="fs-4 fw-semibold mb-0">Image</h6>
+            </th>
+            <th>
+                <h6 class="fs-4 fw-semibold mb-0">Status</h6>
+            </th>
+            <th>
+                <h6 class="fs-4 fw-semibold mb-0">Availability</h6>
+            </th>
+            <th>
+                <h6 class="fs-4 fw-semibold mb-0">Operations</h6>
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.ItemName.ToString()
+                </td>
+                <td>
+                    <div class="d-flex flex-wrap gap-1">
+                        <span class="action showElements">@item.Category!.CategoryName</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="d-flex flex-wrap gap-1">
+                        <span class="action showElements">@item.Category!.Type</span>
+                    </div>
+                </td>
+                    <td>
+                        @item.Price.ToString()
+                    </td>
+                    <td width="140px" height="50px">
+                        <img src=@Url.Content(@item.ImageUrl) alt="@item.ItemName" />
+                    </td>
+                    <td>
+                        @(item.IsActive ? "Active" : "Inactive")
+                    </td>
+                    <td>
+                        @(item.IsAvailable ? "Available" : "Not Available") 
+                    </td>
+                <td>
+                    <a class="action edit-action" asp-area="Dashboard" asp-controller="Items" asp-action="EditItem" asp-route-id="@item.Id">Edit</a>
+                    <a class="action delete-action" asp-area="Dashboard" asp-controller="Items"
+                       asp-action="DeleteItem" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+</div>
+<a asp-area="Dashboard" asp-controller="Items"
+   asp-action="CreateItem"
+   class="add-btn">
+
+    <svg viewBox="0 0 24 24"
+         fill="none"
+         stroke="currentColor"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round">
+        <path d="M12 5v14" />
+        <path d="M5 12h14" />
+    </svg>
+
+    Add New Item
+</a>
+
+
+  

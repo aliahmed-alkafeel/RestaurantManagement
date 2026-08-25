@@ -20,6 +20,10 @@ namespace RestaurantManagement.Repositories
         }
         public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default)
         {
+            return await _dbSet.Where(t => !t.IsDeleted).ToListAsync();
+        }
+        public async Task<IEnumerable<T>> GetAllWithDeletedAsync(CancellationToken cancellationToken = default)
+        {
             return await _dbSet.ToListAsync();
         }
 

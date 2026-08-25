@@ -9,7 +9,7 @@ namespace RestaurantManagement.IRepositories
         IGroupRepository Groups { get; }
         IRepository<Item> Items { get; }
         IRepository<Category> Categories { get; }
-        IRepository<Order> Orders { get; }
+        IOrderRepository Orders { get; }
         IRepository<Discount> Discounts { get; }
         IRepository<ItemOrder> ItemOrders { get; }
         IGroupRoleRepository GroupsRoles { get; }

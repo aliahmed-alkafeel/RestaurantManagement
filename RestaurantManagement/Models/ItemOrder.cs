@@ -6,11 +6,9 @@ namespace RestaurantManagement.Models
     {
         public Guid OrderId { get; set; }
         public Guid ItemId { get; set; }
-        [Required]
         public short Quantity { get; set; }
-        [Required]
         public decimal Price { get; set; }
-        public ICollection<Order> Orders { get; set; } = [];
-        public ICollection<Item> Items { get; set; } = [];
+        public ICollection<Order> Order { get; set; } = null!;
+        public ICollection<Item> Item { get; set; } = null!;
     }
 }

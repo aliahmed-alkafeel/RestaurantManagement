@@ -38,8 +38,12 @@ namespace RestaurantManagement.Services
             {
                 new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString()),
                 new Claim(ClaimTypes.Name, employee.Username),
-                new Claim(nameof(UserGroup), employee.Group!.GroupName.ToString())
             };
+            var group = await _unitOfWork.Groups.GetGroupWithRolesByIdAsync(employee.GroupId);
+            foreach(var role in group.GroupRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role.Role.RoleName.ToString()));
+            }
             var identity = new ClaimsIdentity(
                 claims,
                 CookieAuthenticationDefaults.AuthenticationScheme);

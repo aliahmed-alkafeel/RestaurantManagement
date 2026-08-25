@@ -87,7 +87,12 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         }
 
         public async Task<bool> UpdateEmployeeAsync(ManageEmployeeViewModel model, Guid ModifierId)
-        {    
+        {
+        var isEmailExists = await _unitOfWork.Employees.GetEmployeeByEmailAsync(model.Email);
+        var isUsernameExists = await _unitOfWork.Employees.GetEmployeeByUsernameAsync(model.Username);
+        if((isEmailExists is not null && isEmailExists.Id != model.Id) || (isUsernameExists is not null && isUsernameExists.Id != model.Id)){
+                return false;
+            }
         var employee = await _unitOfWork.Employees.GetByIdAsync(model.Id);
             if (employee is null || (model.EmployeeEndingDate.HasValue && model.EmployeeEndingDate <= model.EmployeeStartingDate))
                 return false;
@@ -114,7 +119,6 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         public async Task<bool> TerminateEmployeeAsync(Guid modelId, Guid ModifierId)
         {
             var emp = await _unitOfWork.Employees.GetByIdAsync(modelId);
-            Console.WriteLine(emp);
             if (emp is null) throw new InvalidOperationException("There is no such employee");
             _unitOfWork.Employees.Terminate(emp,ModifierId);
             await _unitOfWork.SaveChangesAsync();

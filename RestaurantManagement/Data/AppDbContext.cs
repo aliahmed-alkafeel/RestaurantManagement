@@ -23,13 +23,14 @@ namespace RestaurantManagement.Data
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<GroupRole>().HasKey(gr => new { gr.GroupId, gr.RoleId });
             modelBuilder.Entity<ItemOrder>()
-                .ToTable(obj => obj.HasCheckConstraint("CK_ItemOrder_Price_Positive","Price >0"))
+                .ToTable(obj => obj.HasCheckConstraint("CK_ItemOrder_Price_Positive", "Price >0"))
                 .HasKey(it => new { it.OrderId, it.ItemId });
             modelBuilder.Entity<Item>()
                 .ToTable(obj => obj.HasCheckConstraint("CK_Item_Price_Positive", "Price >0"));
 
-            modelBuilder.Entity<Employee>().HasIndex(e => e.Email).IsUnique();
-            modelBuilder.Entity<Employee>().HasIndex(e => e.Username).IsUnique();
+            modelBuilder.Entity<Employee>().HasIndex(e => new { e.Email, e.IsDeleted, e.DeletedAt }).IsUnique();
+            modelBuilder.Entity<Employee>().HasIndex(e => new { e.Username,e.IsDeleted, e.DeletedAt }).IsUnique();
+            modelBuilder.Entity <Category>().HasIndex(c => new {c.CategoryName, c.Type, c.IsDeleted, c.DeletedAt}).IsUnique();
 
             modelBuilder.Entity<Item>().Property(i => i.Price).HasPrecision(18,5);
             modelBuilder.Entity<ItemOrder>().Property(i => i.Price).HasPrecision(18, 5);

@@ -1,0 +1,194 @@
+﻿@model ItemViewModel
+
+@{
+}
+
+<div class="container-fluid employee-page">
+
+    <div class="employee-form-wrapper">
+
+        <div class="row justify-content-center w-100">
+            <div class="col-12 col-xl-9 col-xxl-8">
+
+                <!-- Employee Form Card -->
+                <div class="card employee-card border-0 shadow-sm">
+
+                    <!-- Card Header -->
+                    <div class="card-header bg-transparent border-0 px-4 pt-4">
+                        <div class="d-flex align-items-center gap-3">
+
+                            <div>
+                                <h5 class="mb-1 fw-bold">
+                                    Edit Item
+                                </h5>
+
+                                <p class="text-muted mb-0">
+                                    Edit the Item details.
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <!-- Card Body -->
+                    <div class="card-body px-4 pb-4">
+
+                        <form asp-area="Dashboard" asp-controller="Items"
+                              asp-action="EditItem"
+                              asp-route-Id="@Model.Id"
+                              method="post"
+                              enctype="multipart/form-data">
+                            @Html.AntiForgeryToken()
+
+                            <!-- Validation -->
+                            <div asp-validation-summary="ModelOnly"
+                                 class="text-danger mb-3">
+                            </div>
+
+
+                            <!-- Personal Information -->
+                            @* <div class="section-title">
+                                <i class="ti ti-user"></i>
+                                <span>Personal Information</span>
+                            </div> *@
+
+                            <div class="row">
+
+                                <!-- First Name -->
+                                <div class="col-md-6 mb-3">
+
+                                    <label asp-for="ItemName"
+                                           class="form-label fw-semibold">
+                                        Item Name
+                                    </label>
+
+                                    <input asp-for="ItemName"
+                                           class="form-control"
+                                           placeholder="Enter Item name" />
+
+                                    <span asp-validation-for="ItemName"
+                                          class="text-danger small">
+                                    </span>
+
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Image" class="form-label fw-semibold">
+                                        Image
+                                    </label>
+
+                                    <input class="form-control" asp-for="Image" type="file" accept="image/*" />
+
+                                    <span asp-validation-for="Image"
+                                          class="text-danger small">
+                                    </span>
+                                </div>
+                                <div class="col-md-3 mb-4">
+                                    <label asp-for="Category.Type" class="form-label fw-semibold">
+                                        Type
+                                    </label>
+
+                                    <select asp-for="Category.Type"
+                                            asp-items="Html.GetEnumSelectList<CategoryType>()"
+                                            class="form-select" id="typeSelect">
+                                        <option value="">Select Type</option>
+                                    </select>
+
+                                    <span asp-validation-for="Category.Type"
+                                          class="text-danger small">
+                                    </span>
+                                </div>
+
+                                <div class="col-md-3 mb-4">
+                                    <label asp-for="CategoryId" class="form-label fw-semibold">
+                                        Category
+                                    </label>
+
+                                    <select asp-for="CategoryId" id="categorySelect"
+                                            class="form-select">
+                                        <option value="">Select type first</option>
+                                    </select>
+
+                                    <span asp-validation-for="CategoryId"
+                                          class="text-danger small">
+                                    </span>
+                                </div>
+
+                        
+                                <div class="col-md-2 mb-3">
+
+                                    <label asp-for="Price"
+                                           class="form-label fw-semibold">
+                                        Price
+                                    </label>
+
+                                    <input asp-for="Price"
+                                           class="form-control"
+                                           placeholder="Enter Item Price" />
+
+                                    <span asp-validation-for="Price"
+                                          class="text-danger small">
+                                    </span>
+
+                                </div>
+                                <div class="col-md-4"></div>
+                                <div class="col-md-3 mb-3 ">
+
+                                    <input class="form-check-input" asp-for="IsActive" type="checkbox" checked />
+                                    <label class="form-check-label form-label fw-semibold" asp-for="IsActive">
+                                        Active
+                                    </label>
+
+
+                                    <span asp-validation-for="IsActive"
+                                          class="text-danger small">
+                                    </span>
+                                </div>
+
+                                <div class="col-md-3 mb-3 ">
+                                    <input class="form-check-input" asp-for="IsAvailable" type="checkbox" checked />
+                                    <label class="form-check-label form-label fw-semibold" asp-for="IsAvailable">
+                                        Available
+                                    </label>
+                                    <span asp-validation-for="IsAvailable"
+                                          class="text-danger small">
+                                    </span>
+                                </div>
+
+                            </div>
+                            <br />
+
+                            <!-- Actions -->
+                            <div class="d-flex justify-content-end gap-2">
+
+                                <a asp-controller="Dashboard"
+                                   asp-action="Items"
+                                   class="btn btn-light border px-4">
+                                    Cancel
+                                </a>
+
+                                <button type="submit"
+                                        class="btn btn-primary px-4">
+
+                                                            
+
+                                    Edit the Item
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="~/js/dashboard.js"></script>
