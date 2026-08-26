@@ -16,7 +16,7 @@ namespace RestaurantManagement.Repositories
 
         public IOrderRepository Orders { get; }
 
-        public IRepository<Discount> Discounts { get; }
+        public IDiscountRepository Discounts { get; }
 
         public IRepository<ItemOrder> ItemOrders { get; }
 
@@ -29,7 +29,7 @@ namespace RestaurantManagement.Repositories
             IRepository<Item> items,
             IRepository<Category> categories,
             IOrderRepository orders,
-            IRepository<Discount> discounts,
+            IDiscountRepository discounts,
             IRepository<ItemOrder> itemOrders,
             IRoleRepository roles,
             IGroupRepository groups,

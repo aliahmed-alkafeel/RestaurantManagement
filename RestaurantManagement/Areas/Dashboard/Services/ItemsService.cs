@@ -12,6 +12,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
     {
         public async Task<bool> CreateItemAsync(ItemViewModel model)
         {
+            if (model is null) throw new ArgumentNullException();
             var items = await unitOfWork.Items.GetAllAsync();
             foreach (Item i in items)
             {
@@ -131,6 +132,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         public async Task<bool> UpdateItemAsync(ItemViewModel model, Guid ModifierId)
         {
+            if (model is null) throw new ArgumentNullException();
             var Items = await unitOfWork.Items.GetAllAsync();
             foreach (Item i in Items)
             {

@@ -1,11 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using RestaurantManagement.Models;
+using System.ComponentModel.DataAnnotations;
 
-namespace RestaurantManagement.Models
+namespace RestaurantManagement.Areas.Dashboard.ViewModels
 {
-    public class Discount : BaseModel
+    public class DiscountViewModel
     {
         public Guid Id { get; set; }
-        [Range(0,100)]
+        [Range(0, 100)]
         public decimal DiscountPercentage { get; set; }
         public DateTime DiscountStartingDate { get; set; }
         public DateTime DiscountEndingDate { get; set; }

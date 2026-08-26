@@ -43,6 +43,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         public async Task<bool> UpdateGroupAsync(GroupViewModel model, Guid ModifierId)
         {
+            if (model is null) throw new ArgumentNullException();
             var group = await _unitOfWork.Groups.GetByIdAsync(model.Id);
             if (group is null) throw new KeyNotFoundException("There is no such group");
             var roles = await _unitOfWork.Roles.GetRolesByNamesAsync(model.Roles);

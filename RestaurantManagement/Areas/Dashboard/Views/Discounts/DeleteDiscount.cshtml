@@ -1,4 +1,4 @@
-﻿@model CategoryViewModel
+﻿@model DiscountViewModel
 
 @{
 }
@@ -19,11 +19,11 @@
 
                             <div>
                                 <h5 class="mb-1 fw-bold">
-                                    Edit a category
+                                    Delete a discount
                                 </h5>
 
                                 <p class="text-muted mb-0">
-                                    Enter the category details.
+                                    Do you want to delete this discount?
                                 </p>
                             </div>
 
@@ -34,8 +34,9 @@
                     <!-- Card Body -->
                     <div class="card-body px-4 pb-4">
 
-                        <form asp-area="Dashboard" asp-controller="Categories"
-                              asp-action="EditCategory"
+                        <form asp-area="Dashboard" asp-controller="Discounts"
+                              asp-action="ConfirmedDeleteDiscount"
+                              asp-route-id="@Model.Id"
                               method="post">
                             @Html.AntiForgeryToken()
 
@@ -45,22 +46,27 @@
                             </div>
 
 
+                            <!-- Personal Information -->
+                           <div class="section-title">
+                                <i class="ti ti-user"></i>
+                                <span>Personal Information</span>
+                            </div> 
 
                             <div class="row">
 
                                 <!-- First Name -->
                                 <div class="col-md-6 mb-3">
 
-                                    <label asp-for="CategoryName"
+                                    <label asp-for="DiscountName"
                                            class="form-label fw-semibold">
-                                        Category Name
+                                        Discount Name
                                     </label>
 
-                                    <input asp-for="CategoryName"
+                                    <input disabled asp-for="DiscountName"
                                            class="form-control"
-                                           placeholder="Enter Category name" />
+                                           placeholder="Enter Discount name" />
 
-                                    <span asp-validation-for="CategoryName"
+                                    <span asp-validation-for="DiscountName"
                                           class="text-danger small">
                                     </span>
 
@@ -73,8 +79,8 @@
                                         Type
                                     </label>
 
-                                    <select asp-for="Type"
-                                            asp-items="Html.GetEnumSelectList<CategoryType>()"
+                                    <select disabled asp-for="Type"
+                                            asp-items="Html.GetEnumSelectList<DiscountType>()"
                                             class="form-select">
                                         <option value="">Select Type</option>
                                     </select>
@@ -90,14 +96,14 @@
                             <!-- Actions -->
                             <div class="d-flex justify-content-end gap-2">
                                 <a asp-controller="Dashboard"
-                                   asp-action="Categories"
+                                   asp-action="Discounts"
                                    class="btn btn-light border px-4">
                                     Cancel
                                 </a>
 
                                 <button type="submit"
                                         class="btn btn-primary px-4">
-                                   Save
+                                    Delete
                                 </button>
 
                             </div>
@@ -113,5 +119,3 @@
     </div>
 
 </div>
-
-

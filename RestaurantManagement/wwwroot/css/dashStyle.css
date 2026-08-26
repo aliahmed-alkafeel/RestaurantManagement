@@ -1112,3 +1112,29 @@ tbody tr {
     background-color: rgb(22 205 199);
     color: white;
 }
+th.sort {
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+    th.sort h6 {
+        display: inline;
+    }
+
+    th.sort::after {
+        content: "↕";
+        margin-left: 8px;
+        font-size: 13px;
+        vertical-align: middle;
+        opacity: 0.35;
+    }
+
+    th.sort.asc::after {
+        content: "↑";
+        opacity: 1;
+    }
+
+    th.sort.desc::after {
+        content: "↓";
+        opacity: 1;
+    }

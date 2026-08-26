@@ -4,12 +4,18 @@
 *@
 @{
 }
+<header class="navbar">
+<div class="search-box">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+    <input type="text" id="search" placeholder="Search Items...">
+</div>
+</header>
 <div class="table-responsive">
 
-<table class="table text-nowrap mb-0 align-middle">
+<table class="table text-nowrap mb-0 align-middle" id="table">
     <thead class="text-dark fs-4">
         <tr>
-            <th>
+            <th class="sort" data-sort="item-name">
                 <h6 class="fs-4 fw-semibold mb-0">Item Name</h6>
             </th>
             <th>
@@ -37,11 +43,11 @@
 
         </tr>
     </thead>
-    <tbody>
+    <tbody class="list">
         @foreach (var item in Model)
         {
             <tr>
-                <td>
+                <td class="item-name">
                     @item.ItemName.ToString()
                 </td>
                 <td>
@@ -92,6 +98,16 @@
 
     Add New Item
 </a>
+<script>
+    const options = {
+        valueNames:["item-name"]
+    };
+    const list = new List("table", options);
+    const searchInput = document.getElementById("search");
+    searchInput.addEventListener("input",function(){
+        list.search(this.value)});
+    
+</script>
 
 
   

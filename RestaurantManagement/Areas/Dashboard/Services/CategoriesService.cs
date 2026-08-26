@@ -9,9 +9,10 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 {
     public class CategoriesService(IUnitOfWork unitOfWork) : ICategoriesService
     {
-        [HttpGet("CreateCategory")]
+
         public async Task<bool> CreateCategoryAsync(CategoryViewModel model)
         {
+            if (model is null) throw new ArgumentNullException();
             var categories = await unitOfWork.Categories.GetAllAsync();
             foreach(Category cat in categories)
             {
@@ -75,6 +76,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         public async Task<bool> UpdateCategoryAsync(CategoryViewModel model, Guid ModifierId)
         {
+            if (model is null) throw new ArgumentNullException();
             var categories = await unitOfWork.Categories.GetAllAsync();
             foreach (Category cat in categories)
             {

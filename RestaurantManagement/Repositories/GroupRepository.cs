@@ -11,8 +11,6 @@ namespace RestaurantManagement.Repositories
         {
         }
 
-
-
         public async Task<List<Group>> GetAllGroupsWithRolesAsync()
         {
             var groups = await _dbSet.Include(g => g.GroupRoles).ThenInclude(gr => gr.Role).ToListAsync();

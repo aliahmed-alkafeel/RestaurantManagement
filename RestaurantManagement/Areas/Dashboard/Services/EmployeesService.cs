@@ -12,7 +12,6 @@ namespace RestaurantManagement.Areas.Dashboard.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPasswordHasher<Employee> _passwordHasher;
-
         public EmployeesService(IUnitOfWork unitOfWork, IPasswordHasher<Employee> passwordHasher)
         {
             _unitOfWork = unitOfWork;
@@ -63,6 +62,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         public async Task<bool> CreateEmployeeAsync(ManageEmployeeViewModel model)
         {
+            if (model is null) throw new ArgumentNullException();
             var existingEmployee = await _unitOfWork.Employees.GetEmployeeByUsernameAsync(model.Username);
             if (existingEmployee is not null)
             {
@@ -88,7 +88,8 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         public async Task<bool> UpdateEmployeeAsync(ManageEmployeeViewModel model, Guid ModifierId)
         {
-        var isEmailExists = await _unitOfWork.Employees.GetEmployeeByEmailAsync(model.Email);
+            if (model is null) throw new ArgumentNullException();
+            var isEmailExists = await _unitOfWork.Employees.GetEmployeeByEmailAsync(model.Email);
         var isUsernameExists = await _unitOfWork.Employees.GetEmployeeByUsernameAsync(model.Username);
         if((isEmailExists is not null && isEmailExists.Id != model.Id) || (isUsernameExists is not null && isUsernameExists.Id != model.Id)){
                 return false;

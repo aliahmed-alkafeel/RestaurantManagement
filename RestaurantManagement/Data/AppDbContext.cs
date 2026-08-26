@@ -32,8 +32,9 @@ namespace RestaurantManagement.Data
             modelBuilder.Entity<Employee>().HasIndex(e => new { e.Username,e.IsDeleted, e.DeletedAt }).IsUnique();
             modelBuilder.Entity <Category>().HasIndex(c => new {c.CategoryName, c.Type, c.IsDeleted, c.DeletedAt}).IsUnique();
 
-            modelBuilder.Entity<Item>().Property(i => i.Price).HasPrecision(18,5);
-            modelBuilder.Entity<ItemOrder>().Property(i => i.Price).HasPrecision(18, 5);
+            modelBuilder.Entity<Item>().Property(i => i.Price).HasPrecision(18,3);
+            modelBuilder.Entity<ItemOrder>().Property(io => io.Price).HasPrecision(18, 3);
+            modelBuilder.Entity<Order>().Property(o => o.TotalPrice).HasPrecision(18, 3);
             modelBuilder.Entity<Discount>().Property(d => d.DiscountPercentage).HasPrecision(3, 3);
 
         }

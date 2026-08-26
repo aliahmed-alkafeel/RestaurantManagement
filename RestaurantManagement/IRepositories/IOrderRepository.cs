@@ -2,8 +2,9 @@
 
 namespace RestaurantManagement.IRepositories
 {
-    public interface IOrderRepository
+    public interface IOrderRepository : IRepository<Order>
     {
         public Task<List<Order>> GetAllOrdersWithItemsAsync();
+        public Task<Order?> GetOrderWithItemsByIdAsync(Guid id);
     }
 }
