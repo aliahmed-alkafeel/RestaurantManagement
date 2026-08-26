@@ -1,4 +1,4 @@
-﻿@model DiscountViewModel
+﻿@model OrderViewModel
 
 @{
 }
@@ -19,11 +19,11 @@
 
                             <div>
                                 <h5 class="mb-1 fw-bold">
-                                    Edit a discount
+                                    Delete a order
                                 </h5>
 
                                 <p class="text-muted mb-0">
-                                    Enter the discount details.
+                                    Do you want to delete this order?
                                 </p>
                             </div>
 
@@ -34,8 +34,9 @@
                     <!-- Card Body -->
                     <div class="card-body px-4 pb-4">
 
-                        <form asp-area="Dashboard" asp-controller="Discounts"
-                              asp-action="EditDiscount"
+                        <form asp-area="Dashboard" asp-controller="Orders"
+                              asp-action="EditOrder"
+                              asp-route-id="@Model.Id"
                               method="post">
                             @Html.AntiForgeryToken()
 
@@ -44,73 +45,82 @@
                                  class="text-danger mb-3">
                             </div>
 
-
                             <div class="row">
 
                                 <!-- First Name -->
                                 <div class="col-md-6 mb-3">
 
-                                    <label asp-for="DiscountPercentage"
+                                    <label asp-for="TableId"
                                            class="form-label fw-semibold">
-                                        Discount Percentage
+                                        Table Number
                                     </label>
-
-                                    <input asp-for="DiscountPercentage"
+                                    <input  asp-for="TableId"
                                            class="form-control"
-                                           placeholder="Enter Discount name" />
-
-                                    <span asp-validation-for="DiscountPercentage"
+                                           placeholder="Enter Table Number" />
+                                    <span asp-validation-for="TableId"
                                           class="text-danger small">
                                     </span>
-
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-
-                                    <label asp-for="DiscountStartingDate"
-                                           class="form-label fw-semibold">
-                                        Starting Date
-                                    </label>
-
-                                    <input asp-for="DiscountStartingDate"
-                                           type="datetime-local"
-                                           class="form-control" />
-
-                                    <span asp-validation-for="DiscountStartingDate"
-                                          class="text-danger small">
-                                    </span>
-
                                 </div>
                                 <div class="col-md-6 mb-3">
 
-                                    <label asp-for="DiscountEndingDate"
+                                    <label asp-for="OrderStatus"
                                            class="form-label fw-semibold">
-                                        Ending Date
+                                        Status
                                     </label>
 
-                                    <input asp-for="DiscountEndingDate"
-                                           type="datetime-local"
-                                           class="form-control" />
+                                    <input  asp-for="OrderStatus"
+                                           class="form-control"
+                                           placeholder="Enter Order name" />
 
-                                    <span asp-validation-for="DiscountEndingDate"
+                                    <span asp-validation-for="OrderStatus"
+                                          class="text-danger small">
+                                    </span>
+                                </div>
+                                <div class="col-md-6 mb-3">
+
+                                    <label asp-for="TotalPrice"
+                                           class="form-label fw-semibold">
+                                        Total Price
+                                    </label>
+
+                                    <input  asp-for="TotalPrice"
+                                           class="form-control"
+                                           placeholder="Enter Order name" />
+
+                                    <span asp-validation-for="TotalPrice"
                                           class="text-danger small">
                                     </span>
 
                                 </div>
+                                <div class="col-md-6 mb-3">
 
+                                    <label asp-for="OrderDate"
+                                           class="form-label fw-semibold">
+                                        Order Date
+                                    </label>
+
+                                    <input  asp-for="OrderDate"
+                                           type="datetime-local"
+                                           class="form-control" />
+
+                                    <span asp-validation-for="OrderDate"
+                                          class="text-danger small">
+                                    </span>
+
+                                </div>
                             </div>
                             <br />
                             <!-- Actions -->
                             <div class="d-flex justify-content-end gap-2">
                                 <a asp-controller="Dashboard"
-                                   asp-action="Discounts"
+                                   asp-action="Orders"
                                    class="btn btn-light border px-4">
                                     Cancel
                                 </a>
 
                                 <button type="submit"
                                         class="btn btn-primary px-4">
-                                   Save
+                                    Edit
                                 </button>
 
                             </div>
@@ -126,5 +136,3 @@
     </div>
 
 </div>
-
-

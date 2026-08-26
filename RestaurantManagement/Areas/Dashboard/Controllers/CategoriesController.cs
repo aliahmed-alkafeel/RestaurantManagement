@@ -47,8 +47,8 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [HttpGet("EditCategory/{id:guid}")]
         public async Task<IActionResult> EditCategory(Guid id)
         {
-            var emps = await categoriesService.GetCategoryByIdAsync(id);
-            return View(emps);
+            var order = await categoriesService.GetCategoryByIdAsync(id);
+            return View(order);
         }
         [Authorize(Roles = nameof(UserRole.ManageCategories))]
         [HttpPost("EditCategory/{id:guid}")]

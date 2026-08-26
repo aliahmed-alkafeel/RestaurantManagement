@@ -16,10 +16,16 @@
     <thead class="text-dark fs-4">
         <tr>
             <th class="sort" data-sort="discount-name">
-                <h6 class="fs-4 fw-semibold mb-0">Discount Name</h6>
+                <h6 class="fs-4 fw-semibold mb-0">Starting Date</h6>
             </th>
             <th>
-                <h6 class="fs-4 fw-semibold mb-0">Type</h6>
+                <h6 class="fs-4 fw-semibold mb-0">Ending Date</h6>
+            </th>
+            <th>
+                <h6 class="fs-4 fw-semibold mb-0">Items Included</h6>
+            </th>
+            <th>
+                <h6 class="fs-4 fw-semibold mb-0">Discount Percentage</h6>
             </th>
 
             <th>
@@ -34,15 +40,22 @@
             <tr>
                     <td class="discount-name">
                   
-                    @discount.DiscountName.ToString()
+                    @discount.DiscountStartingDate
                 </td>
                 <td>
-                    <div class="d-flex flex-wrap gap-1">
-
-                            <span class="action showElements">@discount.Type.ToString()</span>
-                        
-                    </div>
+                            @discount.DiscountEndingDate.ToString()                     
                 </td>
+                <td>
+                        <div class="d-flex flex-wrap gap-1">
+                        @foreach(Item item in discount.Items)
+                        {                            
+                            <span class="action showElements">@item.ItemName</span>              
+                        }
+                        </div>
+                </td>
+                    <td>
+                        @discount.DiscountPercentage.ToString() + "%"
+                    </td>
                 <td>
                     <a class="action edit-action" asp-area="Dashboard" asp-controller="Discounts" asp-action="EditDiscount" asp-route-id="@discount.Id">Edit</a>
                     <a class="action delete-action" asp-area="Dashboard" asp-controller="Discounts"

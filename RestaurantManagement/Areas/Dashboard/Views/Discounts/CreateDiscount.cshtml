@@ -54,7 +54,7 @@
                             <div class="row">
 
                                 <!-- First Name -->
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-3 mb-3">
 
                                     <label asp-for="DiscountPercentage"
                                            class="form-label fw-semibold">
@@ -63,28 +63,45 @@
 
                                     <input asp-for="DiscountPercentage"
                                            class="form-control"
-                                           placeholder="Enter Discount name" />
+                                           placeholder="Enter Discount Percentage" type="number"/>
 
-                                    <span asp-validation-for="DiscountName"
+                                    <span asp-validation-for="DiscountPercentage"
                                           class="text-danger small">
                                     </span>
 
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label asp-for="Type" class="form-label fw-semibold">
-                                        Type
+
+                                    <label asp-for="DiscountStartingDate"
+                                           class="form-label fw-semibold">
+                                        Starting Date
                                     </label>
 
-                                    <select asp-for="Type"
-                                            asp-items="Html.GetEnumSelectList<DiscountType>()"
-                                            class="form-select">
-                                        <option value="">Select Type</option>
-                                    </select>
+                                    <input asp-for="DiscountStartingDate"
+                                           type="datetime-local"
+                                           class="form-control" />
 
-                                    <span asp-validation-for="Type"
+                                    <span asp-validation-for="DiscountStartingDate"
                                           class="text-danger small">
                                     </span>
+
+                                </div>
+                                <div class="col-md-6 mb-3">
+
+                                    <label asp-for="DiscountEndingDate"
+                                           class="form-label fw-semibold">
+                                        Ending Date
+                                    </label>
+
+                                    <input asp-for="DiscountEndingDate"
+                                           type="datetime-local"
+                                           class="form-control" />
+
+                                    <span asp-validation-for="DiscountEndingDate"
+                                          class="text-danger small">
+                                    </span>
+
                                 </div>
 
                             </div>
@@ -102,8 +119,7 @@
                                 <button type="submit"
                                         class="btn btn-primary px-4">
 
-         
-
+       
                                     Add Discount
 
                                 </button>

@@ -33,7 +33,14 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         {
             return View();
         }
-
+        [Authorize(Roles = nameof(UserRole.ManageOrders))]
+        [HttpGet("EditOrder/{id:guid}")]
+        public async Task<IActionResult> EditOrder(Guid id)
+        {
+            var order = await ordersService.GetOrderByIdAsync(id);
+            return View(order);
+        }
+  
         [Authorize(Roles = nameof(UserRole.ManageOrders))]
         [HttpPost("EditOrder/{id:guid}")]
         [ValidateAntiForgeryToken]
