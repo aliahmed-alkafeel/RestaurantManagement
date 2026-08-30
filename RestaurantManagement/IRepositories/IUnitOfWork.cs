@@ -7,7 +7,7 @@ namespace RestaurantManagement.IRepositories
         IEmployeeRepository Employees { get; }
         IRoleRepository Roles { get; }
         IGroupRepository Groups { get; }
-        IRepository<Item> Items { get; }
+        IItemRepository Items { get; }
         IRepository<Category> Categories { get; }
         IOrderRepository Orders { get; }
         IDiscountRepository Discounts { get; }

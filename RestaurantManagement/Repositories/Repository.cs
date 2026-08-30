@@ -20,7 +20,7 @@ namespace RestaurantManagement.Repositories
         }
         public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            return await _dbSet.Where(t => !t.IsDeleted).ToListAsync();
+            return await _dbSet.ToListAsync();
         }
         public async Task<IEnumerable<T>> GetAllWithDeletedAsync(CancellationToken cancellationToken = default)
         {
@@ -37,19 +37,19 @@ namespace RestaurantManagement.Repositories
             await _dbSet.AddAsync(obj);
         }
 
-        public void Update(T obj,Guid createdById, CancellationToken cancellationToken = default)
+        public void Update(T obj,Guid UpdatedById, CancellationToken cancellationToken = default)
         {
             obj.IsUpdated = true;
             obj.UpdatedAt = DateTime.UtcNow;
-            obj.UpdatedById = createdById;
+            obj.UpdatedById = UpdatedById;
             _dbSet.Update(obj);
         }
 
-        public void Delete(T obj,Guid createdById, CancellationToken cancellationToken = default)
+        public void Delete(T obj,Guid DeletedById, CancellationToken cancellationToken = default)
         {
             obj.IsDeleted = true;
             obj.DeletedAt = DateTime.UtcNow;
-            obj.DeletedById = createdById;
+            obj.DeletedById = DeletedById;
             _dbSet.Update(obj);
         }
 

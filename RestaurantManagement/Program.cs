@@ -34,6 +34,8 @@ builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IGroupRoleRepository, GroupRoleRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
+builder.Services.AddScoped<IItemRepository, ItemRepository>();
+//builder.Services.AddScoped<IItemOrderRepository, ItemOrderRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IPasswordHasher<Employee>, PasswordHasher<Employee>>();

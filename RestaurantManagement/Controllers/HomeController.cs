@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RestaurantManagement.Areas.Dashboard.IServices;
+using RestaurantManagement.Areas.Dashboard.Services;
 using RestaurantManagement.Models;
 using RestaurantManagement.ViewModels;
 using System.Diagnostics;
@@ -7,11 +9,12 @@ using System.Diagnostics;
 namespace RestaurantManagement.Controllers
 {
     [Authorize]
-    public class HomeController : Controller
+    public class HomeController(IItemsService itemsService) : Controller
     {
-        public IActionResult Index()
+        public async Task<IActionResult> IndexAsync()
         {
-            return View();
+            var Items = await itemsService.GetAllItemsAsync();
+            return View(Items);
         }
 
         public IActionResult Privacy()

@@ -10,6 +10,6 @@ namespace RestaurantManagement.Areas.Dashboard.ViewModels
         public DateTime OrderDate { get; set; }
         public decimal TotalPrice { get; set; }
         public OrderStatus OrderStatus { get; set; } = OrderStatus.Pending;
-        public ICollection<ItemOrder> ItemOrders { get; set; } = [];
+        public ICollection<ItemOrderViewModel> ItemOrders { get; set; } = [];
     }
 }

@@ -10,7 +10,7 @@ namespace RestaurantManagement.Repositories
         public IEmployeeRepository Employees { get; }
         public IGroupRepository Groups { get; }
 
-        public IRepository<Item> Items { get; }
+        public IItemRepository Items { get; }
 
         public IRepository<Category> Categories { get; }
 
@@ -26,7 +26,7 @@ namespace RestaurantManagement.Repositories
         public UnitOfWork(
             AppDbContext context,
             IEmployeeRepository employees,
-            IRepository<Item> items,
+            IItemRepository items,
             IRepository<Category> categories,
             IOrderRepository orders,
             IDiscountRepository discounts,

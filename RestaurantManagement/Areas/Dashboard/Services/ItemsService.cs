@@ -161,5 +161,9 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         {
             return (await unitOfWork.Categories.GetAllAsync()).Where(c => c.Type == type);
         }
+        public async Task<List<Item>> GetItemsByCategoryId(Guid categoryId)
+        {
+            return (await unitOfWork.Items.GetItemsWithCategories()).Where(i => i.CategoryId == categoryId).ToList();
+        }
     }
     }

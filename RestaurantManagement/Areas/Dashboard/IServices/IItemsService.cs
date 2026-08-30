@@ -11,6 +11,7 @@ namespace RestaurantManagement.Areas.Dashboard.IServices
         Task<bool> UpdateItemAsync(ItemViewModel model, Guid ModifierId);
         Task<bool> DeleteItemAsync(Guid id, Guid ModifierId);
         Task<IEnumerable<Category>> GetCategoriesByTypeAsync(CategoryType type);
+        public Task<List<Item>> GetItemsByCategoryId(Guid categoryId);
 
     }
 }

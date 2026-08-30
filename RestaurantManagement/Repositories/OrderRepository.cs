@@ -13,11 +13,12 @@ namespace RestaurantManagement.Repositories
         }
         public async Task<List<Order>> GetAllOrdersWithItemsAsync()
         {
-            return await _dbSet.Where(o => !o.IsDeleted).Include(o => o.ItemOrders).ThenInclude(io => io.Item).ThenInclude(i => i.Discount).ToListAsync();
+            return await _dbSet.Include(o => o.ItemOrders).ThenInclude(io => io.Item).ThenInclude(i => i.Discount).ToListAsync();
         }
         public async Task<Order?> GetOrderWithItemsByIdAsync(Guid id)
         {
-            return await _dbSet.Where(o => !o.IsDeleted && o.Id == id).Include(o => o.ItemOrders).ThenInclude(io => io.Item).ThenInclude(i => i.Discount).FirstOrDefaultAsync();
+            return await _dbSet.Where(o => o.Id == id).Include(o => o.ItemOrders).ThenInclude(io => io.Item).ThenInclude(i => i.Discount).FirstOrDefaultAsync();
         }
+
     }
 }

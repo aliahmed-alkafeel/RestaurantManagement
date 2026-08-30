@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.Areas.Dashboard.IServices;
 using RestaurantManagement.Areas.Dashboard.Services;
 using RestaurantManagement.Areas.Dashboard.ViewModels;
+using RestaurantManagement.Migrations;
 using RestaurantManagement.Models;
 using System.Security.Claims;
 
@@ -85,7 +86,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
                 return RedirectToAction(nameof(Items));
             }
         [HttpGet("GetCategoriesByType")]
-        [Authorize(Roles = nameof(UserRole.ManageCategories))]
+        [Authorize(Roles = nameof(UserRole.AccessCategories))]
         public async Task<IActionResult> GetCategoriesByType(CategoryType type)
         {
             var categories = await itemsService.GetCategoriesByTypeAsync(type);
@@ -95,6 +96,18 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
                 categoryName = c.CategoryName
             }));
         }
-
+        [HttpGet("GetItemsByCategory")]
+        [Authorize(Roles = nameof(UserRole.AccessCategories))]
+        public async Task<IActionResult> GetItemsByCategory(Guid categoryId)
+        {
+            var items = await itemsService.GetItemsByCategoryId(categoryId);
+            return Json(items.Select(c => new
+            {
+                id = c.Id,
+                itemName = c.ItemName,
+                price = c.Price,
+                image = c.ImageUrl
+            }));
+        }
     }
     }
