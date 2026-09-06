@@ -9,6 +9,7 @@ namespace RestaurantManagement.Areas.Dashboard.IServices
         Task<List<OrderViewModel>> GetAllOrdersAsync();
         Task<OrderViewModel> GetOrderByIdAsync(Guid Id);
         Task<bool> UpdateOrderAsync(OrderViewModel model, Guid ModifierId);
+        Task<bool> UpdateOrderAsync(OrderStatusViewModel model, Guid ModifierId);
         Task<bool> CreateOrderAsync(CreateOrderViewModel model);
         Task<bool> DeleteOrderAsync(Guid id, Guid ModifierId);
         Task<List<OrderViewModel>> GetPOSOrders();

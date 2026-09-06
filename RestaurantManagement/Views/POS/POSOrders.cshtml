@@ -131,7 +131,7 @@
                     </div>
 
                     <h3>No orders</h3>
-                    <p>There are currently no orders to display.</p>
+                    <p>There are no orders in the last 24 Hours.</p>
                 </div>
             }
 
@@ -204,6 +204,7 @@
 
                             body: JSON.stringify({
                                 orderId: orderId,
+                            
                                 status: newStatus
                             })
                         }

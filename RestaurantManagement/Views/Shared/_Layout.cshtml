@@ -122,128 +122,114 @@
 
         <!-- Desktop navigation -->
 
-        <nav class="main-navigation">
+<nav class="main-navigation">
+
+    <!-- New Order -->
+    <a asp-controller="POS"
+       asp-action="NewOrder"
+       class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "POS" &&
+                          ViewContext.RouteData.Values["Action"]?.ToString() == "NewOrder"
+                          ? "active" : "")">
+
+        <span class="nav-link-icon">
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.8">
+
+                <path d="M12 5v14" />
+                <path d="M5 12h14" />
+
+            </svg>
+        </span>
+
+        <span>New Order</span>
+
+    </a>
 
 
-            <!-- New Order -->
+    <!-- Orders -->
+    <a asp-controller="POS"
+       asp-action="POSOrders"
+       class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "POS" &&
+                          ViewContext.RouteData.Values["Action"]?.ToString() == "POSOrders"
+                          ? "active" : "")">
 
-            <a asp-controller="POS" asp-action="NewOrder"
-               class="nav-link active">
+        <span class="nav-link-icon">
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.8">
 
-                <span class="nav-link-icon">
+                <path d="M6 3h12v18H6z" />
+                <path d="M9 7h6" />
+                <path d="M9 11h6" />
+                <path d="M9 15h4" />
 
-                    <svg viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="1.8">
+            </svg>
+        </span>
 
-                        <path d="M12 5v14" />
-                        <path d="M5 12h14" />
+        <span>Orders</span>
 
-                    </svg>
-
-                </span>
-
-                <span>
-                    New Order
-                </span>
-
-            </a>
-
-
-            <!-- Orders -->
-
-            <a asp-controller="POS" asp-action="POSOrders"
-               class="nav-link">
-
-                <span class="nav-link-icon">
-
-                    <svg viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="1.8">
-
-                        <path d="M6 3h12v18H6z" />
-
-                        <path d="M9 7h6" />
-                        <path d="M9 11h6" />
-                        <path d="M9 15h4" />
-
-                    </svg>
-
-                </span>
-
-                <span>
-                    Orders
-                </span>
-
-            </a>
+    </a>
 
 
-            <!-- Tables -->
+    <!-- Tables -->
+    <a asp-controller="Tables"
+       asp-action="Index"
+       asp-area="Dashboard"
+       class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Tables"
+                          ? "active" : "")">
 
-            <a href="/Dashboard/Tables"
-               class="nav-link">
+        <span class="nav-link-icon">
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.8">
 
-                <span class="nav-link-icon">
+                <rect x="4" y="7"
+                      width="16"
+                      height="10"
+                      rx="2" />
 
-                    <svg viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="1.8">
+                <path d="M7 7V4" />
+                <path d="M17 7V4" />
+                <path d="M7 17v3" />
+                <path d="M17 17v3" />
 
-                        <rect x="4"
-                              y="7"
-                              width="16"
-                              height="10"
-                              rx="2" />
+            </svg>
+        </span>
 
-                        <path d="M7 7V4" />
-                        <path d="M17 7V4" />
+        <span>Tables</span>
 
-                        <path d="M7 17v3" />
-                        <path d="M17 17v3" />
-
-                    </svg>
-
-                </span>
-
-                <span>
-                    Tables
-                </span>
-
-            </a>
+    </a>
 
 
-            <!-- Menu -->
+    <!-- Menu -->
+    <a asp-controller="Items"
+       asp-action="Index"
+       asp-area="Dashboard"
+       class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Items"
+                          ? "active" : "")">
 
-            <a href="/Dashboard/Items"
-               class="nav-link">
+        <span class="nav-link-icon">
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.8">
 
-                <span class="nav-link-icon">
+                <path d="M4 5h16v14H4z" />
+                <path d="M8 9h8" />
+                <path d="M8 13h5" />
 
-                    <svg viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="1.8">
+            </svg>
+        </span>
 
-                        <path d="M4 5h16v14H4z" />
+        <span>Menu</span>
 
-                        <path d="M8 9h8" />
-                        <path d="M8 13h5" />
+    </a>
 
-                    </svg>
-
-                </span>
-
-                <span>
-                    Menu
-                </span>
-
-            </a>
-
-
-        </nav>
+</nav>
 
 
         <!-- =================================================

@@ -167,20 +167,34 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         public async Task<List<OrderViewModel>> GetPOSOrders()
         {
-            var orders = await unitOfWork.Orders.NoTrackingSelect().ToListAsync();
+            var orders = await unitOfWork.Orders.NoTrackingSelect().Where(o => o.OrderDate > DateTime.UtcNow.AddHours(-24)).OrderByDescending(o => o.OrderDate).ToListAsync();
             List<OrderViewModel> ordersVm = [];
             foreach (Order order in orders)
             {
-                ordersVm.Add(new OrderViewModel
-                {
-                    Id = order.Id,
-                    TableId = order.TableId,
-                    OrderDate = order.OrderDate,
-                    OrderStatus = order.OrderStatus,
-                    TotalPrice = order.TotalPrice
-                });
+
+                    ordersVm.Add(new OrderViewModel
+                    {
+                        Id = order.Id,
+                        TableId = order.TableId,
+                        OrderDate = order.OrderDate,
+                        OrderStatus = order.OrderStatus,
+                        TotalPrice = order.TotalPrice
+                    });
+                
             }
             return ordersVm;
+        }
+
+        public async Task<bool> UpdateOrderAsync(OrderStatusViewModel model, Guid ModifierId)
+        {
+            if (model is null) throw new ArgumentNullException();
+            var order = await unitOfWork.Orders.Select().Where(o => o.Id == model.OrderId).FirstOrDefaultAsync();
+            if (order is null) return false;
+            order.OrderStatus = model.Status;
+            unitOfWork.Orders.Update(order, ModifierId);
+            await unitOfWork.SaveChangesAsync();
+            return true;
+
         }
     }
 }

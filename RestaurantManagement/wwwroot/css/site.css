@@ -542,6 +542,7 @@ a {
 .menu-section {
     min-width: 0;
     padding: 34px;
+    margin-top:var(--navbar-height);
     background: #F3F6F5;
 }
 
