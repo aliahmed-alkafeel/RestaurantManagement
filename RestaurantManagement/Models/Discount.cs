@@ -9,6 +9,6 @@ namespace RestaurantManagement.Models
         public decimal DiscountPercentage { get; set; }
         public DateTime DiscountStartingDate { get; set; }
         public DateTime DiscountEndingDate { get; set; }
-        public List<Item> Items { get; set; } = null!;
+        public List<Item> Items { get; set; } = [];
     }
 }

@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.Models;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using RestaurantManagement.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace RestaurantManagement.Areas.Dashboard.ViewModels
@@ -27,7 +28,8 @@ namespace RestaurantManagement.Areas.Dashboard.ViewModels
         [MaxLength(50)]
         public string Username { get; set; } = null!;
         [Required]
-        public UserGroup Group { get; set; }
+        public string Group { get; set; } = null!;
+        public List<SelectListItem> Groups = [];
 
         [Required(ErrorMessage = "Password is required")]
         [DataType(DataType.Password)]
@@ -41,6 +43,7 @@ namespace RestaurantManagement.Areas.Dashboard.ViewModels
         [Length(2, 50, ErrorMessage = "The Length must be between {1} and {2}")]
         public string ConfirmPassword { get; set; } = null!;
 
+        
 
     }
 }

@@ -37,7 +37,6 @@ builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
 //builder.Services.AddScoped<IItemOrderRepository, ItemOrderRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
 builder.Services.AddScoped<IPasswordHasher<Employee>, PasswordHasher<Employee>>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmployeesService, EmployeesService>();
@@ -75,7 +74,7 @@ app.MapControllers();
 //    pattern: "{area:exists}/{Controller}/{Action}");
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    pattern: "{controller=POS}/{action=NewOrder}/{id?}")
     .WithStaticAssets();
 
 app.Run();

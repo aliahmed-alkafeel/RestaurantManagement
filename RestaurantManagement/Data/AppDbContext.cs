@@ -36,15 +36,16 @@ namespace RestaurantManagement.Data
             modelBuilder.Entity<GroupRole>().HasQueryFilter(i => !i.IsDeleted);
             modelBuilder.Entity<Role>().HasQueryFilter(i => !i.IsDeleted);
 
-            modelBuilder.Entity<GroupRole>().HasIndex(gr => new { gr.GroupId, gr.RoleId, gr.DeletedAt, gr.IsDeleted });
+            modelBuilder.Entity<GroupRole>().HasIndex(gr => new { gr.GroupId, gr.RoleId, gr.DeletedAt, gr.IsDeleted }).IsUnique();
             modelBuilder.Entity<Employee>().HasIndex(e => new { e.Email, e.IsDeleted, e.DeletedAt }).IsUnique();
             modelBuilder.Entity<Employee>().HasIndex(e => new { e.Username,e.IsDeleted, e.DeletedAt }).IsUnique();
-            modelBuilder.Entity <Category>().HasIndex(c => new {c.CategoryName, c.Type, c.IsDeleted, c.DeletedAt}).IsUnique();
+            modelBuilder.Entity<Category>().HasIndex(c => new {c.CategoryName, c.Type, c.IsDeleted, c.DeletedAt}).IsUnique();
+            modelBuilder.Entity<Group>().HasIndex(c => new {c.GroupName, c.IsDeleted, c.DeletedAt}).IsUnique();
 
             modelBuilder.Entity<Item>().Property(i => i.Price).HasPrecision(18,3);
             modelBuilder.Entity<ItemOrder>().Property(io => io.Price).HasPrecision(18, 3);
             modelBuilder.Entity<Order>().Property(o => o.TotalPrice).HasPrecision(18, 3);
-            modelBuilder.Entity<Discount>().Property(d => d.DiscountPercentage).HasPrecision(3, 3);
+            modelBuilder.Entity<Discount>().Property(d => d.DiscountPercentage).HasPrecision(5, 2);
 
         }
     }

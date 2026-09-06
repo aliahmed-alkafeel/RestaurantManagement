@@ -94,7 +94,7 @@
                                         Ending Date
                                     </label>
 
-                                    <input disabled disabled asp-for="DiscountEndingDate"
+                                    <input disabled asp-for="DiscountEndingDate"
                                            type="datetime-local"
                                            class="form-control" />
 
@@ -105,6 +105,58 @@
                                 </div>
 
                             </div>
+
+                            <br />
+
+
+
+                            <div class="mt-4">
+
+                                <h6 class="fw-bold mb-3">
+                                    Discount Items
+                                </h6>
+
+                                <div class="table-responsive">
+                                    <table class="table align-middle mb-0">
+
+                                        <thead>
+                                            <tr>
+                                                <th>Item</th>
+                                                <th>Price</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            @if (Model.Items.Any())
+                                            {
+                                                foreach (var item in Model.Items)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            @item.ItemName
+                                                        </td>
+
+                                                        <td>
+                                                            @item.Price.ToString("0.000")
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td colspan="2" class="text-center text-muted py-4">
+                                                        No items in this discount.
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+
+                                    </table>
+                                </div>
+
+                            </div>
+
 
                             <br />
                             <!-- Actions -->
@@ -133,3 +185,4 @@
     </div>
 
 </div>
+

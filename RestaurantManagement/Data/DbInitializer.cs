@@ -26,11 +26,11 @@ namespace RestaurantManagement.Data
             }
 
             var exsistingGroups = await context.Groups.Select(r => r.GroupName).ToListAsync();
-            var GroupsToAdd = Enum.GetValues<UserGroup>().
-                Where(r => !exsistingGroups.Contains(r)).Select(r => new Group
+            var GroupsToAdd = Enum.GetValues<InitUserGroup>().
+                Where(r => !exsistingGroups.Contains(r.ToString())).Select(r => new Group
                 {
                     Id = new Guid(),
-                    GroupName = r
+                    GroupName = r.ToString()
                 }).ToList();
             if (GroupsToAdd.Count > 0)
             {
@@ -38,13 +38,13 @@ namespace RestaurantManagement.Data
                 await context.SaveChangesAsync();
             }
 
-            var AdminGroup = await context.Groups.FirstOrDefaultAsync(g => g.GroupName == UserGroup.Administrator);
+            var AdminGroup = await context.Groups.FirstOrDefaultAsync(g => g.GroupName == "Administrator");
             if(AdminGroup is null)
             {
             AdminGroup = new Group
             {
                 Id = new Guid(),
-                GroupName = UserGroup.Administrator
+                GroupName = "Administrator"
             };
                 await context.Groups.AddAsync(AdminGroup);
                 await context.SaveChangesAsync();
@@ -78,7 +78,7 @@ namespace RestaurantManagement.Data
                 EmployeeStartingDate = DateTime.UtcNow,
                 PasswordHash = ""
             };
-            admin.PasswordHash = passwordHasher.HashPassword(admin, "adminpass");
+            admin.PasswordHash = passwordHasher.HashPassword(admin, "admin");
             await context.Employees.AddAsync(admin);
 
             }

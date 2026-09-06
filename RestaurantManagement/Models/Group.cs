@@ -5,11 +5,11 @@ namespace RestaurantManagement.Models
     public class Group : BaseModel
     {
         public Guid Id { get; set; }
-        public UserGroup GroupName { get; set; }
+        public string GroupName { get; set; } = null!;
         public ICollection<Employee> Employees { get; set; } = [];
         public ICollection<GroupRole> GroupRoles { get; set; } = [];
     }
-    public enum UserGroup
+    public enum InitUserGroup
     {
         Unclassified = 0,
         Administrator,
@@ -21,4 +21,5 @@ namespace RestaurantManagement.Models
         Accountant,
         Receptionist
     }
+
 }

@@ -27,7 +27,7 @@ namespace RestaurantManagement.Areas.Dashboard.ViewModels
         [MaxLength(50)]
         public string Username { get; set; } = null!;
         [Required]
-        public UserGroup Group { get; set; }
+        public string Group { get; set; } = null!;
 
     }
 }

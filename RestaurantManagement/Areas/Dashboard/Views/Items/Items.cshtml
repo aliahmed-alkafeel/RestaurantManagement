@@ -1,88 +1,455 @@
-﻿@model List<ItemViewModel>
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-<header class="navbar">
-<div class="search-box">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
-    <input type="text" id="search" placeholder="Search Items...">
-</div>
+﻿@model ItemsPageViewModel
+
+<header class="item-filter">
+
+    <form method="get"
+          asp-area="Dashboard"
+          asp-controller="Items"
+          asp-action="Items"
+          class="filter-form">
+
+        <!-- Search -->
+        <div class="search-box">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.8"
+                 stroke-linecap="round">
+
+                <circle cx="11" cy="11" r="7" />
+                <path d="m21 21-4.3-4.3" />
+
+            </svg>
+
+            <input type="text"
+                   name="Search"
+                   value="@Model.Filter.Search"
+                   placeholder="Search Items..." />
+
+        </div>
+
+        <select id="typeFilter"
+                name="Type"
+                class="filter-select">
+
+            <option value="">
+                All Types
+            </option>
+
+            @foreach (var type in Enum.GetValues<CategoryType>())
+            {
+                <option value="@type"
+                        selected="@(Model.Filter.Type == type)">
+                    @type
+                </option>
+            }
+
+        </select>
+
+        <!-- Category -->
+        <select id="categoryFilter"
+                name="CategoryId"
+                class="filter-select">
+
+            <option value="">
+                All Categories
+            </option>
+
+            @foreach (var category in Model.Categories)
+            {
+                <option value="@category.Id"
+                        selected="@(Model.Filter.CategoryId == category.Id)">
+                    @category.CategoryName
+                </option>
+            }
+
+        </select>
+
+
+        <!-- Min Price -->
+        <input type="number"
+               name="MinPrice"
+               value="@Model.Filter.MinPrice"
+               placeholder="Min Price"
+               step="1.0"
+               class="filter-input" />
+
+
+        <!-- Max Price -->
+        <input type="number"
+               name="MaxPrice"
+               value="@Model.Filter.MaxPrice"
+               placeholder="Max Price"
+               step="1.0"
+               class="filter-input" />
+
+
+        <!-- Availability -->
+        <select name="IsAvailable" class="filter-select">
+
+            <option value="">
+                All
+            </option>
+
+            @if (Model.Filter.IsAvailable == true)
+            {
+                <option value="true" selected>
+                    Available
+                </option>
+            }
+            else
+            {
+                <option value="true">
+                    Available
+                </option>
+            }
+
+            @if (Model.Filter.IsAvailable == false)
+            {
+                <option value="false" selected>
+                    Not Available
+                </option>
+            }
+            else
+            {
+                <option value="false">
+                    Not Available
+                </option>
+            }
+
+        </select>
+
+
+        <!-- Sort -->
+        <select name="Sort" class="filter-select">
+
+            <option value="">
+                Default
+            </option>
+
+            <option value="name_asc"
+                    selected="@(Model.Filter.Sort == "name_asc")">
+                Name A-Z
+            </option>
+
+            <option value="name_desc"
+                    selected="@(Model.Filter.Sort == "name_desc")">
+                Name Z-A
+            </option>
+
+            <option value="price_asc"
+                    selected="@(Model.Filter.Sort == "price_asc")">
+                Price Low → High
+            </option>
+
+            <option value="price_desc"
+                    selected="@(Model.Filter.Sort == "price_desc")">
+                Price High → Low
+            </option>
+            <option value="category_asc"
+                    selected="@(Model.Filter.Sort == "category_asc")">
+                Category A-Z
+            </option>
+            <option value="category_desc"
+                    selected="@(Model.Filter.Sort == "category_desc")">
+                Category Z-A
+            </option>
+            <option value="isAvailable_asc"
+                    selected="@(Model.Filter.Sort == "isAvailable_asc")">
+               Available → UnAvailable
+            </option>
+            <option value="isAvailable_desc"
+                    selected="@(Model.Filter.Sort == "isAvailable_desc")">
+                UnAvailable → Available
+            </option>
+            <option value="isActive_asc"
+                    selected="@(Model.Filter.Sort == "isActive_asc")">
+                Active → Inactive
+            </option>
+            <option value="isActive_desc"
+                    selected="@(Model.Filter.Sort == "isActive_desc")">
+                Inactive → Active
+            </option>
+
+
+        </select>
+
+
+        <!-- Keep PageSize -->
+        <input type="hidden"
+               name="PageSize"
+               value="@Model.Filter.PageSize" />
+
+        <!-- Always start from page 1 after applying filters -->
+        <input type="hidden"
+               name="Page"
+               value="1" />
+
+
+        <button type="submit" class="btn btn-primary">
+            Apply
+        </button>
+
+    </form>
+
 </header>
-<div class="table-responsive">
 
-<table class="table text-nowrap mb-0 align-middle" id="table">
-    <thead class="text-dark fs-4">
-        <tr>
-            <th class="sort" data-sort="item-name">
-                <h6 class="fs-4 fw-semibold mb-0">Item Name</h6>
-            </th>
-            <th>
-                <h6 class="fs-4 fw-semibold mb-0">Category Name</h6>
-            </th>
-            <th>
-                <h6 class="fs-4 fw-semibold mb-0">Type</h6>
-            </th>
+<div class="table-responsive bg-white mb-0">
 
-            <th>
-                <h6 class="fs-4 fw-semibold mb-0">Price</h6>
-            </th>
-            <th>
-                <h6 class="fs-4 fw-semibold mb-0">Image</h6>
-            </th>
-            <th>
-                <h6 class="fs-4 fw-semibold mb-0">Status</h6>
-            </th>
-            <th>
-                <h6 class="fs-4 fw-semibold mb-0">Availability</h6>
-            </th>
-            <th>
-                <h6 class="fs-4 fw-semibold mb-0">Operations</h6>
-            </th>
+    <table class="table text-nowrap mb-0 align-middle">
 
-        </tr>
-    </thead>
-    <tbody class="list">
-        @foreach (var item in Model)
-        {
+        <thead class="text-dark fs-4">
+
             <tr>
-                <td class="item-name">
-                    @item.ItemName.ToString()
-                </td>
-                <td>
-                    <div class="d-flex flex-wrap gap-1">
-                        <span class="action showElements">@item.Category!.CategoryName</span>
-                    </div>
-                </td>
-                <td>
-                    <div class="d-flex flex-wrap gap-1">
-                        <span class="action showElements">@item.Category!.Type</span>
-                    </div>
-                </td>
+
+                <th>
+                    <h6 class="fs-4 fw-semibold mb-0">
+                        Item Name
+                    </h6>
+                </th>
+
+                <th>
+                    <h6 class="fs-4 fw-semibold mb-0">
+                        Category Name
+                    </h6>
+                </th>
+
+                <th>
+                    <h6 class="fs-4 fw-semibold mb-0">
+                        Type
+                    </h6>
+                </th>
+
+                <th>
+                    <h6 class="fs-4 fw-semibold mb-0">
+                        Price
+                    </h6>
+                </th>
+
+                <th>
+                    <h6 class="fs-4 fw-semibold mb-0">
+                        Image
+                    </h6>
+                </th>
+
+                <th>
+                    <h6 class="fs-4 fw-semibold mb-0">
+                        Status
+                    </h6>
+                </th>
+
+                <th>
+                    <h6 class="fs-4 fw-semibold mb-0">
+                        Availability
+                    </h6>
+                </th>
+
+                <th>
+                    <h6 class="fs-4 fw-semibold mb-0">
+                        Operations
+                    </h6>
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            @foreach (var item in Model.Items.Items)
+            {
+                <tr>
+
                     <td>
-                        @item.Price.ToString()
+                        @item.ItemName
                     </td>
+
+                    <td>
+                        <div class="d-flex flex-wrap gap-1">
+                            <span class="action showElements">
+                                @item.Category?.CategoryName
+                            </span>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="d-flex flex-wrap gap-1">
+                            <span class="action showElements">
+                                @item.Category?.Type
+                            </span>
+                        </div>
+                    </td>
+
+                    <td>
+                        @item.Price
+                    </td>
+
                     <td width="140px" height="50px">
-                        <img src=@Url.Content(@item.ImageUrl) alt="@item.ItemName" />
+
+                        <img src="@Url.Content(item.ImageUrl)"
+                             alt="@item.ItemName" />
+
                     </td>
+
                     <td>
                         @(item.IsActive ? "Active" : "Inactive")
                     </td>
+
                     <td>
-                        @(item.IsAvailable ? "Available" : "Not Available") 
+                        @(item.IsAvailable
+                            ? "Available"
+                            : "Not Available")
                     </td>
-                <td>
-                    <a class="action edit-action" asp-area="Dashboard" asp-controller="Items" asp-action="EditItem" asp-route-id="@item.Id">Edit</a>
-                    <a class="action delete-action" asp-area="Dashboard" asp-controller="Items"
-                       asp-action="DeleteItem" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+
+                    <td>
+
+                        <a class="action edit-action"
+                           asp-area="Dashboard"
+                           asp-controller="Items"
+                           asp-action="EditItem"
+                           asp-route-id="@item.Id">
+                            Edit
+                        </a>
+
+                        <a class="action delete-action"
+                           asp-area="Dashboard"
+                           asp-controller="Items"
+                           asp-action="DeleteItem"
+                           asp-route-id="@item.Id">
+                            Delete
+                        </a>
+
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+
+    </table>
+<!-- Pagination -->
+
+<div style="margin:10px 20px;" class="d-flex justify-content-between align-items-center">
+
+        <div class="rounded-1 p-2" style="background:#635bff;color:white;">
+        Showing
+        @(
+            Model.Items.TotalCount == 0
+                ? 0
+                : ((Model.Items.CurrentPage - 1)
+                    * Model.Items.PageSize) + 1
+        )
+        -
+        @(
+            Math.Min(
+                Model.Items.CurrentPage * Model.Items.PageSize,
+                Model.Items.TotalCount
+            )
+        )
+        of @Model.Items.TotalCount items
+    </div>
+
+    <nav>
+
+        <ul class="pagination mb-0">
+
+            <!-- Previous -->
+            @if (Model.Items.HasPreviousPage)
+            {
+                <li class="page-item">
+
+                    <a class="page-link"
+                       asp-area="Dashboard"
+                       asp-controller="Items"
+                       asp-action="Items"
+                       asp-route-Search="@Model.Filter.Search"
+                           asp-route-Type="@Model.Filter.Type"
+                       asp-route-CategoryId="@Model.Filter.CategoryId"
+                       asp-route-MinPrice="@Model.Filter.MinPrice"
+                       asp-route-MaxPrice="@Model.Filter.MaxPrice"
+                       asp-route-IsAvailable="@Model.Filter.IsAvailable"
+                       asp-route-Sort="@Model.Filter.Sort"
+                       asp-route-Page="@(Model.Items.CurrentPage - 1)"
+                       asp-route-PageSize="@Model.Items.PageSize">
+
+                        Previous
+
+                    </a>
+
+                </li>
+            }
+
+
+            <!-- Pages -->
+            @for (int i = 1; i <= Model.Items.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.Items.CurrentPage ? "active" : "")">
+
+                    <a class="page-link"
+                       asp-area="Dashboard"
+                       asp-controller="Items"
+                       asp-action="Items"
+                       asp-route-Search="@Model.Filter.Search"
+                           asp-route-Type="@Model.Filter.Type"
+                       asp-route-CategoryId="@Model.Filter.CategoryId"
+                       asp-route-MinPrice="@Model.Filter.MinPrice"
+                       asp-route-MaxPrice="@Model.Filter.MaxPrice"
+                       asp-route-IsAvailable="@Model.Filter.IsAvailable"
+                       asp-route-Sort="@Model.Filter.Sort"
+                       asp-route-Page="@i"
+                       asp-route-PageSize="@Model.Items.PageSize">
+
+                        @i
+
+                    </a>
+
+                </li>
+            }
+
+
+            <!-- Next -->
+            @if (Model.Items.HasNextPage)
+            {
+                <li class="page-item">
+
+                    <a class="page-link"
+                       asp-area="Dashboard"
+                       asp-controller="Items"
+                       asp-action="Items"
+                       asp-route-Search="@Model.Filter.Search"
+                           asp-route-Type="@Model.Filter.Type"
+                       asp-route-CategoryId="@Model.Filter.CategoryId"
+                       asp-route-MinPrice="@Model.Filter.MinPrice"
+                       asp-route-MaxPrice="@Model.Filter.MaxPrice"
+                       asp-route-IsAvailable="@Model.Filter.IsAvailable"
+                       asp-route-Sort="@Model.Filter.Sort"
+                       asp-route-Page="@(Model.Items.CurrentPage + 1)"
+                       asp-route-PageSize="@Model.Items.PageSize">
+
+                        Next
+
+                    </a>
+
+                </li>
+            }
+
+        </ul>
+
+    </nav>
+
 </div>
-<a asp-area="Dashboard" asp-controller="Items"
+
+</div>
+
+
+
+<!-- Add New Item -->
+
+<a asp-area="Dashboard"
+   asp-controller="Items"
    asp-action="CreateItem"
    class="add-btn">
 
@@ -92,22 +459,65 @@
          stroke-width="2"
          stroke-linecap="round"
          stroke-linejoin="round">
+
         <path d="M12 5v14" />
         <path d="M5 12h14" />
+
     </svg>
 
     Add New Item
+
 </a>
 <script>
-    const options = {
-        valueNames:["item-name"]
-    };
-    const list = new List("table", options);
-    const searchInput = document.getElementById("search");
-    searchInput.addEventListener("input",function(){
-        list.search(this.value)});
-    
+
+    const typeFilter = document.getElementById("typeFilter");
+    const categoryFilter = document.getElementById("categoryFilter");
+    typeFilter.addEventListener("change", async function() {
+
+        const type = this.value;
+
+        // Reset categories
+        categoryFilter.innerHTML = `
+                <option value="">
+                    All Categories
+                </option>
+            `;
+
+        // If no type selected, stop
+        if (!type) {
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                `/Dashboard/Items/GetCategoriesByType?type=${encodeURIComponent(type)}`
+            );
+
+            if (!response.ok) {
+                throw new Error("Failed to load categories.");
+            }
+
+            const categories = await response.json();
+
+            categories.forEach(category => {
+
+                const option = document.createElement("option");
+
+                option.value = category.id;
+                option.textContent = category.categoryName;
+
+                categoryFilter.appendChild(option);
+
+            });
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+        }
+
+    });
+
 </script>
-
-
-  

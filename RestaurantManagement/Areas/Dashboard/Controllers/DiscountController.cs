@@ -19,12 +19,11 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
                 return View(discounts);
             }
 
-
             [Authorize(Roles = nameof(UserRole.ManageDiscounts))]
             [HttpGet("CreateDiscount")]
             public async Task<IActionResult> CreateDiscount()
             {
-                return View();
+                return View("ManageDiscount",new DiscountViewModel());
             }
 
             [Authorize(Roles = nameof(UserRole.ManageDiscounts))]
@@ -45,8 +44,8 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             [HttpGet("EditDiscount/{id:guid}")]
             public async Task<IActionResult> EditDiscount(Guid id)
             {
-                var emps = await discountsService.GetDiscountByIdAsync(id);
-                return View(emps);
+                var discount = await discountsService.GetDiscountByIdAsync(id);
+                return View("ManageDiscount", discount);
             }
             [Authorize(Roles = nameof(UserRole.ManageDiscounts))]
             [HttpPost("EditDiscount/{id:guid}")]

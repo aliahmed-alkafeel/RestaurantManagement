@@ -47,11 +47,29 @@
             </td>
             <td>
               <a class="action edit-action" asp-area="Dashboard" asp-controller="Groups" asp-action="EditGroup" asp-route-id="@group.Id">Edit</a>
+                        <a class="action delete-action" asp-area="Dashboard" asp-controller="Groups"
+                           asp-action="DeleteGroup" asp-route-id="@group.Id">Delete</a>
             </td>
         </tr>
         }
     </tbody>
 </table>
+    <a asp-area="Dashboard" asp-controller="Groups"
+       asp-action="CreateGroup"
+       class="add-btn">
+
+        <svg viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2"
+             stroke-linecap="round"
+             stroke-linejoin="round">
+            <path d="M12 5v14" />
+            <path d="M5 12h14" />
+        </svg>
+        Add New Group
+    </a>
+
 </div>
 <script>
     const options = {

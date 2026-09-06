@@ -73,13 +73,12 @@
                                 </div>
                           
                                 <div class="col-md-6 mb-3">
-                                    <label asp-for="Image" class="form-label fw-semibold">
+                                    <label asp-for="ItemImage" class="form-label fw-semibold">
                                         Image
                                     </label>
+                                    <input class="form-control" asp-for="ItemImage" type="file" accept="image/*" />
 
-                                    <input class="form-control" asp-for="Image" type="file" accept="image/*" />
-
-                                    <span asp-validation-for="Image"
+                                    <span asp-validation-for="ItemImage"
                                           class="text-danger small">
                                     </span>
                                 </div>

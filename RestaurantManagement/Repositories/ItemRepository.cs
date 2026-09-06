@@ -13,7 +13,7 @@ namespace RestaurantManagement.Repositories
 
         public async Task<List<Item>> GetItemsWithCategories()
         {
-            return await _dbSet.Where(i => !i.IsDeleted).Include(i => i.Category).ToListAsync();
+            return await Select().Include(i => i.Category).ToListAsync();
         }
     }
 }

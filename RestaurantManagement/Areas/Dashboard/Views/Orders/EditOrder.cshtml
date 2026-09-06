@@ -2,7 +2,23 @@
 
 @{
 }
+<style>
+    .item-price-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
+.original-price {
+    text-decoration: line-through;
+    opacity: 0.5;
+    font-size: 0.85rem;
+}
+
+.discounted-price {
+    font-weight: 600;
+}
+</style>
 <div class="container-fluid employee-page">
 
     <div class="employee-form-wrapper">
@@ -276,17 +292,18 @@
         </div>
     </div>
 <script>
-    const initialOrderItems = @Html.Raw(
-                System.Text.Json.JsonSerializer.Serialize(
-                        Model.ItemOrders.Select(x => new
-                        {
-                                itemId = x.ItemId,
-                                itemName = x.ItemName,
-                                price = x.Price,
-                                quantity = x.Quantity
-                        })
-                )
-        );
+const initialOrderItems = @Html.Raw(
+    System.Text.Json.JsonSerializer.Serialize(
+        Model.ItemOrders.Select(x => new
+        {
+            itemId = x.ItemId,
+            itemName = x.ItemName,
+            price = x.Price,
+            discountPercentage = x.DiscountPercentage,
+            quantity = x.Quantity
+        })
+    )
+);
 </script>
 
 <script src="~/js/addingItemsModal.js"></script>

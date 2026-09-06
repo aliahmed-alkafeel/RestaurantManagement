@@ -139,7 +139,7 @@
                                     </label>
 
                                     <select asp-for="Group"
-                                            asp-items="Html.GetEnumSelectList<UserGroup>()"
+                                            asp-items="@Model.Groups"
                                             class="form-select">
                                         <option value="">Select Group</option>
                                     </select>

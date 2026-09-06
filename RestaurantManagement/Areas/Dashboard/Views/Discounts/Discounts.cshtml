@@ -54,7 +54,7 @@
                         </div>
                 </td>
                     <td>
-                        @discount.DiscountPercentage.ToString() + "%"
+                        @discount.DiscountPercentage.ToString()%
                     </td>
                 <td>
                     <a class="action edit-action" asp-area="Dashboard" asp-controller="Discounts" asp-action="EditDiscount" asp-route-id="@discount.Id">Edit</a>
@@ -95,6 +95,3 @@
     });
 
 </script>
-
-
-  

@@ -23,7 +23,7 @@ namespace RestaurantManagement.Repositories
             return group;
         }
 
-        public async Task<Guid> GetIdByNameAsync(UserGroup group)
+        public async Task<Guid> GetIdByNameAsync(string group)
         {
             Console.WriteLine(group);
             var dbGroup = await _dbSet.FirstOrDefaultAsync(g => g.GroupName == group);

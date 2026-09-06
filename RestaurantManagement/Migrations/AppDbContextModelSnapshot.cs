@@ -79,8 +79,8 @@ namespace RestaurantManagement.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("DiscountPercentage")
-                        .HasPrecision(3, 3)
-                        .HasColumnType("decimal(3,3)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<DateTime>("DiscountStartingDate")
                         .HasColumnType("datetime2");
@@ -192,8 +192,9 @@ namespace RestaurantManagement.Migrations
                     b.Property<Guid?>("DeletedById")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("GroupName")
-                        .HasColumnType("int");
+                    b.Property<string>("GroupName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -208,6 +209,10 @@ namespace RestaurantManagement.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupName", "IsDeleted", "DeletedAt")
+                        .IsUnique()
+                        .HasFilter("[DeletedAt] IS NOT NULL");
 
                     b.ToTable("Groups");
                 });
@@ -246,7 +251,9 @@ namespace RestaurantManagement.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.HasIndex("GroupId", "RoleId", "DeletedAt", "IsDeleted");
+                    b.HasIndex("GroupId", "RoleId", "DeletedAt", "IsDeleted")
+                        .IsUnique()
+                        .HasFilter("[DeletedAt] IS NOT NULL");
 
                     b.ToTable("GroupsRoles");
                 });

@@ -13,14 +13,21 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [Route("[area]/[controller]")]
     public class ItemsController(IItemsService itemsService) : Controller
     {
+            //[Authorize(Roles = nameof(UserRole.AccessItems))]
+            //[HttpGet("")]
+            //public async Task<IActionResult> Items()
+            //{
+            //    var Items = await itemsService.GetPagedItemsAsync();
+            //    return View(Items);
+            //}
             [Authorize(Roles = nameof(UserRole.AccessItems))]
-            [HttpGet("")]
-            public async Task<IActionResult> Items()
+            [HttpGet]
+            public async Task<IActionResult> Items(ItemFilterViewModel model)
             {
-                var Items = await itemsService.GetAllItemsAsync();
+                var Items = await itemsService.GetPagedItemsAsync(model);
                 return View(Items);
             }
-
+            
 
             [Authorize(Roles = nameof(UserRole.ManageItems))]
             [HttpGet("CreateItem")]
@@ -101,13 +108,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         public async Task<IActionResult> GetItemsByCategory(Guid categoryId)
         {
             var items = await itemsService.GetItemsByCategoryId(categoryId);
-            return Json(items.Select(c => new
-            {
-                id = c.Id,
-                itemName = c.ItemName,
-                price = c.Price,
-                image = c.ImageUrl
-            }));
+            return Json(items);
         }
-    }
+      }
     }

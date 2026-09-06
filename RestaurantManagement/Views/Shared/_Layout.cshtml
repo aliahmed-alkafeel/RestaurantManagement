@@ -1,54 +1,356 @@
 ﻿<!DOCTYPE html>
-<html lang="en" data-bs-theme="light">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Restaument</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/RestaurantManagement.styles.css" asp-append-version="true" />
-    <link rel="shortcut icon" type="image/png" href="~/images/logos/favicon.png" />
-    <link rel="stylesheet" href="~/css/styles.min.css" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <header>
-        @* <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">RestaurantManagement</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav> *@
-    </header>
-    @* <div class="container"> *@
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    @* </div> *@
 
-    <footer class="border-top footer text-muted">
-        @* <div class="container">
-            &copy; 2026 - RestaurantManagement - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div> *@
+<html lang="en"
+      dir="ltr"
+      data-bs-theme="light">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>
+        @ViewData["Title"] - Restaument
+    </title>
+
+
+    <!-- =====================================================
+         BOOTSTRAP
+         ===================================================== -->
+
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+
+    <!-- =====================================================
+         PROJECT CSS
+         ===================================================== -->
+
+    <link rel="stylesheet"
+          href="~/RestaurantManagement.styles.css"
+          asp-append-version="true" />
+
+
+    <!-- =====================================================
+         FAVICON
+         ===================================================== -->
+
+    <link rel="shortcut icon"
+          type="image/png"
+          href="~/images/logos/favicon.png" />
+
+
+    <!-- =====================================================
+         EXISTING STYLES
+         ===================================================== -->
+
+    <link rel="stylesheet"
+          href="~/css/styles.min.css" />
+
+
+    <!-- =====================================================
+         FONTS
+         ===================================================== -->
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          >
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+          rel="stylesheet">
+
+
+    <!-- =====================================================
+         SITE CSS
+         ===================================================== -->
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+
+    @await RenderSectionAsync("Styles", required: false)
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         TOP NAVBAR
+         ===================================================== -->
+
+    <header class="top-navbar">
+
+
+        <!-- Brand -->
+
+        <a href="/POS/NewOrder"
+           class="brand-name" style="text-decoration:none">
+
+            Restaument
+
+        </a>
+
+
+        <!-- Mobile menu -->
+
+        <button type="button"
+                class="mobile-menu-button"
+                id="sidebarOpen"
+                aria-label="Open menu">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2">
+
+                <path d="M4 6h16" />
+                <path d="M4 12h16" />
+                <path d="M4 18h16" />
+
+            </svg>
+
+        </button>
+
+
+        <!-- Desktop navigation -->
+
+        <nav class="main-navigation">
+
+
+            <!-- New Order -->
+
+            <a asp-controller="POS" asp-action="NewOrder"
+               class="nav-link active">
+
+                <span class="nav-link-icon">
+
+                    <svg viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8">
+
+                        <path d="M12 5v14" />
+                        <path d="M5 12h14" />
+
+                    </svg>
+
+                </span>
+
+                <span>
+                    New Order
+                </span>
+
+            </a>
+
+
+            <!-- Orders -->
+
+            <a asp-controller="POS" asp-action="POSOrders"
+               class="nav-link">
+
+                <span class="nav-link-icon">
+
+                    <svg viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8">
+
+                        <path d="M6 3h12v18H6z" />
+
+                        <path d="M9 7h6" />
+                        <path d="M9 11h6" />
+                        <path d="M9 15h4" />
+
+                    </svg>
+
+                </span>
+
+                <span>
+                    Orders
+                </span>
+
+            </a>
+
+
+            <!-- Tables -->
+
+            <a href="/Dashboard/Tables"
+               class="nav-link">
+
+                <span class="nav-link-icon">
+
+                    <svg viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8">
+
+                        <rect x="4"
+                              y="7"
+                              width="16"
+                              height="10"
+                              rx="2" />
+
+                        <path d="M7 7V4" />
+                        <path d="M17 7V4" />
+
+                        <path d="M7 17v3" />
+                        <path d="M17 17v3" />
+
+                    </svg>
+
+                </span>
+
+                <span>
+                    Tables
+                </span>
+
+            </a>
+
+
+            <!-- Menu -->
+
+            <a href="/Dashboard/Items"
+               class="nav-link">
+
+                <span class="nav-link-icon">
+
+                    <svg viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.8">
+
+                        <path d="M4 5h16v14H4z" />
+
+                        <path d="M8 9h8" />
+                        <path d="M8 13h5" />
+
+                    </svg>
+
+                </span>
+
+                <span>
+                    Menu
+                </span>
+
+            </a>
+
+
+        </nav>
+
+
+        <!-- =================================================
+             NAVBAR RIGHT
+             ================================================= -->
+
+        <div class="navbar-right">
+
+
+            <!-- Employee -->
+
+<button type="button"
+        class="logout-btn"
+        data-bs-toggle="modal"
+        data-bs-target="#logoutModal">
+    <span>Logout</span>
+</button>
+
+
+        </div>
+
+<div class="modal fade"
+     id="logoutModal"
+     tabindex="-1"
+     aria-labelledby="logoutModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content logout-modal">
+
+            <div class="logout-content">
+
+                <h4 id="logoutModalLabel">
+                    Log out?
+                </h4>
+
+                <p>
+                    Are you sure you want to log out of your account?
+                </p>
+
+            </div>
+
+            <div class="logout-actions">
+
+                <button type="button"
+                        class="cancel-btn"
+                        data-bs-dismiss="modal">
+                    Cancel
+                </button>
+
+                <form asp-controller="Auth"
+                      asp-action="Logout"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit"
+                            class="confirm-logout-btn">
+                        Log out
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+    </header>
+
+
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
+
+    <main role="main"
+          class="main-content">
+
+        @RenderBody()
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="site-footer">
     </footer>
+
+
+    <!-- =====================================================
+         SCRIPTS
+         ===================================================== -->
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="~/js/site.js"
+            asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
+
 </html>

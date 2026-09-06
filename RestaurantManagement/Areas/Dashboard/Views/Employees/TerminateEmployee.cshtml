@@ -142,9 +142,9 @@
                                     </label>
 
                                     <select disabled asp-for="Group"
-                                            asp-items="Html.GetEnumSelectList<UserGroup>()"
+                                            
                                             class="form-select">
-                                        <option value="">Select Group</option>
+                                        <option value="">@Model.Group</option>
                                     </select>
 
                                     <span asp-validation-for="Group"

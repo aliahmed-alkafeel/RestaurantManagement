@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.IRepositories;
 using RestaurantManagement.IServices;
 using RestaurantManagement.Models;
@@ -25,7 +26,7 @@ namespace RestaurantManagement.Services
         public async Task<bool> LoginAsync(LoginViewModel loginViewModel)
         {
             var employee = await _unitOfWork.Employees.GetEmployeeWithGroupByUsernameAsync(loginViewModel.Username);
-            if (employee is null)
+            if (employee is null || employee.EmployeeStartingDate > DateTime.UtcNow || employee.EmployeeEndingDate < DateTime.UtcNow)
             {
                 return false;
             }
@@ -51,6 +52,11 @@ namespace RestaurantManagement.Services
             var properties = new AuthenticationProperties { IsPersistent = loginViewModel.RememberMe };
             await _httpContextAccessor.HttpContext!.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,principal,properties);
             return true;
+        }
+
+        public async Task LogoutAsync()
+        {
+            await _httpContextAccessor.HttpContext!.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
     }
 }

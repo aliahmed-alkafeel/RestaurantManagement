@@ -19,8 +19,13 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 DiscountPercentage = model.DiscountPercentage,
                 DiscountStartingDate = model.DiscountStartingDate,
                 DiscountEndingDate = model.DiscountEndingDate,
-                Items = model.Items
             };
+            foreach(var itemId in model.ItemIds)
+            {
+                var item = await unitOfWork.Items.GetByIdAsync(itemId);
+                if (item is null) continue;
+                discount.Items.Add(item);
+            }
             await unitOfWork.Discounts.AddAsync(discount);
             await unitOfWork.SaveChangesAsync();
             return true;
@@ -51,7 +56,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             if (discount is null) throw new KeyNotFoundException("There is no such discount");
             DiscountViewModel discountVm = new DiscountViewModel
             {
-                Id = Guid.NewGuid(),
+                Id = discount.Id,
                 DiscountPercentage = discount.DiscountPercentage,
                 DiscountStartingDate = discount.DiscountStartingDate,
                 DiscountEndingDate = discount.DiscountEndingDate,

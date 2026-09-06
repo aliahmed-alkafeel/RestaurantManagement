@@ -13,7 +13,8 @@ namespace RestaurantManagement.Areas.Dashboard.ViewModels
         public short Quantity { get; set; }
         [Required]
         public decimal Price { get; set; }
-        public ICollection<Order> Orders { get; set; } = [];
-        public ICollection<Item> Items { get; set; } = [];
+        public decimal? DiscountPercentage { get; set; }
+        //public Order Orders { get; set; } = null!;
+        //public Item Item { get; set; } = null!;
     }
 }

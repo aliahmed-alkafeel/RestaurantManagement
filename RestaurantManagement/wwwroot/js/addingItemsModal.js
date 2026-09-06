@@ -186,23 +186,21 @@ itemCategory.addEventListener(
                 const option =
                     document.createElement("option");
 
-
                 option.value =
                     item.id;
-
 
                 option.textContent =
                     item.itemName;
 
-
                 option.dataset.price =
                     item.price;
 
+                option.dataset.discount =
+                    item.discountPercentage ?? 0;
 
                 itemSelect.appendChild(option);
 
             });
-
 
             itemSelect.disabled = false;
 
@@ -224,7 +222,6 @@ itemCategory.addEventListener(
 // ==================================================
 // Add Item
 // ==================================================
-
 confirmAddItem.addEventListener(
     "click",
     function () {
@@ -232,22 +229,23 @@ confirmAddItem.addEventListener(
         const itemId =
             itemSelect.value;
 
-
         const selectedOption =
             itemSelect.options[
             itemSelect.selectedIndex
             ];
 
-
         const itemName =
-            selectedOption?.textContent;
-
+            selectedOption?.textContent?.trim();
 
         const price =
             Number(
                 selectedOption?.dataset.price
             );
 
+        const discount =
+            Number(
+                selectedOption?.dataset.discount
+            ) || 0;
 
         const quantity =
             Number(itemQuantity.value);
@@ -259,66 +257,73 @@ confirmAddItem.addEventListener(
 
         if (!itemId) {
 
-            alert(
-                "Please select an item."
-            );
+            alert("Please select an item.");
 
             return;
         }
 
 
-        if (quantity < 1) {
+        if (!Number.isFinite(price)) {
 
-            alert(
-                "Quantity must be at least 1."
-            );
+            alert("Invalid item price.");
+
+            return;
+        }
+
+
+        if (!Number.isFinite(quantity) || quantity < 1) {
+
+            alert("Quantity must be at least 1.");
 
             return;
         }
 
 
         // ------------------------------------------
-        // Prevent Duplicate
+        // Find Existing Item
         // ------------------------------------------
 
-        const alreadyExists =
-            orderItems.some(
+        const existingItem =
+            orderItems.find(
                 x => x.itemId === itemId
             );
 
 
-        if (alreadyExists) {
+        // ------------------------------------------
+        // Update Existing Item
+        // ------------------------------------------
 
-            alert(
-                "This item has already been added."
-            );
+        if (existingItem) {
 
-            return;
+            existingItem.quantity += quantity;
+
+            // Keep latest discount/price information
+            existingItem.price = price;
+            existingItem.discountPercentage = discount;
+
         }
 
-
         // ------------------------------------------
-        // Create Item
-        // ------------------------------------------
-
-        const item = {
-
-            itemId: itemId,
-
-            itemName: itemName,
-
-            price: price,
-
-            quantity: quantity
-
-        };
-
-
-        // ------------------------------------------
-        // Add To Array
+        // Create New Item
         // ------------------------------------------
 
-        orderItems.push(item);
+        else {
+
+            orderItems.push({
+
+                itemId: itemId,
+
+                itemName: itemName,
+
+                price: price,
+
+                discountPercentage: discount,
+
+                quantity: quantity
+
+            });
+
+        }
 
 
         // ------------------------------------------
@@ -339,14 +344,12 @@ confirmAddItem.addEventListener(
                 addItemModal
             );
 
-
-        if (modal)
+        if (modal) {
             modal.hide();
+        }
 
     }
 );
-
-
 // ==================================================
 // Render Items
 // ==================================================
@@ -355,11 +358,38 @@ function renderItems() {
 
     itemsTableBody.innerHTML = "";
 
-
     orderItems.forEach(item => {
 
         const row =
             document.createElement("tr");
+
+
+        const discount =
+            Number(item.discountPercentage) || 0;
+
+
+        const discountedPrice =
+            discount > 0
+                ? item.price * (1 - discount / 100)
+                : item.price;
+
+
+        const priceHtml =
+            discount > 0
+                ? `
+                    <span class="original-price">
+                        $${Number(item.price).toFixed(2)}
+                    </span>
+
+                    <span class="discounted-price">
+                        $${discountedPrice.toFixed(2)}
+                    </span>
+                  `
+                : `
+                    <span class="discounted-price">
+                        $${Number(item.price).toFixed(2)}
+                    </span>
+                  `;
 
 
         row.innerHTML = `
@@ -369,7 +399,9 @@ function renderItems() {
             </td>
 
             <td>
-                ${item.price}
+                <div class="item-price-display">
+                    ${priceHtml}
+                </div>
             </td>
 
             <td>
@@ -397,7 +429,6 @@ function renderItems() {
     });
 
 }
-
 
 // ==================================================
 // Delete Button
@@ -467,10 +498,6 @@ function updateHiddenInputs() {
                 <input type="hidden"
                        name="ItemOrders[${index}].ItemName"
                        value="${escapeHtml(item.itemName)}" />
-
-                <input type="hidden"
-                       name="ItemOrders[${index}].Price"
-                       value="${item.price}" />
 
                 <input type="hidden"
                        name="ItemOrders[${index}].Quantity"
@@ -554,5 +581,4 @@ function escapeHtml(value) {
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
-
 }

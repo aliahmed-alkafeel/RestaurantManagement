@@ -38,8 +38,8 @@
         @foreach (var order in Model)
         {
             <tr>
-                    <td class="table-number">
-                    @order.TableId
+                <td class="table-number">
+                @order.TableId
                 </td>
                 <td>
                 @order.TotalPrice        
@@ -60,10 +60,9 @@
     </tbody>
 </table>
 </div>
-<a asp-area="Dashboard" asp-controller="Orders"
-   asp-action="CreateOrder"
+<a asp-controller="POS"
+   asp-action="NewOrder"
    class="add-btn">
-
     <svg viewBox="0 0 24 24"
          fill="none"
          stroke="currentColor"
@@ -89,6 +88,3 @@
     });
 
 </script>
-
-
-  

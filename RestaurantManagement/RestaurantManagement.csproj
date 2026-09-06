@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Views\Home\Login.cshtml" />
-    <Content Remove="Views\Home\Register.cshtml" />
+    <Content Remove="Views\POS\Login.cshtml" />
+    <Content Remove="Views\POS\Register.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,320 @@
+﻿@model DiscountViewModel
+@{
+    bool isEdit = Model.Id != Guid.Empty;
+}
+<div class="container-fluid employee-page">
+
+    <div class="employee-form-wrapper">
+
+        <div class="row justify-content-center w-100">
+
+            <div class="col-12 col-xl-9 col-xxl-8">
+
+                <div class="card employee-card border-0 shadow-sm">
+                    <!-- Header -->
+                    <div class="card-header bg-transparent border-0 px-4 pt-4">
+                        <div>
+                            <h5 class="mb-1 fw-bold">
+                                @(isEdit ? "Edit Discount":"Add a new discount")
+                            </h5>
+
+                            <p class="text-muted mb-0">
+                                @(isEdit?"Edit":"Enter") the discount details.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Body -->
+                    <div class="card-body px-4 pb-4">
+
+                        <form asp-area="Dashboard"
+                              asp-controller="Discounts"
+                              asp-action=@(isEdit?"EditDiscount":"CreateDiscount")
+                              method="post">
+
+                            @Html.AntiForgeryToken()
+
+
+                            <!-- Validation -->
+                            <div asp-validation-summary="ModelOnly"
+                                 class="text-danger mb-3">
+                            </div>
+                            <input asp-for="Id" type="hidden" />
+
+
+
+                            <!-- Discount Information -->
+
+                            <div class="row">
+
+                                <!-- Percentage -->
+
+                                <div class="col-md-4 mb-3">
+
+                                    <label asp-for="DiscountPercentage"
+                                           class="form-label fw-semibold">
+
+                                        Discount Percentage
+
+                                    </label>
+
+                                    <input asp-for="DiscountPercentage"
+                                           class="form-control"
+                                           type="number"
+                                           min="0"
+                                           max="100"
+                                           step="0.01"
+                                           placeholder="Enter percentage" />
+
+                                    <span asp-validation-for="DiscountPercentage"
+                                          class="text-danger small">
+                                    </span>
+
+                                </div>
+
+
+                                <!-- Starting Date -->
+
+                                <div class="col-md-4 mb-3">
+
+                                    <label asp-for="DiscountStartingDate"
+                                           class="form-label fw-semibold">
+
+                                        Starting Date
+
+                                    </label>
+
+                                    <input asp-for="DiscountStartingDate"
+                                           type="datetime-local"
+                                           class="form-control" />
+
+                                    <span asp-validation-for="DiscountStartingDate"
+                                          class="text-danger small">
+                                    </span>
+
+                                </div>
+
+
+                                <!-- Ending Date -->
+
+                                <div class="col-md-4 mb-3">
+
+                                    <label asp-for="DiscountEndingDate"
+                                           class="form-label fw-semibold">
+
+                                        Ending Date
+
+                                    </label>
+
+                                    <input asp-for="DiscountEndingDate"
+                                           type="datetime-local"
+                                           class="form-control" />
+
+                                    <span asp-validation-for="DiscountEndingDate"
+                                          class="text-danger small">
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <hr class="my-4" />
+
+
+                            <!-- Discount Items -->
+
+                            <div>
+
+                                <h6 class="fw-bold mb-3">
+                                    Discount Items
+                                </h6>
+
+
+                                <div class="row align-items-end">
+
+                                    <!-- Type -->
+
+                                    <div class="col-md-4 mb-3">
+
+                                        <label class="form-label fw-semibold">
+                                            Type
+                                        </label>
+
+                                        <select id="itemType"
+                                                class="form-select">
+
+                                            <option value="">
+                                                Select Type
+                                            </option>
+
+                                            @foreach (var type in Enum.GetValues<CategoryType>())
+                                            {
+                                                <option value="@type">
+                                                    @type
+                                                </option>
+                                            }
+
+                                        </select>
+
+                                    </div>
+
+
+                                    <!-- Category -->
+
+                                    <div class="col-md-4 mb-3">
+
+                                        <label class="form-label fw-semibold">
+                                            Category
+                                        </label>
+
+                                        <select id="itemCategory"
+                                                class="form-select"
+                                                disabled>
+
+                                            <option value="">
+                                                Select Category
+                                            </option>
+
+                                        </select>
+
+                                    </div>
+
+
+                                    <!-- Item -->
+
+                                    <div class="col-md-4 mb-3">
+
+                                        <label class="form-label fw-semibold">
+                                            Item
+                                        </label>
+
+                                        <div class="d-flex gap-2">
+
+                                            <select id="itemSelect"
+                                                    class="form-select"
+                                                    disabled>
+
+                                                <option value="">
+                                                    Select Item
+                                                </option>
+
+                                            </select>
+
+
+                                            <button type="button"
+                                                    id="addItemBtn"
+                                                    class="btn btn-primary px-3">
+
+                                                Add
+
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Selected Items Table -->
+
+                                <div class="table-responsive mt-3">
+
+                                    <table class="table align-middle">
+
+                                        <thead>
+
+                                            <tr>
+
+                                                <th>
+                                                    Item
+                                                </th>
+
+                                                <th>
+                                                    Price
+                                                </th>
+
+                                                <th class="text-end">
+                                                    Action
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+                                        <tbody id="itemsTableBody">
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+
+                                <!-- Hidden ItemIds -->
+
+                                <div id="itemIdsContainer">
+                                </div>
+
+                            </div>
+
+
+                            <br />
+
+
+                            <!-- Actions -->
+
+                            <div class="d-flex justify-content-end gap-2">
+
+                                <a asp-controller="Dashboard"
+                                   asp-action="Discounts"
+                                   class="btn btn-light border px-4">
+
+                                    Cancel
+
+                                </a>
+
+
+                                <button type="submit"
+                                        class="btn btn-primary px-4">
+
+                                    @(isEdit?"Edit":"Add") Discount
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+                const initialDiscountItems =
+            @Html.Raw(
+                    System.Text.Json.JsonSerializer.Serialize(
+                            Model.Items.Select(x => new
+                            {
+                                    itemId = x.Id,
+                                    itemName = x.ItemName,
+                                    price = x.Price
+                            })
+                    )
+            );
+ </script>
+    
+
+<script src="~/js/createDiscount.js"></script>
+

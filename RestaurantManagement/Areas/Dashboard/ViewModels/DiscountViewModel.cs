@@ -10,6 +10,7 @@ namespace RestaurantManagement.Areas.Dashboard.ViewModels
         public decimal DiscountPercentage { get; set; }
         public DateTime DiscountStartingDate { get; set; }
         public DateTime DiscountEndingDate { get; set; }
-        public List<Item> Items { get; set; } = null!;
+        public List<Guid> ItemIds { get; set; } = [];
+        public List<Item> Items { get; set; } = [];
     }
 }

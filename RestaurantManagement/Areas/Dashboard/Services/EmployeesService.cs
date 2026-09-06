@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Areas.Dashboard.IServices;
 using RestaurantManagement.Areas.Dashboard.ViewModels;
 using RestaurantManagement.IRepositories;
@@ -44,6 +46,10 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         {
             var emp = await _unitOfWork.Employees.GetEmployeeWithGroupAsync(id);
             if (emp is null) throw new EntryPointNotFoundException("There is no such employee");
+            var groups = await _unitOfWork.Groups.NoTrackingSelect().Select(g =>
+            new SelectListItem{
+                Value = g.Id.ToString(),
+                Text = g.GroupName }).ToListAsync();
             ManageEmployeeViewModel empvm = new ManageEmployeeViewModel
             {
                 Id = emp.Id,
@@ -54,7 +60,8 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 EmployeeEndingDate = emp.EmployeeEndingDate,
                 Username = emp.Username,
                 Email = emp.Email,
-                Group = emp.Group!.GroupName
+                Group = emp.Group!.GroupName,
+                Groups = groups
             };
             return empvm;
         }

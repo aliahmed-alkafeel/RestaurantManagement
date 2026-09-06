@@ -1,0 +1,98 @@
+﻿@model GroupViewModel
+@{
+    bool isEdit = Model.Id != Guid.Empty;
+}
+<div class="container-fluid employee-page">
+
+    <div class="employee-form-wrapper">
+
+        <div class="row justify-content-center w-100">
+            <div class="col-12 col-xl-9 col-xxl-8">
+
+                <!-- Employee Form Card -->
+                <div class="card employee-card border-0 shadow-sm">
+
+                    <!-- Card Header -->
+                    <div class="card-header bg-transparent border-0 px-4 pt-4">
+                        <h2>@(isEdit ? $"Edit {Model.GroupName} Roles": "Add New Group")</h2>
+                        <div class="d-flex align-items-center gap-3">
+
+
+   <form asp-area="Dashboard" asp-controller="Groups" asp-action=@(isEdit?"EditGroup":"CreateGroup") asp-route-Id=@(isEdit ? Model.Id : "") method="post">
+
+                                    <div class="col-md-4 mb-3">
+
+                                        <label asp-for="GroupName"
+                                               class="form-label fw-semibold">
+
+                                            Group Name
+
+                                        </label>
+
+                                        <input asp-for="GroupName"
+                                               class="form-control"
+                                               type="text"
+                                               placeholder="Enter group name.." />
+
+                                        <span asp-validation-for="GroupName"
+                                              class="text-danger small">
+                                        </span>
+
+                                    </div>
+                                
+
+    <div class="mb-3 mt-2">
+        <div class="row g-2">
+
+
+                                  <label asp-for="GroupRoles"
+                                         class="form-label fw-semibold">
+
+                                      Select Group Roles
+
+                                  </label>
+            @foreach (var role in Enum.GetValues<UserRole>())
+            {
+                <div class="col-6">
+
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="@role"
+                           name="Roles" value="@role" checked="@Model.GroupRoles.Any(gr => gr.Role.RoleName == role)" />
+
+                    <label class="form-check-label"
+                           for="@role">
+                        @role
+                    </label>
+                </div>
+                </div>
+            }
+        </div>
+    </div>
+                                <div asp-validation-summary="All"
+                                     class="text-danger mb-3">
+                                </div>
+                                <div class="d-flex justify-content-end gap-2">
+
+                                    <a asp-controller="Dashboard"
+                                       asp-action="Groups"
+                                       class="btn btn-light border px-4">
+
+                                        Cancel
+
+                                    </a>
+    <button type="submit" class="btn btn-primary">
+        @(isEdit?"Edit":"Create")
+    </button>
+    </div>
+    </form>
+                        </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        
+        </div>

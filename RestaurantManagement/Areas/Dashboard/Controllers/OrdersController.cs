@@ -40,7 +40,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             var order = await ordersService.GetOrderByIdAsync(id);
             return View(order);
         }
-  
+
         [Authorize(Roles = nameof(UserRole.ManageOrders))]
         [HttpPost("EditOrder/{id:guid}")]
         [ValidateAntiForgeryToken]
@@ -59,6 +59,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             }
             return RedirectToAction(nameof(Orders));
         }
+
 
         [Authorize(Roles = nameof(UserRole.ManageOrders))]
         [HttpGet("DeleteOrder/{id:guid}")]

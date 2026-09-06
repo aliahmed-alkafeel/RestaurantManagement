@@ -18,6 +18,26 @@ namespace RestaurantManagement.Repositories
             _context = context;
             _dbSet = context.Set<T>();
         }
+        public IQueryable<T> Select(DeletedStatus status = DeletedStatus.NotDeleted)
+        {
+            if (status == DeletedStatus.All)
+            {
+                return _dbSet.AsQueryable();
+            }
+            var isDeleted = status == DeletedStatus.Deleted;
+            return _dbSet.AsQueryable().Where(m => m.IsDeleted == isDeleted);
+        }
+
+        public IQueryable<T> NoTrackingSelect(DeletedStatus status = DeletedStatus.NotDeleted)
+        {
+            if (status == DeletedStatus.All)
+            {
+                return _dbSet.AsNoTracking().AsQueryable();
+            }
+            var isDeleted = status == DeletedStatus.Deleted;
+            return _dbSet.AsNoTracking().AsQueryable().Where(m => m.IsDeleted == isDeleted);
+        }
+
         public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             return await _dbSet.ToListAsync();
@@ -58,5 +78,6 @@ namespace RestaurantManagement.Repositories
             return await GetByIdAsync(id) != null;
         }
 
+       
     }
 }
