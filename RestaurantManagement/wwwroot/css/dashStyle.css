@@ -1301,3 +1301,422 @@ th.sort {
         grid-column: auto;
     }
 }
+
+/* =========================================================
+   DASHBOARD
+   ========================================================= */
+
+.dashboard-page {
+    padding: 30px;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+    .dashboard-header h1 {
+        margin: 0;
+        font-size: 30px;
+        font-weight: 700;
+    }
+
+    .dashboard-header p {
+        margin: 6px 0 0;
+        color: #6c757d;
+    }
+
+.dashboard-date {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   STAT CARDS
+   ========================================================= */
+
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 16px;
+    padding: 22px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.stat-icon {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    border-radius: 13px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+}
+
+.sales-icon {
+    background: rgba(13, 110, 253, .1);
+    color: #0d6efd;
+}
+
+.orders-icon {
+    background: rgba(25, 135, 84, .1);
+    color: #198754;
+}
+
+.today-icon {
+    background: rgba(255, 193, 7, .12);
+    color: #d39e00;
+}
+
+.items-icon {
+    background: rgba(111, 66, 193, .1);
+    color: #6f42c1;
+}
+
+.stat-card span {
+    display: block;
+    color: #6c757d;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.stat-card h2 {
+    margin: 0;
+    font-size: 25px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   GRID
+   ========================================================= */
+
+.dashboard-grid {
+    display: grid;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.dashboard-grid-main {
+    grid-template-columns: 2fr 1fr;
+}
+
+.dashboard-grid-secondary {
+    grid-template-columns: 1fr 1fr;
+}
+
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.dashboard-card {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.card-header {
+    padding: 22px 24px;
+}
+
+    .card-header h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .card-header p {
+        margin: 5px 0 0;
+        font-size: 13px;
+        color: #6c757d;
+    }
+
+
+/* =========================================================
+   CHART
+   ========================================================= */
+
+.sales-chart-wrapper {
+    position: relative;
+    height: 330px;
+    padding: 5px 24px 24px;
+}
+
+
+/* =========================================================
+   RANKING
+   ========================================================= */
+
+.ranking-list {
+    padding: 0 24px 18px;
+}
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 15px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+    .ranking-item:last-child {
+        border-bottom: none;
+    }
+
+.rank-number {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    border-radius: 10px;
+    background: #f1f3f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.ranking-info {
+    flex: 1;
+}
+
+    .ranking-info strong {
+        display: block;
+        font-size: 14px;
+    }
+
+    .ranking-info small {
+        display: block;
+        margin-top: 3px;
+        font-size: 12px;
+        color: #6c757d;
+    }
+
+.ranking-value {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   CATEGORY
+   ========================================================= */
+
+.category-list {
+    padding: 0 24px 24px;
+}
+
+.category-row {
+    margin-bottom: 22px;
+}
+
+    .category-row:last-child {
+        margin-bottom: 0;
+    }
+
+.category-title {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+    .category-title span {
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .category-title strong {
+        font-size: 13px;
+    }
+
+.progress {
+    height: 8px;
+    background: #f1f3f5;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: 10px;
+    background: #0d6efd;
+}
+
+
+/* =========================================================
+   CASHIERS
+   ========================================================= */
+
+.cashiers-card {
+    margin-bottom: 24px;
+}
+
+.cashiers-grid {
+    padding: 0 24px 24px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.cashier-card {
+    border: 1px solid #e9ecef;
+    border-radius: 14px;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
+    align-items: center;
+    gap: 14px;
+}
+
+.cashier-rank {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #f1f3f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.cashier-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.cashier-info h4 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.cashier-info span {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.cashier-sales {
+    text-align: right;
+}
+
+    .cashier-sales small {
+        display: block;
+        font-size: 11px;
+        color: #6c757d;
+    }
+
+    .cashier-sales strong {
+        font-size: 14px;
+    }
+
+
+/* =========================================================
+   CASHIER RANK COLORS
+   ========================================================= */
+
+.cashier-first .cashier-rank {
+    background: #fff3cd;
+    color: #997404;
+}
+
+.cashier-second .cashier-rank {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.cashier-third .cashier-rank {
+    background: #f5e6d3;
+    color: #8a5a24;
+}
+
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+.empty-dashboard {
+    padding: 35px 20px;
+    text-align: center;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+    .dashboard-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .dashboard-grid-main {
+        grid-template-columns: 1fr;
+    }
+
+    .cashiers-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 768px) {
+
+    .dashboard-page {
+        padding: 18px;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-grid-secondary {
+        grid-template-columns: 1fr;
+    }
+
+    .cashier-card {
+        grid-template-columns: auto auto 1fr;
+    }
+
+    .cashier-sales {
+        grid-column: 3;
+        text-align: left;
+    }
+}

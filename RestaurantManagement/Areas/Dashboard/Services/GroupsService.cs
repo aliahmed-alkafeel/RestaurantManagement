@@ -75,6 +75,8 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             if (model is null) throw new ArgumentNullException();
             var group = await unitOfWork.Groups.GetByIdAsync(model.Id);
             if (group is null) throw new KeyNotFoundException("There is no such group");
+            if (model.GroupName == InitUserGroup.Administrator.ToString() || group.GroupName == InitUserGroup.Administrator.ToString()) 
+                return false;
             group.GroupName = model.GroupName;
             var roles = await unitOfWork.Roles.GetRolesByNamesAsync(model.Roles);
             await unitOfWork.GroupsRoles.DeleteByGroupIdAsync(model.Id);

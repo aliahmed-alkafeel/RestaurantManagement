@@ -29,6 +29,6 @@ namespace RestaurantManagement.Models
         AccessPayments,
         ManagePayments,
 
-        AccessDetailss,
+        AccessDetails,
     }
 }

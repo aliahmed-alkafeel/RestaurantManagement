@@ -39,6 +39,7 @@ namespace RestaurantManagement.Controllers
             }
             return RedirectToAction("NewOrder", "POS");
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout(LoginViewModel model)

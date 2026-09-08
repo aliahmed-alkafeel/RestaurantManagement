@@ -9,6 +9,7 @@ using RestaurantManagement.IServices;
 using RestaurantManagement.Services;
 using RestaurantManagement.Areas.Dashboard.Services;
 using RestaurantManagement.Areas.Dashboard.IServices;
+using RestaurantManagement.Areas.Details.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +52,7 @@ builder.Services.AddScoped<ICategoriesService, CategoriesService>();
 builder.Services.AddScoped<IItemsService, ItemsService>();
 builder.Services.AddScoped<IOrdersService, OrdersService>();
 builder.Services.AddScoped<IDiscountService, DiscountService>();
+builder.Services.AddScoped<IDetailsService, DetailsService>();
 
 
 builder.Services.AddHttpContextAccessor();

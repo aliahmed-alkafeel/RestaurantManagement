@@ -103,14 +103,20 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             return true;
         }
 
-        public async Task<bool> UpdateEmployeeAsync(ManageEmployeeViewModel model, Guid ModifierId)
+        public async Task<bool> UpdateEmployeeAsync(ManageEmployeeViewModel model, Guid modifierId)
         {
-            if (model is null) throw new ArgumentNullException();
-            var isEmailExists = await _unitOfWork.Employees.GetEmployeeByEmailAsync(model.Email);
+        if (model is null) throw new ArgumentNullException();
+        var isEmailExists = await _unitOfWork.Employees.GetEmployeeByEmailAsync(model.Email);
         var isUsernameExists = await _unitOfWork.Employees.GetEmployeeByUsernameAsync(model.Username);
         if((isEmailExists is not null && isEmailExists.Id != model.Id) || (isUsernameExists is not null && isUsernameExists.Id != model.Id)){
                 return false;
             }
+            var modifier = await _unitOfWork.Employees.GetEmployeeWithGroupAsync(modifierId);
+
+
+            if (model.Group == InitUserGroup.Administrator.ToString() && modifier!.Group!.GroupName != InitUserGroup.Administrator.ToString())
+                return false;
+
         var employee = await _unitOfWork.Employees.GetByIdAsync(model.Id);
             if (employee is null || (model.EmployeeEndingDate.HasValue && model.EmployeeEndingDate <= model.EmployeeStartingDate))
                 return false;
@@ -128,15 +134,14 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         if(model.Password is not null && model.Password == model.ConfirmPassword)
         employee.PasswordHash = _passwordHasher.HashPassword(employee, model.Password);
-        _unitOfWork.Employees.Update(employee,ModifierId);
+        _unitOfWork.Employees.Update(employee,modifierId);
         await _unitOfWork.SaveChangesAsync();
-            return true;
-
+        return true;
         }
 
         public async Task<bool> TerminateEmployeeAsync(Guid modelId, Guid ModifierId)
         {
-            var emp = await _unitOfWork.Employees.Select().Include(e => e.Group).Where(e=> e.Id == modelId).FirstOrDefaultAsync();
+            var emp = await _unitOfWork.Employees.Select().Include(e => e.Group).Where(e => e.Id == modelId).FirstOrDefaultAsync();
             if (emp is null) throw new InvalidOperationException("There is no such employee");
             if(emp.Group!.GroupName == InitUserGroup.Administrator.ToString()) return false;
             _unitOfWork.Employees.Terminate(emp,ModifierId);

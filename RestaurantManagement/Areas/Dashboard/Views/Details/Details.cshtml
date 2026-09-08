@@ -1,0 +1,510 @@
+﻿@model RestaurantManagement.Areas.Dashboard.ViewModels.DetailsViewModel
+
+@{
+    // ViewData["Title"] = "Dashboard";
+}
+
+<div class="dashboard-page">
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <div class="dashboard-header">
+
+        <div>
+
+            <h1>
+                Dashboard
+            </h1>
+
+            <p>
+                Restaurant performance overview
+            </p>
+
+        </div>
+
+        <div class="dashboard-date">
+
+            <i class="bi bi-calendar3"></i>
+
+            @DateTime.Today.ToString("dd MMMM yyyy")
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         STATISTICS
+         ===================================================== -->
+
+    <div class="dashboard-stats">
+
+        <!-- TOTAL SALES -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon sales-icon">
+
+                <i class="bi bi-cash-stack"></i>
+
+            </div>
+
+            <div>
+
+                <span>
+                    Total Sales
+                </span>
+
+                <h2>
+                    @Model.TotalSales.ToString("N2")
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <!-- TOTAL ORDERS -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon orders-icon">
+
+                <i class="bi bi-receipt"></i>
+
+            </div>
+
+            <div>
+
+                <span>
+                    Total Orders
+                </span>
+
+                <h2>
+                    @Model.TotalOrders
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <!-- TODAY SALES -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon today-icon">
+
+                <i class="bi bi-graph-up-arrow"></i>
+
+            </div>
+
+            <div>
+
+                <span>
+                    Today's Sales
+                </span>
+
+                <h2>
+                    @Model.TodaySales.ToString("N2")
+                </h2>
+
+            </div>
+
+        </div>
+
+
+        <!-- AVAILABLE ITEMS -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon items-icon">
+
+                <i class="bi bi-box-seam"></i>
+
+            </div>
+            <div>
+
+                <span>
+                    Today's Orders
+                </span>
+
+                <h2>
+                    @Model.TodayOrders
+                </h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SALES + TOP SELLING
+         ===================================================== -->
+
+    <div class="dashboard-grid dashboard-grid-main">
+
+
+        <!-- SALES OVERVIEW -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h3>
+                        Sales Overview
+                    </h3>
+
+                    <p>
+                        Sales during the last 7 days
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="sales-chart-wrapper">
+
+                <canvas id="salesChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <!-- TOP SELLING -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h3>
+                        Top Selling Items
+                    </h3>
+
+                    <p>
+                        Best selling items overall
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="ranking-list">
+
+                @if (Model.TopSellingItems.Any())
+                {
+                    var rank = 1;
+
+                    foreach (var item in Model.TopSellingItems)
+                    {
+                        <div class="ranking-item">
+
+                            <div class="rank-number">
+                                @rank
+                            </div>
+
+                            <div class="ranking-info">
+
+                                <strong>
+                                    @item.ItemName
+                                </strong>
+
+                                <small>
+                                    @item.Quantity items sold
+                                </small>
+
+                            </div>
+
+                            <span class="ranking-value">
+
+                                @item.TotalSales.ToString("N2")
+
+                            </span>
+
+                        </div>
+
+                        rank++;
+                    }
+                }
+                else
+                {
+                    <div class="empty-dashboard">
+                        No sales data available.
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         CATEGORY + TODAY
+         ===================================================== -->
+
+    <div class="dashboard-grid dashboard-grid-secondary">
+
+
+        <!-- SALES BY CATEGORY -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h3>
+                        Sales by Category
+                    </h3>
+
+                    <p>
+                        Revenue generated by each category
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="category-list">
+
+                @if (Model.SalesByCategory.Any())
+                {
+                    var maxCategorySales =
+                        Model.SalesByCategory.Max(x => x.TotalSales);
+
+                    foreach (var category in Model.SalesByCategory)
+                    {
+                        var percentage =
+                            maxCategorySales == 0
+                                ? 0
+                                : (double)
+                                    (category.TotalSales /
+                                    maxCategorySales * 100);
+
+                        <div class="category-row">
+
+                            <div class="category-title">
+
+                                <span>
+                                    @category.CategoryName
+                                </span>
+
+                                <strong>
+                                    @category.TotalSales.ToString("N2")
+                                </strong>
+
+                            </div>
+
+
+                            <div class="progress">
+
+                                <div class="progress-bar"
+                                     style="width:@percentage.ToString("0.##")%">
+                                </div>
+
+                            </div>
+
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="empty-dashboard">
+                        No category sales available.
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+
+        <!-- MOST POPULAR TODAY -->
+
+        <div class="dashboard-card">
+
+            <div class="card-header">
+
+                <div>
+
+                    <h3>
+                        Most Popular Today
+                    </h3>
+
+                    <p>
+                        Most ordered items today
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="ranking-list">
+
+                @if (Model.MostPopularToday.Any())
+                {
+                    var rank = 1;
+
+                    foreach (var item in Model.MostPopularToday)
+                    {
+                        <div class="ranking-item">
+
+                            <div class="rank-number">
+
+                                @if (rank == 1)
+                                {
+                                    <i class="bi bi-trophy-fill"></i>
+                                }
+                                else
+                                {
+                                    @rank
+                                }
+
+                            </div>
+
+
+                            <div class="ranking-info">
+
+                                <strong>
+                                    @item.ItemName
+                                </strong>
+
+                                <small>
+                                    @item.Quantity sold today
+                                </small>
+
+                            </div>
+
+
+                            <span class="ranking-value">
+
+                                @item.TotalSales.ToString("N2")
+
+                            </span>
+
+                        </div>
+
+                        rank++;
+                    }
+                }
+                else
+                {
+                    <div class="empty-dashboard">
+                        No orders today.
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+
+        const salesLabels =
+            @Html.Raw(
+                    System.Text.Json.JsonSerializer.Serialize(
+                            Model.SalesLast7Days.Select(x =>
+                                    x.Date.ToString("ddd"))
+                    )
+            );
+
+
+        const salesData =
+            @Html.Raw(
+                    System.Text.Json.JsonSerializer.Serialize(
+                            Model.SalesLast7Days.Select(x =>
+                                    x.Sales)
+                    )
+            );
+
+
+        const ctx =
+            document.getElementById("salesChart");
+
+
+        new Chart(ctx,
+        {
+            type: "line",
+
+            data:
+            {
+                labels: salesLabels,
+
+                datasets:
+                [
+                    {
+                        label: "Sales",
+
+                        data: salesData,
+
+                        tension: 0.35,
+
+                        fill: true
+                    }
+                ]
+            },
+
+            options:
+            {
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins:
+                {
+                    legend:
+                    {
+                        display: false
+                    }
+                },
+
+                scales:
+                {
+                    y:
+                    {
+                        beginAtZero: true,
+
+                        ticks:
+                        {
+                            callback: function(value)
+                            {
+                                return value.toLocaleString();
+                            }
+                        }
+                    },
+
+                    x:
+                    {
+                        grid:
+                        {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+    </script>
