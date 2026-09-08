@@ -190,7 +190,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             if (model is null) throw new ArgumentNullException();
             var order = await unitOfWork.Orders.Select().Where(o => o.Id == model.OrderId).FirstOrDefaultAsync();
             if (order is null) return false;
-            order.OrderStatus = model.Status;
+            order.OrderStatus = (OrderStatus) model.Status;
             unitOfWork.Orders.Update(order, ModifierId);
             await unitOfWork.SaveChangesAsync();
             return true;

@@ -69,11 +69,11 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             await employeesService.TerminateEmployeeAsync(id, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
             return RedirectToAction(nameof(Employees));
         }
-
         [Authorize(Roles = nameof(UserRole.ManageEmployees))]
         [HttpGet("CreateEmployee")]
         public async Task<IActionResult> CreateEmployee()
         {
+            ViewBag.groups = await employeesService.ShowCreateEmployeeAsync();
             return View();
         }
 

@@ -47,8 +47,13 @@ namespace RestaurantManagement.Controllers
             return RedirectToAction("NewOrder", "POS");
         }
         [HttpGet]
-        public IActionResult AccessDenied()
+        public IActionResult AccessDenied(string? returnUrl)
         {
+            Console.WriteLine(Request.Path);
+            if (returnUrl?.StartsWith("/Dashboard") == true)
+            {
+                return View("DashboardAccessDenied");
+            }
             return View();
         }
     }

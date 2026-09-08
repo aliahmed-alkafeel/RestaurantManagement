@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.Areas.Dashboard.ViewModels;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using RestaurantManagement.Areas.Dashboard.ViewModels;
 using RestaurantManagement.Models;
 
 namespace RestaurantManagement.Areas.Dashboard.IServices
@@ -10,5 +11,7 @@ namespace RestaurantManagement.Areas.Dashboard.IServices
         Task<bool> CreateEmployeeAsync(ManageEmployeeViewModel model);
         Task<bool> UpdateEmployeeAsync(ManageEmployeeViewModel model, Guid ModifierId);
         Task<bool> TerminateEmployeeAsync(Guid modelId, Guid ModifierId);
+        Task<List<SelectListItem>> ShowCreateEmployeeAsync();
+
     }
 }

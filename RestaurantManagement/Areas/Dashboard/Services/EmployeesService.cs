@@ -45,10 +45,11 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         public async Task<ManageEmployeeViewModel> GetEmployeeByIdAsync(Guid id)
         {
             var emp = await _unitOfWork.Employees.GetEmployeeWithGroupAsync(id);
+            Console.WriteLine(emp.Group);
             if (emp is null) throw new EntryPointNotFoundException("There is no such employee");
             var groups = await _unitOfWork.Groups.NoTrackingSelect().Select(g =>
             new SelectListItem{
-                Value = g.Id.ToString(),
+                Value = g.GroupName,
                 Text = g.GroupName }).ToListAsync();
             ManageEmployeeViewModel empvm = new ManageEmployeeViewModel
             {
@@ -67,6 +68,15 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         }
 
 
+        public async Task<List<SelectListItem>> ShowCreateEmployeeAsync()
+        {
+            return await _unitOfWork.Groups.NoTrackingSelect().Select(g =>
+        new SelectListItem
+        {
+        Value = g.Id.ToString(),
+         Text = g.GroupName
+        }).ToListAsync();
+        }
         public async Task<bool> CreateEmployeeAsync(ManageEmployeeViewModel model)
         {
             if (model is null) throw new ArgumentNullException();
@@ -76,7 +86,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
            
                 return false;
             }
-            var groupId = await _unitOfWork.Groups.GetIdByNameAsync(model.Group);
+            //var groupId = await _unitOfWork.Groups.GetIdByNameAsync(model.Group);
             var employee = new Employee
             {
                 Username = model.Username,
@@ -85,7 +95,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 LastName = model.LastName,
                 EmployeeStartingDate = DateTime.UtcNow,
                 PhoneNumber = model.PhoneNumber,
-                GroupId = groupId
+                GroupId = Guid.Parse(model.Group)
             };
             employee.PasswordHash = _passwordHasher.HashPassword(employee, model.Password);
             await _unitOfWork.Employees.AddAsync(employee);

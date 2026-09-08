@@ -91,9 +91,9 @@
                                         }
                                         else
                                         {
-                                            <option value="@status">
-                                                @status
-                                            </option>
+                                 <option value="@((int)status)">
+    @status
+</option>
                                         }
                                     }
 
@@ -210,17 +210,18 @@
                         }
                     );
 
-                    if (!response.ok) {
-                        throw new Error("Failed to update order status.");
-                    }
+                    // if (!response.ok) {
+                    //     throw new Error("Failed to update order status.");
+                    // }
 
-                    const result = await response.json();
+           const result = await response.json();
 
-                    if (!result.success) {
-                        throw new Error(
-                            result.message ?? "Failed to update order status."
-                        );
-                    }
+console.log("Server response:", result);
+
+
+if (!response.ok) {
+    throw new Error(result.message ?? "Failed to update order status.");
+}
 
                     // Save the new status
                     this.dataset.previousStatus = newStatus;

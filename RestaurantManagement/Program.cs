@@ -17,7 +17,13 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
 {
     options.LoginPath = "/Auth/Login";
-    options.AccessDeniedPath = "/Auth/AccessDenied";
+    //options.AccessDeniedPath = "/Auth/AccessDenied";
+    options.Events.OnRedirectToAccessDenied = context =>
+    {
+        var returnUrl = context.Request.PathBase + context.Request.Path;
+        context.Response.Redirect($"/Auth/AccessDenied?returnUrl={Uri.EscapeDataString(returnUrl)}");
+        return Task.CompletedTask;
+    };
     options.ExpireTimeSpan = TimeSpan.FromHours(8);
     options.SlidingExpiration = true;
 });

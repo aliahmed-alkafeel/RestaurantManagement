@@ -5,6 +5,6 @@ namespace RestaurantManagement.ViewModels
     public class OrderStatusViewModel
     {
         public Guid OrderId { get; set; }
-        public OrderStatus Status { get; set; }
+        public int Status { get; set; }
     }
 }

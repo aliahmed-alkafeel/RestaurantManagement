@@ -63,17 +63,39 @@ namespace RestaurantManagement.Controllers
         [Authorize(Roles = nameof(UserRole.ManageOrders))]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateOrderStatus([FromBody] OrderStatusViewModel model)
+        public async Task<IActionResult> UpdateOrderStatus(
+            [FromBody] OrderStatusViewModel? model)
         {
-            if (model is null) return BadRequest(new { success = false, message = "Invalid request." });
-            var result = await ordersService.UpdateOrderAsync(model, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
-            if (!result) return BadRequest( new { success = false, message = "Order status could not be updated" });
+            if (model is null)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Model is null"
+                });
+            }
+
+            var modifierId = Guid.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier)!
+            );
+
+            var result = await ordersService.UpdateOrderAsync(model, modifierId);
+
+            if (!result)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Order not found",
+                    orderId = model.OrderId
+                });
+            }
+
             return Ok(new
             {
                 success = true
             });
         }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
