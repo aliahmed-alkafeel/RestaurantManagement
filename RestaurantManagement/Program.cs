@@ -20,7 +20,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     //options.AccessDeniedPath = "/Auth/AccessDenied";
     options.Events.OnRedirectToAccessDenied = context =>
     {
-        var returnUrl = context.Request.PathBase + context.Request.Path;
+        var returnUrl = context.Request.Path;
         context.Response.Redirect($"/Auth/AccessDenied?returnUrl={Uri.EscapeDataString(returnUrl)}");
         return Task.CompletedTask;
     };

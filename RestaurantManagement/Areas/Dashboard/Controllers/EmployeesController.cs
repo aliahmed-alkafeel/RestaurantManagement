@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -66,7 +67,8 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [HttpPost("ConfirmedTerminateEmployee/{id:guid}")]
         public async Task<IActionResult> ConfirmedTerminateEmployee(Guid id)
         {
-            await employeesService.TerminateEmployeeAsync(id, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
+            var result = await employeesService.TerminateEmployeeAsync(id, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
+            if (!result) return RedirectToAction("AccessDenied", "Auth", new {area="",returnUrl="/Dashboard"});
             return RedirectToAction(nameof(Employees));
         }
         [Authorize(Roles = nameof(UserRole.ManageEmployees))]

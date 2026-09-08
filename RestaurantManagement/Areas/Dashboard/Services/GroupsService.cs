@@ -37,6 +37,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         {
             var group = await unitOfWork.Groups.GetByIdAsync(modelId);
             if (group is null) throw new InvalidOperationException("There is no such group");
+            if (group.GroupName == InitUserGroup.Administrator.ToString()) return false;
             unitOfWork.Groups.Delete(group, ModifierId);
             await unitOfWork.SaveChangesAsync();
             return true;

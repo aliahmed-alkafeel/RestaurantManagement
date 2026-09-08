@@ -136,8 +136,9 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         public async Task<bool> TerminateEmployeeAsync(Guid modelId, Guid ModifierId)
         {
-            var emp = await _unitOfWork.Employees.GetByIdAsync(modelId);
+            var emp = await _unitOfWork.Employees.Select().Include(e => e.Group).Where(e=> e.Id == modelId).FirstOrDefaultAsync();
             if (emp is null) throw new InvalidOperationException("There is no such employee");
+            if(emp.Group!.GroupName == InitUserGroup.Administrator.ToString()) return false;
             _unitOfWork.Employees.Terminate(emp,ModifierId);
             await _unitOfWork.SaveChangesAsync();
             return true;

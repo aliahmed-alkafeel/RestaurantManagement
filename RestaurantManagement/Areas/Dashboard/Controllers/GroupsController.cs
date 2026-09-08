@@ -51,7 +51,8 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [HttpPost("ConfirmedDeleteGroup/{id:guid}")]
         public async Task<IActionResult> ConfirmedDeleteGroup(Guid id)
         {
-            await groupsService.DeleteGroupAsync(id, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
+            var result = await groupsService.DeleteGroupAsync(id, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
+            if (!result) return RedirectToAction("AccessDenied", "Auth", new { area = "", returnUrl = "/Dashboard" });
             return RedirectToAction(nameof(Groups));
         }
         [Authorize(Roles = nameof(UserRole.ManageEmployees))]

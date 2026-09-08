@@ -18,7 +18,6 @@
         .Select(g => g.First())
         .ToList();
 
-    var firstCategoryId = categories.FirstOrDefault()?.Id;
 }
 
 
@@ -117,7 +116,36 @@
 
                 <nav class="category-navigation">
 
+                    <div class="category-type">
 
+                        <div class="type-title">
+                            <span class="type-name">
+                                MENU
+                            </span>
+                        </div>
+
+                        <ul class="category-list">
+
+                            <li>
+                                <button type="button"
+                                        id="allItemsButton"
+                                        class="category-button active"
+                                        data-category-id="">
+
+                                    <span class="category-name">
+                                        All Items
+                                    </span>
+
+                                    <span class="category-count">
+                                        @items.Count
+                                    </span>
+
+                                </button>
+                            </li>
+
+                        </ul>
+
+                    </div>
                     @foreach (var type in Enum.GetValues<CategoryType>())
                     {
 
@@ -164,7 +192,7 @@
 
 
                                         <button type="button"
-                                                class="category-button @(category.Id == firstCategoryId ? "active" : "")"
+                                                class="category-button"
                                                 data-category-id="@category.Id">
 
 
