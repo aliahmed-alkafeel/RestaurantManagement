@@ -114,7 +114,6 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             order.OrderStatus = model.OrderStatus;
             order.TableId = model.TableId;
             order.OrderDate = model.OrderDate;
-
             var existingItemOrders = order.ItemOrders.ToList();
             var ItemIds = model.ItemOrders.Select(x => x.ItemId).ToList();
             decimal newItemsTotal = 0;

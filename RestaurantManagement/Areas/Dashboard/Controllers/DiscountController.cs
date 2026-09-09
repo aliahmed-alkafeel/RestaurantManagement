@@ -31,12 +31,12 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             [ValidateAntiForgeryToken]
             public async Task<IActionResult> CreateDiscount(DiscountViewModel model)
             {
-                if (!ModelState.IsValid) return View(model);
+                if (!ModelState.IsValid) return View("ManageDiscount",model);
                 var result = await discountsService.CreateDiscountAsync(model);
                 if (result is false)
                 {
                     ModelState.AddModelError("", "The Discount is Regestered");
-                    return View(model);
+                    return View("ManageDiscount",model);
                 }
                 return RedirectToAction(nameof(Discounts));
             }
@@ -54,13 +54,13 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return View(model);
+                    return View("ManageDiscount",model);
                 }
                 var result = await discountsService.UpdateDiscountAsync(model, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
                 if (!result)
                 {
                     ModelState.AddModelError("", "This update is not allowed");
-                    return View(model);
+                    return View("ManageDiscount",model);
                 }
                 return RedirectToAction(nameof(Discounts));
             }

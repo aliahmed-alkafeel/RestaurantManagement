@@ -10,6 +10,7 @@ using RestaurantManagement.Services;
 using RestaurantManagement.Areas.Dashboard.Services;
 using RestaurantManagement.Areas.Dashboard.IServices;
 using RestaurantManagement.Areas.Details.Services;
+using RestaurantManagement.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,7 +55,8 @@ builder.Services.AddScoped<IOrdersService, OrdersService>();
 builder.Services.AddScoped<IDiscountService, DiscountService>();
 builder.Services.AddScoped<IDetailsService, DetailsService>();
 
-
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 builder.Services.AddHttpContextAccessor();
 
 
@@ -65,11 +67,11 @@ await DbInitializer.SeedAsync(app.Services);
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    //app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
+app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();

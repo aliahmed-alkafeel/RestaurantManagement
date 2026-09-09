@@ -1720,3 +1720,107 @@ th.sort {
         text-align: left;
     }
 }
+
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    position: relative;
+    min-height: 175px;
+    padding: 26px;
+    background: #ffffff;
+    border: 1px solid #eeeeee;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    isolation: isolate;
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, .08);
+    }
+
+
+/* =========================
+   TEXT
+   ========================= */
+
+.stat-info {
+    position: relative;
+    z-index: 2;
+}
+
+.stat-label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #777;
+}
+
+.stat-info h2 {
+    margin: 0;
+    font-size: 30px;
+    line-height: 1.2;
+    font-weight: 700;
+    color: #202124;
+}
+
+.stat-description {
+    display: block;
+    margin-top: 12px;
+    font-size: 12px;
+    color: #999;
+}
+
+
+/* =========================
+   SVG
+   ========================= */
+
+.stat-svg {
+    position: absolute;
+    right: -10px;
+    bottom: -15px;
+    width: 180px;
+    height: 145px;
+    z-index: 1;
+    opacity: .20;
+    pointer-events: none;
+    transition: transform .3s ease, opacity .3s ease;
+}
+
+.stat-card:hover .stat-svg {
+    transform: scale(1.08);
+    opacity: .30;
+}
+
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 1200px) {
+
+    .dashboard-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-card {
+        min-height: 160px;
+    }
+}

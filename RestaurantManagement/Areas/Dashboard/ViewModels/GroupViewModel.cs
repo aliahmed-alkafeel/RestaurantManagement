@@ -7,7 +7,8 @@ namespace RestaurantManagement.Areas.Dashboard.ViewModels
     {
         [Required]
         public Guid Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = ("Group name is required."))]
+        [MaxLength(50)]
         public string GroupName { get; set; } = null!;
         public ICollection<GroupRole> GroupRoles { get; set; } = [];
         public List<UserRole> Roles { get; set; } = [];

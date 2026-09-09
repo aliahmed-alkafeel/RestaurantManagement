@@ -7,6 +7,7 @@ using RestaurantManagement.Areas.Dashboard.ViewModels;
 using RestaurantManagement.IRepositories;
 using RestaurantManagement.Models;
 using RestaurantManagement.Repositories;
+using System.Security.Claims;
 
 namespace RestaurantManagement.Areas.Dashboard.Services
 {
@@ -14,10 +15,12 @@ namespace RestaurantManagement.Areas.Dashboard.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPasswordHasher<Employee> _passwordHasher;
-        public EmployeesService(IUnitOfWork unitOfWork, IPasswordHasher<Employee> passwordHasher)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public EmployeesService(IUnitOfWork unitOfWork, IPasswordHasher<Employee> passwordHasher, IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = unitOfWork;
             _passwordHasher = passwordHasher;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<List<EmployeeViewModel>> GetAllEmployeesAsync()
@@ -80,13 +83,20 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         public async Task<bool> CreateEmployeeAsync(ManageEmployeeViewModel model)
         {
             if (model is null) throw new ArgumentNullException();
-            var existingEmployee = await _unitOfWork.Employees.GetEmployeeByUsernameAsync(model.Username);
-            if (existingEmployee is not null)
+            var isEmailExists = await _unitOfWork.Employees.GetEmployeeByEmailAsync(model.Email);
+            var isUsernameExists = await _unitOfWork.Employees.GetEmployeeByUsernameAsync(model.Username);
+            if ((isEmailExists is not null && isEmailExists.Id != model.Id) || (isUsernameExists is not null && isUsernameExists.Id != model.Id))
             {
-           
                 return false;
             }
-            //var groupId = await _unitOfWork.Groups.GetIdByNameAsync(model.Group);
+            var modifierId = Guid.Parse(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var modifier = await _unitOfWork.Employees.
+                GetEmployeeWithGroupAsync(modifierId);
+
+
+            if (model.Group == InitUserGroup.Administrator.ToString() && modifier!.Group!.GroupName != InitUserGroup.Administrator.ToString())
+                return false;
+
             var employee = new Employee
             {
                 Username = model.Username,

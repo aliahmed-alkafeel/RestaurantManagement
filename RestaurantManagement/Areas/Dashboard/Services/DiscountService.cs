@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Areas.Dashboard.IServices;
 using RestaurantManagement.Areas.Dashboard.ViewModels;
 using RestaurantManagement.IRepositories;
@@ -40,7 +41,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
                     discountsVm.Add(new DiscountViewModel
                     {
-                        Id = Guid.NewGuid(),
+                        Id = discount.Id,
                         DiscountPercentage = discount.DiscountPercentage,
                         DiscountStartingDate = discount.DiscountStartingDate,
                         DiscountEndingDate = discount.DiscountEndingDate,
@@ -83,7 +84,21 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             discount.DiscountPercentage = model.DiscountPercentage;
             discount.DiscountEndingDate = model.DiscountEndingDate;
             discount.DiscountStartingDate = model.DiscountStartingDate;
-            discount.Items = discount.Items;
+            var existingItems = discount.Items.ToList();
+            var toRemove = existingItems
+                .Where(i => !model.ItemIds.Contains(i.Id));
+            foreach (var oldItem in toRemove)
+            {
+                oldItem.Discount = null;
+                unitOfWork.Items.Update(oldItem, ModifierId);
+            }
+            
+            foreach (var itemId in model.ItemIds)
+            {
+                var item = await unitOfWork.Items.GetByIdAsync(itemId);
+                if (item is null) continue;
+                discount.Items.Add(item);
+            }
             unitOfWork.Discounts.Update(discount, ModifierId);
             await unitOfWork.SaveChangesAsync();
             return true;
