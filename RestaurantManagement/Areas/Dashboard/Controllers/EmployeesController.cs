@@ -27,6 +27,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [HttpGet("EditEmployee/{id:guid}")]
         public async Task<IActionResult> EditEmployee(Guid id)
         {
+            ViewBag.groups = await employeesService.ShowCreateEmployeeAsync();
             var emps = await employeesService.GetEmployeeByIdAsync(id);
             return View(emps);
         }
@@ -40,6 +41,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
                 ModelState.Remove(nameof(model.ConfirmPassword));
             if (!ModelState.IsValid)
             {
+                ViewBag.groups = await employeesService.ShowCreateEmployeeAsync();
                 return View(model);
             }
             if (!cloendModelState.IsValid && !string.IsNullOrEmpty(model.Password) && !string.IsNullOrEmpty(model.ConfirmPassword))
@@ -84,7 +86,11 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateEmployee(ManageEmployeeViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
+            if (!ModelState.IsValid)
+            {
+                ViewBag.groups = await employeesService.ShowCreateEmployeeAsync();
+                return View(model);
+            }
             var result = await employeesService.CreateEmployeeAsync(model);
             if(result is false)
             {

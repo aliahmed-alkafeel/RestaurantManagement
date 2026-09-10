@@ -131,7 +131,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             if (employee is null || (model.EmployeeEndingDate.HasValue && model.EmployeeEndingDate <= model.EmployeeStartingDate))
                 return false;
 
-            var groupId = await _unitOfWork.Groups.GetIdByNameAsync(model.Group);
+            //var groupId = await _unitOfWork.Groups.GetIdByNameAsync(Guid.Parse(model.Group));
 
             employee.Username = model.Username;
             employee.Email = model.Email;
@@ -139,7 +139,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             employee.LastName = model.LastName;
             employee.EmployeeStartingDate = model.EmployeeStartingDate;
             employee.PhoneNumber = model.PhoneNumber;
-            employee.GroupId = groupId;
+            employee.GroupId = Guid.Parse(model.Group);
             employee.EmployeeEndingDate = model.EmployeeEndingDate;
 
         if(model.Password is not null && model.Password == model.ConfirmPassword)

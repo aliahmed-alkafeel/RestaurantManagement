@@ -50,11 +50,7 @@ namespace RestaurantManagement.Controllers
         [HttpGet]
         public IActionResult AccessDenied(string? returnUrl)
         {
-            Console.WriteLine(Request.Path);
-            if (returnUrl?.StartsWith("/Dashboard") == true)
-            {
-                return View("DashboardAccessDenied");
-            }
+            ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
     }

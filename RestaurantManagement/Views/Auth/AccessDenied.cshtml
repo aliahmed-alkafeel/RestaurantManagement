@@ -1,6 +1,14 @@
 ﻿@{
     ViewData["Title"] = "Access Denied";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var returnUrl = ViewData["ReturnUrl"] as string;
+
+    var isDashboard =
+        returnUrl?.StartsWith("/Dashboard", StringComparison.OrdinalIgnoreCase) == true;
+
+    Layout = isDashboard
+        ? "/Areas/Dashboard/Views/Shared/DashLayout.cshtml"
+        : "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container d-flex justify-content-center align-items-center"

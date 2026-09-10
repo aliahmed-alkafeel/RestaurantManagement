@@ -34,7 +34,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             var result = await groupsService.CreateGroupAsync(model);
             if (result is false)
             {
-                ModelState.AddModelError("", "The Group is Regestered");
+                ModelState.AddModelError("", "The Group is Registered");
                 return View("ManageGroup",model);
             }
             return RedirectToAction(nameof(Groups));

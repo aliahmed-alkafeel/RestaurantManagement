@@ -140,8 +140,9 @@
                                         Group
                                     </label>
 
+   
                                     <select asp-for="Group"
-                                            asp-items="@Model.Groups"
+                                            asp-items="@ViewBag.groups"
                                             class="form-select">
                                         <option value="">Select Group</option>
                                     </select>

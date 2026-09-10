@@ -65,9 +65,9 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         }
 
-        public async Task<bool> DeleteCategoryAsync(Guid modelId, Guid ModifierId)
+        public async Task<bool> DeleteCategoryAsync(Guid id, Guid ModifierId)
         {
-            var category = await unitOfWork.Categories.GetByIdAsync(modelId);
+            var category = await unitOfWork.Categories.GetByIdAsync(id);
             if (category is null) throw new InvalidOperationException("There is no such category");
             unitOfWork.Categories.Delete(category, ModifierId);
             await unitOfWork.SaveChangesAsync();
