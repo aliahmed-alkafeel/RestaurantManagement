@@ -56,7 +56,6 @@ builder.Services.AddScoped<IDiscountService, DiscountService>();
 builder.Services.AddScoped<IDetailsService, DetailsService>();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-builder.Services.AddProblemDetails();
 builder.Services.AddHttpContextAccessor();
 
 
@@ -71,7 +70,8 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-app.UseExceptionHandler();
+app.UseExceptionHandler("/Error");
+
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();

@@ -20,13 +20,6 @@
             Please try again later.
         </p>
 
-        @if (Model.ShowRequestId)
-        {
-            <div class="request-id">
-                <span>Request ID:</span>
-                <code>@Model.RequestId</code>
-            </div>
-        }
 
         <a asp-controller="POS"
            asp-action="NewOrder"

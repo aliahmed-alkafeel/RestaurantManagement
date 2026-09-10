@@ -101,6 +101,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             {
                 Id = item.Id,
                 ItemName = item.ItemName,
+                CategoryId = item.CategoryId,
                 Category = category!,
                 Price = item.Price,
                 IsActive = item.IsActive,
@@ -188,7 +189,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             if (model.Page < 1) model.Page = 1;
             if (model.PageSize < 1) model.PageSize = 10;
 
-            var items = unitOfWork.Items.NoTrackingSelect().Include(x => x.Category).AsNoTracking();
+            var items = unitOfWork.Items.NoTrackingSelect().Include(x => x.Category).Where(x => !x.Category.IsDeleted).AsNoTracking();
             var categories = await unitOfWork.Categories.NoTrackingSelect().ToListAsync();
 
             if (!string.IsNullOrEmpty(model.Search))

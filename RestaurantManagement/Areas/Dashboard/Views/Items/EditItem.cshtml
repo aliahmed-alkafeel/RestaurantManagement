@@ -104,13 +104,12 @@
                                     <label asp-for="CategoryId" class="form-label fw-semibold">
                                         Category
                                     </label>
-
-                                    <select asp-for="CategoryId" id="categorySelect"
-                                            class="form-select">
-                                        <option value="">Select type first</option>
-                                    </select>
-
-                                    <span asp-validation-for="CategoryId"
+                                    <select asp-for="CategoryId"
+                                            id="categorySelect"
+                                            class="form-select"
+                                            data-selected-category="@Model.CategoryId">
+                                        <option value="default">Select type first</option>
+                                    </select>                                    <span asp-validation-for="CategoryId"
                                           class="text-danger small">
                                     </span>
                                 </div>

@@ -24,6 +24,12 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             [HttpGet]
             public async Task<IActionResult> Items(ItemFilterViewModel model)
             {
+            if (!ModelState.IsValid)
+            {
+                var pageModel = await itemsService.GetPagedItemsAsync(model);
+                pageModel.Filter = model;
+                return View(pageModel); 
+            }
                 var Items = await itemsService.GetPagedItemsAsync(model);
                 return View(Items);
             }

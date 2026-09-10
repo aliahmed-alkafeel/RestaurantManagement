@@ -200,6 +200,9 @@
         <div class="navbar-right">
 
 
+<div class="profile-wrapper"> 
+@await Component.InvokeAsync("EmployeeProfile")
+</div>
             <!-- Employee -->
 
 <button type="button"
@@ -209,7 +212,7 @@
     <span>Logout</span>
 </button>
 
-
+</div>
         </div>
 
 <div class="modal fade"
@@ -301,3 +304,30 @@
 </body>
 
 </html>
+<script>
+const profileButton =
+    document.getElementById("profileButton");
+
+const profileDropdown =
+    document.getElementById("profileDropdown");
+
+
+profileButton?.addEventListener("click", function (event) {
+
+    event.stopPropagation();
+
+    profileDropdown.classList.toggle("show");
+
+});
+
+
+document.addEventListener("click", function (event) {
+
+    if (!event.target.closest(".profile-wrapper")) {
+
+        profileDropdown?.classList.remove("show");
+
+    }
+
+});
+</script>

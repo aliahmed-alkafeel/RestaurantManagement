@@ -190,9 +190,13 @@
         <button type="submit" class="btn btn-primary">
             Apply
         </button>
-
     </form>
-
+    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+    {
+        <div class="text-danger">
+            @error.ErrorMessage
+        </div>
+    }
 </header>
 
 <div class="table-responsive bg-white mb-0">

@@ -1,0 +1,264 @@
+﻿@model Employee?
+<style>
+    
+    .profile-wrapper {
+        position: relative;
+    }
+
+
+    /* Avatar */
+
+    .profile-avatar {
+        width: 33px;
+        height: 33px;
+        border-radius: 50%;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #635bff;
+        color: white;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .profile-avatar:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(99, 91, 255, 0.25);
+        }
+
+
+    /* Dropdown */
+
+    .profile-dropdown {
+        position: absolute;
+        top: calc(100% + 12px);
+        right: 0;
+        width: 280px;
+        padding: 16px;
+        background: white;
+        border: 1px solid #eee;
+        border-radius: 16px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-8px);
+        transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+        z-index: 1000;
+    }
+
+        .profile-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+
+    /* Header */
+
+    .profile-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .profile-avatar-large {
+        width: 46px;
+        height: 46px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        display: flex;
+        
+        align-items: center;
+        justify-content: center;
+        background: #635bff;
+        color: white;
+        font-weight: 700;
+    }
+
+    .profile-name {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .profile-group {
+        margin-top: 3px;
+        font-size: 12px;
+        color: #777;
+    }
+
+
+    /* Divider */
+
+    .profile-divider {
+        height: 1px;
+        background: #eee;
+        margin: 14px 0;
+    }
+
+
+    /* Details */
+
+    .profile-details {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .profile-detail {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .detail-label {
+        font-size: 11px;
+        color: #999;
+    }
+
+    .detail-value {
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+
+    /* Logout */
+
+    .profile-logout {
+        width: 100%;
+        border: none;
+        background: transparent;
+        text-align: left;
+        padding: 8px 4px;
+        color: #dc3545;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        border-radius: 8px;
+    }
+
+        .profile-logout:hover {
+            background: #fff1f1;
+        }
+
+    /* Roles */
+
+    .profile-roles {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 5px;
+    }
+
+    .role-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 9px;
+        border-radius: 999px;
+        background: #f3f2ff;
+        color: #635bff;
+        border: 1px solid #e5e3ff;
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 1;
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+        .role-badge:hover {
+            background: #e9e7ff;
+            transform: translateY(-1px);
+        }
+
+   
+</style>
+@if (Model != null)
+{
+    var initial = Model.Username?
+        .Substring(0, 2)
+        .ToUpper();
+
+    <div class="profile-wrapper">
+
+        <button type="button"
+                class="profile-avatar"
+                id="profileButton"
+                aria-label="Open profile">
+
+            @initial
+
+        </button>
+
+
+        <div class="profile-dropdown"
+             id="profileDropdown">
+
+            <!-- Header -->
+
+            <div class="profile-header">
+
+                <div class="profile-avatar-large">
+                    @initial
+                </div>
+
+                <div class="profile-main-info">
+
+                    <div class="profile-name">
+                        @Model.Username
+                    </div>
+
+                    <div class="profile-group">
+                        @Model.Group?.GroupName
+                    </div>
+                    <div class="profile-divider"></div>
+
+                    <div class="profile-detail">
+
+                        <span class="detail-label">
+                            Roles
+                        </span>
+
+                        <div class="profile-roles">
+
+                            @foreach (var groupRole in Model.Group?.GroupRoles ?? [])
+                            {
+                                <span class="role-badge">
+                                    @groupRole.Role.RoleName
+                                </span>
+                            }
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="profile-divider"></div>
+
+
+            <!-- Logout -->
+
+            <form asp-controller="Auth"
+                  asp-action="Logout"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <button type="submit"
+                        class="profile-logout">
+
+                    Logout
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+}

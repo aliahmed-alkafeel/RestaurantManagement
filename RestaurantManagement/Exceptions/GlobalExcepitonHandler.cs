@@ -19,7 +19,7 @@ public class GlobalExceptionHandler : IExceptionHandler
     {
         _logger.LogError(
             exception,
-            "Unhandled exception occurred.");
+            "Unhandled exception occurred. RequestId: {RequestId}", httpContext.TraceIdentifier);
 
         httpContext.Response.Redirect("/Error");
 
