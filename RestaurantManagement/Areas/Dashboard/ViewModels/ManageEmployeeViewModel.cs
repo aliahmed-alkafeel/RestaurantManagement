@@ -36,14 +36,10 @@ namespace RestaurantManagement.Areas.Dashboard.ViewModels
         [StringLength(50, MinimumLength = 2, ErrorMessage = "The Length must be between {1} and {2}")]
         public string Password { get; set; } = null!;
 
-
         [Required(ErrorMessage = "Confirm Password is required")]
         [DataType(DataType.Password)]
         [Compare(nameof(Password), ErrorMessage = "Confirm password is not identical to the password")]
         [Length(2, 50, ErrorMessage = "The Length must be between {1} and {2}")]
         public string ConfirmPassword { get; set; } = null!;
-
-        
-
     }
 }

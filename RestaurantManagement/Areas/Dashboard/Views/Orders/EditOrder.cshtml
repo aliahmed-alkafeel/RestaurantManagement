@@ -139,6 +139,7 @@
                                         </tbody>
                                     </table>
                                 </div>
+
                                     <button type="button" id="addItemBtn" data-bs-toggle="modal"
                                             data-bs-target="#addItemModal" class="add-btn">
                                     <svg viewBox="0 0 24 24"
@@ -153,6 +154,9 @@
                                     Add New Item
                                 </button>
                             </div>
+                                    <span asp-validation-for="ItemOrders"
+                                          class="text-danger small">
+                                    </span>
 
                                 <div id="itemOrdersContainer"></div>
                                 <br />

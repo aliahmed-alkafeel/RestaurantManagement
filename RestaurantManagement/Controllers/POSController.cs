@@ -53,7 +53,7 @@ namespace RestaurantManagement.Controllers
                 message = "Order created successfully."
             });
         }
-        [Authorize(Roles = nameof(UserRole.ManageOrders))]
+        [Authorize(Roles = nameof(UserRole.AccessOrders))]
         [HttpGet]
         public async Task<IActionResult> POSOrders()
         {

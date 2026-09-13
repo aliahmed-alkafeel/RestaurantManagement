@@ -129,7 +129,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             if (!allowedExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase)) return false;
             if (!model.ItemImage.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase)) return false;
             var directory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "items");
-            string fileName = model.ItemName+"_"+ new Guid() + extension;            
+            string fileName = model.ItemName+"_"+ Guid.NewGuid() + extension;            
             string filePath = Path.Combine(directory, fileName);
             await using var stream = new FileStream(filePath, FileMode.Create);
             await model.ItemImage.CopyToAsync(stream);

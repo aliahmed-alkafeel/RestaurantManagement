@@ -7,6 +7,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
 {
     [Area("Dashboard")]
     [Route("[area]/[controller]")]
+    [Authorize(Roles = nameof(UserRole.AccessPayments))]
     public class DetailsController(IDetailsService DetailsService) : Controller
     {
         [Authorize(Roles = nameof(UserRole.AccessDetails))]

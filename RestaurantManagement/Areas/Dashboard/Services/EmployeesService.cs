@@ -121,11 +121,11 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         if((isEmailExists is not null && isEmailExists.Id != model.Id) || (isUsernameExists is not null && isUsernameExists.Id != model.Id)){
                 return false;
             }
-            var modifier = await _unitOfWork.Employees.GetEmployeeWithGroupAsync(modifierId);
+            //var modifier = await _unitOfWork.Employees.GetEmployeeWithGroupAsync(modifierId);
 
 
-            if (model.Group == InitUserGroup.Administrator.ToString() && modifier!.Group!.GroupName != InitUserGroup.Administrator.ToString())
-                return false;
+            //if (model.Group == InitUserGroup.Administrator.ToString() && modifier!.Group!.GroupName != InitUserGroup.Administrator.ToString())
+            //    return false;
 
         var employee = await _unitOfWork.Employees.GetByIdAsync(model.Id);
             if (employee is null || (model.EmployeeEndingDate.HasValue && model.EmployeeEndingDate <= model.EmployeeStartingDate))

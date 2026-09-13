@@ -14,29 +14,29 @@ namespace RestaurantManagement.Areas.Details.Services
             var tomorrow = today.AddDays(1);
             var startDate = today.AddDays(-6);
             var totalSales = await unitOfWork.ItemOrders
-                .NoTrackingSelect()
+                .NoTrackingSelect().Where(io => io.Order.OrderStatus == Models.OrderStatus.Completed)
                 .SumAsync(io => io.Price * io.Quantity);
 
             var totalOrders = await unitOfWork.Orders
-                .NoTrackingSelect()
+                .NoTrackingSelect().Where(o => o.OrderStatus == Models.OrderStatus.Completed)
                 .CountAsync();
 
             var todaySales = await unitOfWork.ItemOrders
                 .NoTrackingSelect()
                 .Where(io =>
                     io.Order.OrderDate >= today &&
-                    io.Order.OrderDate < tomorrow).SumAsync(io => io.Price * io.Quantity);
+                    io.Order.OrderDate < tomorrow && io.Order.OrderStatus == Models.OrderStatus.Completed).SumAsync(io => io.Price * io.Quantity);
 
             var todayOrders = await unitOfWork.Orders
                 .NoTrackingSelect()
                 .Where(o =>
                     o.OrderDate >= today &&
-                    o.OrderDate < tomorrow).CountAsync();
+                    o.OrderDate < tomorrow && o.OrderStatus == Models.OrderStatus.Completed).CountAsync();
 
             var salesLast7Days = await unitOfWork.ItemOrders
                 .NoTrackingSelect()
                 .Where(io =>
-                    io.Order.OrderDate >= startDate)
+                    io.Order.OrderDate >= startDate && io.Order.OrderStatus == Models.OrderStatus.Completed)
                 .GroupBy(io => io.Order.OrderDate.Date)
                 .Select(g => new DailySalesViewModel()
                 {
@@ -61,7 +61,7 @@ namespace RestaurantManagement.Areas.Details.Services
     })
     .ToList();
             var topSellingItems = await unitOfWork.ItemOrders
-                .NoTrackingSelect()
+                .NoTrackingSelect().Where(io => io.Order.OrderStatus == Models.OrderStatus.Completed)
                 .GroupBy(io => new
                 {
                     io.ItemId,
@@ -83,7 +83,7 @@ namespace RestaurantManagement.Areas.Details.Services
                 .ToListAsync();
 
                  var salesByCategory = await unitOfWork.ItemOrders
-                .NoTrackingSelect()
+                .NoTrackingSelect().Where(io => io.Order.OrderStatus == Models.OrderStatus.Completed)
                 .GroupBy(io => new
                 {
                     io.Item.CategoryId,
@@ -103,7 +103,7 @@ namespace RestaurantManagement.Areas.Details.Services
                 .NoTrackingSelect()
                 .Where(io =>
                  io.Order.OrderDate >= today &&
-                 io.Order.OrderDate < tomorrow)
+                 io.Order.OrderDate < tomorrow && io.Order.OrderStatus == Models.OrderStatus.Completed)
                 .GroupBy(io => new
                 {
                     io.ItemId,
