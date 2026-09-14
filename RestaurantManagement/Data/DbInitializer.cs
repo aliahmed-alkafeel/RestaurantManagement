@@ -82,7 +82,7 @@ namespace RestaurantManagement.Data
             await context.Employees.AddAsync(admin);
 
             }
-            else{ admin.IsUpdated = true; admin.UpdatedAt = DateTime.UtcNow; admin.UpdatedById = admin.Id; }
+            else{ admin.UpdatedAt = DateTime.UtcNow; admin.UpdatedById = admin.Id; }
             
              
             await context.SaveChangesAsync();

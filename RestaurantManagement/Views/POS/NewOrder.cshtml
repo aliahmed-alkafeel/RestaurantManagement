@@ -58,9 +58,9 @@
 
     <!-- Project CSS -->
 
-    <link rel="stylesheet"
+  @*   <link rel="stylesheet"
           href="~/css/order.css"
-          asp-append-version="true" />
+          asp-append-version="true" /> *@
 
 </head>
 
@@ -655,7 +655,7 @@
     <!-- BOOTSTRAP -->
     <!-- ================================================= -->
 
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @* <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> *@
 
 
     <!-- ================================================= -->
@@ -1369,7 +1369,9 @@ createOrder.addEventListener(
 
             createOrder.disabled = true;
 
-
+                            console.log(
+                                [...formData.entries()]
+                            );
             const response =
                 await fetch(
                     "/POS/CreateOrder",

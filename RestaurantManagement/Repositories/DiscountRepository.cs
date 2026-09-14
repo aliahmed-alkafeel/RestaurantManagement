@@ -7,7 +7,7 @@ namespace RestaurantManagement.Repositories
 {
     public class DiscountRepository : Repository<Discount>, IDiscountRepository
     {
-        public DiscountRepository(AppDbContext context) : base(context)
+        public DiscountRepository(AppDbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
 

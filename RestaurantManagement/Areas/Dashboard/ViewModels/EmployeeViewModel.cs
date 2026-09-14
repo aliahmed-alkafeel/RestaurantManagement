@@ -1,32 +1,33 @@
 ﻿using RestaurantManagement.Models;
 using System.ComponentModel.DataAnnotations;
+using RestaurantManagement.ViewModels;
 
 namespace RestaurantManagement.Areas.Dashboard.ViewModels
 {
-    public class EmployeeViewModel
+    public class EmployeeViewModel : BaseDto
     {
-        [Required]
+        //[Required]
         public Guid Id { get; set; }
         public string FirstName { get; set; } = null!;
-        [Required]
-        [MaxLength(50)]
+        //[Required]
+        //[MaxLength(50)]
         public string LastName { get; set; } = null!;
-        [Required]
-        [MaxLength(20)]
+        //[Required]
+        //[MaxLength(20)]
         public string PhoneNumber { get; set; } = null!;
-        [Required]
-        [DataType(DataType.DateTime)]
+        //[Required]
+        //[DataType(DataType.DateTime)]
         public DateTime EmployeeStartingDate { get; set; }
-        [DataType(DataType.DateTime)]
+        //[DataType(DataType.DateTime)]
         public DateTime? EmployeeEndingDate { get; set; }
-        [Required]
-        [MaxLength(100)]
-        [EmailAddress]
+        //[Required]
+        //[MaxLength(100)]
+        //[EmailAddress]
         public string Email { get; set; } = null!;
-        [Required]
-        [MaxLength(50)]
+        //[Required]
+        //[MaxLength(50)]
         public string Username { get; set; } = null!;
-        [Required]
+        //[Required]
         public string Group { get; set; } = null!;
 
     }

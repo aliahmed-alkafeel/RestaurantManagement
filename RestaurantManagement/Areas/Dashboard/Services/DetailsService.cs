@@ -10,7 +10,7 @@ namespace RestaurantManagement.Areas.Details.Services
     {
         public async Task<DetailsViewModel> GetDetailsAsync()
         {
-            var today = DateTime.Today;
+            var today = DateTime.UtcNow.Date;
             var tomorrow = today.AddDays(1);
             var startDate = today.AddDays(-6);
             var totalSales = await unitOfWork.ItemOrders
@@ -38,7 +38,7 @@ namespace RestaurantManagement.Areas.Details.Services
                 .Where(io =>
                     io.Order.OrderDate >= startDate && io.Order.OrderStatus == Models.OrderStatus.Completed)
                 .GroupBy(io => io.Order.OrderDate.Date)
-                .Select(g => new DailySalesViewModel()
+                .Select(g => new DailySales()
                 {
                     Date = g.Key,
                     Sales = g.Sum(io => io.Price * io.Quantity)
@@ -53,7 +53,7 @@ namespace RestaurantManagement.Areas.Details.Services
         var existing = salesLast7Days
             .FirstOrDefault(x => x.Date == date);
 
-        return new DailySalesViewModel
+        return new DailySales
         {
             Date = date,
             Sales = existing?.Sales ?? 0
@@ -67,7 +67,7 @@ namespace RestaurantManagement.Areas.Details.Services
                     io.ItemId,
                     io.Item.ItemName
                 })
-                .Select(g => new TopSellingItemViewModel
+                .Select(g => new TopSellingItem
                 {
                     ItemId = g.Key.ItemId,
 
@@ -89,7 +89,7 @@ namespace RestaurantManagement.Areas.Details.Services
                     io.Item.CategoryId,
                     io.Item.Category.CategoryName
                 })
-                .Select(g => new CategorySalesViewModel
+                .Select(g => new CategorySales
                 {
                     CategoryId = g.Key.CategoryId,
                     CategoryName = g.Key.CategoryName,
@@ -109,7 +109,7 @@ namespace RestaurantManagement.Areas.Details.Services
                     io.ItemId,
                     io.Item.ItemName
                 })
-                .Select(g => new TopSellingItemViewModel
+                .Select(g => new TopSellingItem
                 {
                     ItemId = g.Key.ItemId,
                     ItemName = g.Key.ItemName,

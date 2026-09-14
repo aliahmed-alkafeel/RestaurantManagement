@@ -69,7 +69,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         {
             var category = await unitOfWork.Categories.GetByIdAsync(id);
             if (category is null) throw new InvalidOperationException("There is no such category");
-            unitOfWork.Categories.Delete(category, ModifierId);
+            unitOfWork.Categories.Delete(category);
             await unitOfWork.SaveChangesAsync();
             return true;
         }
@@ -90,7 +90,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             if (category is null) return false;
             category.CategoryName = model.CategoryName;
             category.Type = model.Type;
-            unitOfWork.Categories.Update(category, ModifierId);
+            unitOfWork.Categories.Update(category);
             await unitOfWork.SaveChangesAsync();
             return true;
         }

@@ -1,9 +1,10 @@
 ﻿using RestaurantManagement.Models;
 using System.ComponentModel.DataAnnotations;
+using RestaurantManagement.ViewModels;
 
 namespace RestaurantManagement.Areas.Dashboard.ViewModels
 {
-    public class CategoryViewModel
+    public class CategoryViewModel : BaseCommand
     {
         public Guid Id { get; set; }
         [Required]

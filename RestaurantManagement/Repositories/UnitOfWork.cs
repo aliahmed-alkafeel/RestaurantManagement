@@ -48,7 +48,7 @@ namespace RestaurantManagement.Repositories
             }
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            return await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

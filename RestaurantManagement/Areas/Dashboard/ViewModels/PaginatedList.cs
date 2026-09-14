@@ -1,6 +1,8 @@
-﻿namespace RestaurantManagement.Areas.Dashboard.ViewModels
+﻿using RestaurantManagement.ViewModels;
+
+namespace RestaurantManagement.Areas.Dashboard.ViewModels
 {
-    public class PaginatedList<T>
+    public class PaginatedList<T> : BaseDto
     {
         public List<T> Items { get; set; } = [];
         public int CurrentPage { get; set; }

@@ -48,7 +48,10 @@
                 @order.OrderStatus.ToString()        
                 </td>
                 <td>
-                @order.OrderDate        
+                    <span class="order-date"
+                          data-utc="@DateTime.SpecifyKind(order.OrderDate, DateTimeKind.Utc).ToString("O")">
+                    </span>
+                    
                 </td>
                 <td>
                     <a class="action edit-action" asp-area="Dashboard" asp-controller="Orders" asp-action="EditOrder" asp-route-id="@order.Id">Edit</a>
@@ -86,5 +89,9 @@
     searchInput.addEventListener("input", function() {
         list.search(this.value)
     });
+    document.querySelectorAll('.order-date').forEach(element => {
+        const utcDate = new Date(element.dataset.utc);
 
+        element.textContent = utcDate.toLocaleString();
+    });
 </script>

@@ -2,6 +2,7 @@
 .pos-orders {
     padding: 28px;
     background: #f3f6f5;
+    margin-top:70px
 }
 
 /* =========================
@@ -284,3 +285,60 @@
 }
 
 
+.order-row {
+    transition: background-color 0.25s ease, opacity 0.25s ease;
+}
+
+    /* Confirmed - Blue */
+    .order-row.status-confirmed td {
+        background-color: #dbeafe;
+    }
+
+    /* Preparing - Orange */
+    .order-row.status-preparing td {
+        background-color: #ffedd5;
+    }
+
+    /* Pending - Yellow */
+    .order-row.status-pending td {
+        background-color: #fef3c7;
+    }
+
+    /* Ready - Green */
+    .order-row.status-ready td {
+        background-color: #d1fae5;
+    }
+
+    /* Cancelled - Red */
+    .order-row.status-cancelled td {
+        background-color: #fee2e2;
+    }
+
+
+
+.order-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.order-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 5px;
+    border: 1px solid #635bff;
+    border-radius: 8px;
+    background: rgba(99, 91, 255, 0.06);
+    white-space: nowrap;
+}
+
+.item-name {
+    font-weight: 600;
+}
+
+.item-quantity {
+    color: #635bff;
+    font-weight: 700;
+}

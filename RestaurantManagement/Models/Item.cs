@@ -11,6 +11,7 @@ namespace RestaurantManagement.Models
         [MaxLength(50)]
         public string ItemName { get; set; } = null!;
         public decimal Price { get; set; }
+        [StringLength(maximumLength:10000)]
         public string ImageUrl { get; set; } = "~/wwwroot/images/Items/default.jpg";
         public bool IsAvailable { get; set; }
         public bool IsActive { get; set; } = true;

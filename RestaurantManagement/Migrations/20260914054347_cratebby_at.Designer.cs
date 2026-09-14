@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RestaurantManagement.Data;
 
@@ -11,9 +12,11 @@ using RestaurantManagement.Data;
 namespace RestaurantManagement.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260914054347_cratebby_at")]
+    partial class cratebby_at
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,12 +36,6 @@ namespace RestaurantManagement.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatedUserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -46,6 +43,9 @@ namespace RestaurantManagement.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUpdated")
                         .HasColumnType("bit");
 
                     b.Property<int>("Type")
@@ -72,12 +72,6 @@ namespace RestaurantManagement.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatedUserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -97,6 +91,9 @@ namespace RestaurantManagement.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsUpdated")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -112,12 +109,6 @@ namespace RestaurantManagement.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatedUserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("DeletedAt")
@@ -146,6 +137,9 @@ namespace RestaurantManagement.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUpdated")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastName")
@@ -195,12 +189,6 @@ namespace RestaurantManagement.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatedUserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -213,6 +201,9 @@ namespace RestaurantManagement.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUpdated")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -236,12 +227,6 @@ namespace RestaurantManagement.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatedUserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -252,6 +237,9 @@ namespace RestaurantManagement.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUpdated")
                         .HasColumnType("bit");
 
                     b.Property<Guid>("RoleId")
@@ -283,12 +271,6 @@ namespace RestaurantManagement.Migrations
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatedUserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -310,6 +292,9 @@ namespace RestaurantManagement.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUpdated")
                         .HasColumnType("bit");
 
                     b.Property<string>("ItemName")
@@ -345,12 +330,6 @@ namespace RestaurantManagement.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatedUserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -358,6 +337,9 @@ namespace RestaurantManagement.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUpdated")
                         .HasColumnType("bit");
 
                     b.Property<Guid>("ItemId")
@@ -402,12 +384,6 @@ namespace RestaurantManagement.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatedUserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -415,6 +391,9 @@ namespace RestaurantManagement.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUpdated")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("OrderDate")
@@ -447,12 +426,6 @@ namespace RestaurantManagement.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatedUserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
@@ -460,6 +433,9 @@ namespace RestaurantManagement.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUpdated")
                         .HasColumnType("bit");
 
                     b.Property<int>("RoleName")

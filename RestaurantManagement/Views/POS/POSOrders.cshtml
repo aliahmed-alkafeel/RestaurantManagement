@@ -11,7 +11,7 @@
 <div class="pos-orders">
 
     <!-- Header -->
-    <div class="pos-header">
+    @* <div class="pos-header" style="z-index:55">
         <div class="search-box">
             <svg viewBox="0 0 24 24" fill="none"
                  stroke="currentColor"
@@ -25,7 +25,7 @@
                    id="search"
                    placeholder="Search table number..." />
         </div>
-    </div>
+    </div> *@
 
     <!-- Orders -->
     <div class="orders-card">
@@ -39,6 +39,7 @@
                         <th>Table</th>
                         <th>Total</th>
                         <th>Status</th>
+                        <th>Items</th>
                         <th>Order Date</th>
                     </tr>
                 </thead>
@@ -47,7 +48,9 @@
 
                     @foreach (var order in Model)
                     {
-                        <tr data-table="@order.TableId">
+                        <tr data-table="@order.TableId"
+                            data-order-id="@order.Id"
+                            class="order-row status-@order.OrderStatus.ToString().ToLower()">
 
                             <td>
                                 <div class="table-info">
@@ -83,18 +86,91 @@
 
                                     @foreach (var status in Enum.GetValues<OrderStatus>())
                                     {
-                                        if (status == order.OrderStatus)
-                                        {
-                                            <option value="@status" selected>
-                                                @status
-                                            </option>
-                                        }
-                                        else
-                                        {
-                                 <option value="@((int)status)">
-    @status
-</option>
-                                        }
+                                        <option value="@((int)status)"
+                                                selected="@(status == order.OrderStatus)">
+                                            @status
+                                        </option>
+                                    }
+
+                                </select>
+                            </td>
+
+                            <!-- Items -->
+                            <td>
+                                <div class="order-items">
+
+                                    @foreach (var item in order.ItemOrders)
+                                    {
+                                        <span class="order-item">
+                                            <span class="item-name">
+                                                @item.ItemName
+                                            </span>
+
+                                            <span class="item-quantity">
+                                                × @item.Quantity
+                                            </span>
+                                        </span>
+                                    }
+
+                                </div>
+                            </td>
+
+                            <!-- Order Date -->
+                            <td>
+                                <span class="order-date">
+                                    @order.OrderDate.ToString("dd/MM/yyyy HH:mm")
+                                </span>
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+                <tbody>
+
+                    @foreach (var order in Model)
+                    {
+                        <tr data-table="@order.TableId"
+                            data-order-id="@order.Id"
+                            class="order-row status-@order.OrderStatus.ToString().ToLower()">
+                            <td>
+                                <div class="table-info">
+                                    <span class="table-icon">
+                                        <svg viewBox="0 0 24 24"
+                                             fill="none"
+                                             stroke="currentColor"
+                                             stroke-width="1.8"
+                                             stroke-linecap="round"
+                                             stroke-linejoin="round">
+                                            <rect x="3" y="8" width="18" height="3" rx="1" />
+                                            <path d="M6 11v7" />
+                                            <path d="M18 11v7" />
+                                        </svg>
+                                    </span>
+
+                                    <div>
+                                        <span class="table-label">Table</span>
+                                        <strong>@order.TableId</strong>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="total-price">
+                                    @order.TotalPrice.ToString("F2")
+                                </span>
+                            </td>
+
+                            <td>
+                                <select class="status-select"
+                                        data-order-id="@order.Id">
+
+                                    @foreach (var status in Enum.GetValues<OrderStatus>())
+                                    {
+                                        <option value="@((int)status)"
+                                                selected="@(status == order.OrderStatus)">
+                                            @status
+                                        </option>
                                     }
 
                                 </select>
@@ -146,46 +222,21 @@
 
     <script>
 
-        // ==========================
-        // Search
-        // ==========================
-
-        const searchInput = document.getElementById("search");
-        const rows = document.querySelectorAll("#ordersTable tbody tr");
-
-        searchInput.addEventListener("input", function() {
-
-            const searchValue = this.value.toLowerCase().trim();
-
-            rows.forEach(row => {
-
-                const tableNumber = row.dataset.table.toLowerCase();
-
-                row.style.display =
-                    tableNumber.includes(searchValue)
-                        ? ""
-                        : "none";
-
-            });
-
-        });
-
-
-        // ==========================
-        // Change Order Status
-        // ==========================
-
         document.querySelectorAll(".status-select").forEach(select => {
+
+            // Save initial status
+            select.dataset.previousStatus = select.value;
 
             select.addEventListener("change", async function() {
 
                 const orderId = this.dataset.orderId;
-                const newStatus = this.value;
+                const newStatus = parseInt(this.value); const previousStatus = this.dataset.previousStatus;
 
-                const previousStatus = this.dataset.previousStatus ?? "";
+                const row = this.closest(".order-row");
 
-                // Prevent multiple requests
                 this.disabled = true;
+
+                // ...
 
                 try {
 
@@ -204,26 +255,49 @@
 
                             body: JSON.stringify({
                                 orderId: orderId,
-                            
                                 status: newStatus
                             })
                         }
                     );
 
-                    // if (!response.ok) {
-                    //     throw new Error("Failed to update order status.");
-                    // }
+                    const result = await response.json();
 
-           const result = await response.json();
+                    console.log("Server response:", result);
 
-console.log("Server response:", result);
+                    if (!response.ok) {
+                        throw new Error(
+                            result.message ?? "Failed to update order status."
+                        );
+                    }
 
+                    // Completed => remove row
+                    if (newStatus === 5 || newStatus === 4) {
 
-if (!response.ok) {
-    throw new Error(result.message ?? "Failed to update order status.");
-}
+                        row.style.opacity = "0";
 
-                    // Save the new status
+                        setTimeout(() => {
+                            row.remove();
+                        }, 250);
+
+                        return;
+                    }
+
+                    row.classList.remove(
+                        "status-confirmed",
+                        "status-preparing",
+                        "status-pending",
+                        "status-ready",
+                    );
+
+                    const statusClasses = {
+                        0: "status-confirmed",
+                        1: "status-preparing",
+                        2: "status-pending",
+                        3: "status-ready",
+                    };
+
+row.classList.add(statusClasses[newStatus]);
+                    // Save new status
                     this.dataset.previousStatus = newStatus;
 
                     // Visual feedback
@@ -238,12 +312,11 @@ if (!response.ok) {
 
                     console.error(error);
 
-                    // Return to previous value
                     if (previousStatus !== "") {
                         this.value = previousStatus;
                     }
 
-                    alert("Could not update order status.");
+                    alert(error.message || "Could not update order status.");
 
                 }
                 finally {
@@ -255,8 +328,8 @@ if (!response.ok) {
             });
 
         });
-
     </script>
 
 }
 
+                    

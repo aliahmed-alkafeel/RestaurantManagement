@@ -9,8 +9,8 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
 {
     [Area("Dashboard")]
     [Route("[area]/[controller]")]
-        public class DiscountsController(IDiscountService discountsService) : Controller
-        {
+        public class DiscountsController(IDiscountService discountsService) : BaseController
+    {
             [Authorize(Roles = nameof(UserRole.AccessDiscounts))]
             [HttpGet("")]
             public async Task<IActionResult> Discounts()

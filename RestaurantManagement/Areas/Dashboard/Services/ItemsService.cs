@@ -47,7 +47,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             var item = await unitOfWork.Items.GetByIdAsync(modelId);
             if (item is null) throw new InvalidOperationException("There is no such Item");
             DeleteImage(item); 
-            unitOfWork.Items.Delete(item, ModifierId);
+            unitOfWork.Items.Delete(item);
             await unitOfWork.SaveChangesAsync();
             return true;
         }
@@ -129,7 +129,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             if (!allowedExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase)) return false;
             if (!model.ItemImage.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase)) return false;
             var directory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "items");
-            string fileName = model.ItemName+"_"+ Guid.NewGuid() + extension;            
+            string fileName = Guid.NewGuid() + extension;            
             string filePath = Path.Combine(directory, fileName);
             await using var stream = new FileStream(filePath, FileMode.Create);
             await model.ItemImage.CopyToAsync(stream);
@@ -160,7 +160,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             item.IsActive = model.IsActive;
             item.IsAvailable = model.IsAvailable;
             item.ImageUrl = model.ImageUrl;
-            unitOfWork.Items.Update(item, ModifierId);
+            unitOfWork.Items.Update(item);
             await unitOfWork.SaveChangesAsync();
             return true;
         }

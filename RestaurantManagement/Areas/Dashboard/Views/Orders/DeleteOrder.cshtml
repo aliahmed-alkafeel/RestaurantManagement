@@ -99,7 +99,8 @@
                                         Order Date
                                     </label>
 
-                                    <input disabled asp-for="OrderDate"
+                                    <input disabled name="OrderDate"
+                                           value="@DateTime.SpecifyKind(Model.OrderDate, DateTimeKind.Utc).ToLocalTime().ToString("yyyy-MM-ddTHH:mm")"
                                            type="datetime-local"
                                            class="form-control" />
 

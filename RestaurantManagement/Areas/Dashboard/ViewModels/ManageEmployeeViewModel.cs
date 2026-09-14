@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using RestaurantManagement.Models;
 using System.ComponentModel.DataAnnotations;
+using RestaurantManagement.ViewModels;
 
 namespace RestaurantManagement.Areas.Dashboard.ViewModels
 {
-    public class ManageEmployeeViewModel
+    public class ManageEmployeeViewModel : BaseCommand
     {
         [Required]
         public Guid Id { get; set; }

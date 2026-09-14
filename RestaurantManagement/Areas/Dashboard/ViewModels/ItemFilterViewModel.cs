@@ -1,9 +1,10 @@
 ﻿using RestaurantManagement.Models;
 using System.ComponentModel.DataAnnotations;
+using RestaurantManagement.ViewModels;
 
 namespace RestaurantManagement.Areas.Dashboard.ViewModels
 {
-    public class ItemFilterViewModel
+    public class ItemFilterViewModel : BaseQuery
     {
         public string? Search { get; set; }
         public CategoryType? Type { get; set; }

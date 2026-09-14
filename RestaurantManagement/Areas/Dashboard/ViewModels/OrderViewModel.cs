@@ -1,9 +1,10 @@
 ﻿using RestaurantManagement.Models;
 using System.ComponentModel.DataAnnotations;
+using RestaurantManagement.ViewModels;
 
 namespace RestaurantManagement.Areas.Dashboard.ViewModels
 {
-    public class OrderViewModel
+    public class OrderViewModel : BaseCommand
     {
         public Guid Id { get; set; }
         [Required(ErrorMessage ="You must choice a table.")]

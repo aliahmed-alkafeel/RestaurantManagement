@@ -7,7 +7,7 @@ namespace RestaurantManagement.Repositories
 {
     public class RoleRepository : Repository<Role>,IRoleRepository
     {
-        public RoleRepository(AppDbContext context) : base(context)
+        public RoleRepository(AppDbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
         public async Task<List<Role>> GetRolesByNamesAsync(List<UserRole> rolesNames)

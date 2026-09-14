@@ -308,15 +308,18 @@
                     </td>
 
                     <td>
+                                    @if (User.IsInRole(UserRole.ManageItems.ToString()))
+                        {
+                            <a class="action edit-action"
+                               asp-area="Dashboard"
+                               asp-controller="Items"
+                               asp-action="EditItem"
+                               asp-route-id="@item.Id">
+                                Edit
+                            </a>
 
-                        <a class="action edit-action"
-                           asp-area="Dashboard"
-                           asp-controller="Items"
-                           asp-action="EditItem"
-                           asp-route-id="@item.Id">
-                            Edit
-                        </a>
-
+                        }
+                     
                         <a class="action delete-action"
                            asp-area="Dashboard"
                            asp-controller="Items"

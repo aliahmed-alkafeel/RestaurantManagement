@@ -6,7 +6,7 @@ namespace RestaurantManagement.Repositories
 {
     public class GroupRoleRepository : Repository<GroupRole>, IGroupRoleRepository
     {
-        public GroupRoleRepository(AppDbContext context) : base(context)
+        public GroupRoleRepository(AppDbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
         public async Task DeleteByGroupIdAsync(Guid id)

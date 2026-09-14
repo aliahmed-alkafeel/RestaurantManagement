@@ -7,7 +7,7 @@ namespace RestaurantManagement.Repositories
 {
     public class ItemRepository : Repository<Item>, IItemRepository
     {
-        public ItemRepository(AppDbContext context) : base(context)
+        public ItemRepository(AppDbContext context,IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
 

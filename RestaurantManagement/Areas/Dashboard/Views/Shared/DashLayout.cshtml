@@ -18,6 +18,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"></link>
 </head>
 <body>
 
@@ -155,6 +156,13 @@
 
 
                 @RenderBody()
+
+            <div class="position-fixed bottom-0 start-0 m-4" style="z-index: 1050;">
+                <a href="@Url.Action("NewOrder", "POS")" class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center shadow-lg"
+                   style="width: 50px; height: 50px;">
+                    <i class="fas fa-home fa-lg"></i>
+                </a>
+            </div>
 
     </div>
     </div>

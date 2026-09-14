@@ -8,7 +8,7 @@ namespace RestaurantManagement.Repositories
 {
     public class OrderRepository : Repository<Order>, IOrderRepository
     {
-        public OrderRepository(AppDbContext context) : base(context)
+        public OrderRepository(AppDbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
         public async Task<List<Order>> GetAllOrdersWithItemsAsync()

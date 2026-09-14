@@ -144,7 +144,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         if(model.Password is not null && model.Password == model.ConfirmPassword)
         employee.PasswordHash = _passwordHasher.HashPassword(employee, model.Password);
-        _unitOfWork.Employees.Update(employee,modifierId);
+        _unitOfWork.Employees.Update(employee);
         await _unitOfWork.SaveChangesAsync();
         return true;
         }

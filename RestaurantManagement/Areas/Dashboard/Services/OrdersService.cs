@@ -15,10 +15,10 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         {
             var order = await unitOfWork.Orders.GetOrderWithItemsByIdAsync(modelId);
             if (order is null) throw new InvalidOperationException("There is no such order");
-            unitOfWork.Orders.Delete(order, ModifierId);
+            unitOfWork.Orders.Delete(order);
             foreach(ItemOrder itemOrder in order.ItemOrders)
             {
-            unitOfWork.ItemOrders.Delete(itemOrder, ModifierId);
+            unitOfWork.ItemOrders.Delete(itemOrder);
             }
             await unitOfWork.SaveChangesAsync();
             return true;
@@ -113,7 +113,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             if (order is null) return false;
             order.OrderStatus = model.OrderStatus;
             order.TableId = model.TableId;
-            order.OrderDate = model.OrderDate;
+            order.OrderDate = model.OrderDate.AddHours(-3);
             var existingItemOrders = order.ItemOrders.ToList();
             var ItemIds = model.ItemOrders.Select(x => x.ItemId).ToList();
             decimal newItemsTotal = 0;
@@ -122,7 +122,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             
             foreach(var oldItemOrder in toRemove)
             {
-                unitOfWork.ItemOrders.Delete(oldItemOrder,ModifierId);
+                unitOfWork.ItemOrders.Delete(oldItemOrder);
             }
             
             foreach(var newItem in model.ItemOrders)
@@ -143,7 +143,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                     existing.Price = finalPrice;
                     existing.DeletedAt = null;
                     existing.DeletedById = null;
-                    unitOfWork.ItemOrders.Update(existing, ModifierId);
+                    unitOfWork.ItemOrders.Update(existing);
                 }
                 else
                 {
@@ -159,28 +159,43 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 newItemsTotal += finalPrice * newItem.Quantity;
             }
             order.TotalPrice = newItemsTotal;
-            unitOfWork.Orders.Update(order, ModifierId);
+            unitOfWork.Orders.Update(order);
             await unitOfWork.SaveChangesAsync();
             return true;
         }
 
         public async Task<List<OrderViewModel>> GetPOSOrders()
         {
-            var orders = await unitOfWork.Orders.NoTrackingSelect().Where(o => o.OrderDate > DateTime.UtcNow.AddHours(-24)).OrderByDescending(o => o.OrderDate).ToListAsync();
-            List<OrderViewModel> ordersVm = [];
-            foreach (Order order in orders)
-            {
-                    ordersVm.Add(new OrderViewModel
-                    {
-                        Id = order.Id,
-                        TableId = order.TableId,
-                        OrderDate = order.OrderDate,
-                        OrderStatus = order.OrderStatus,
-                        TotalPrice = order.TotalPrice
-                    });
-                
-            }
-            return ordersVm;
+            var fromDate = DateTime.UtcNow.AddHours(-24);
+
+            return await unitOfWork.Orders.NoTrackingSelect()
+                .Where(o =>
+                    o.OrderDate > fromDate &&
+                    o.OrderStatus != OrderStatus.Cancelled &&
+                    o.OrderStatus != OrderStatus.Completed)
+                .OrderByDescending(o => o.OrderDate)
+                .Select(o => new OrderViewModel
+                {
+                    Id = o.Id,
+                    TableId = o.TableId,
+                    OrderDate = o.OrderDate,
+                    OrderStatus = o.OrderStatus,
+                    TotalPrice = o.TotalPrice,
+                    ItemOrders = o.ItemOrders
+                        .Select(io => new ItemOrderViewModel
+                        {
+                            ItemId = io.ItemId,
+                            DiscountPercentage = io.Item.Discount != null
+                                ? io.Item.Discount.DiscountPercentage
+                                : null,
+                            ItemName = io.Item.ItemName,
+                            OrderId = io.OrderId,
+                            Price = io.Price,
+                            Quantity = io.Quantity
+                        })
+                        .ToList()
+                })
+                .ToListAsync();
         }
 
         public async Task<bool> UpdateOrderAsync(OrderStatusViewModel model, Guid ModifierId)
@@ -188,9 +203,9 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             if (model is null) throw new ArgumentNullException();
             var order = await unitOfWork.Orders.Select().Where(o => o.Id == model.OrderId).FirstOrDefaultAsync();
             if (order is null) return false;
-            order.OrderStatus = (OrderStatus) model.Status;
-            unitOfWork.Orders.Update(order, ModifierId);
-            await unitOfWork.SaveChangesAsync();
+            order.OrderStatus = model.Status;
+            unitOfWork.Orders.Update(order);
+            await unitOfWork.SaveChangesAsync(model.CancellationToken);
             return true;
 
         }

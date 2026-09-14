@@ -1,17 +1,19 @@
-﻿namespace RestaurantManagement.Areas.Dashboard.ViewModels
+﻿using RestaurantManagement.ViewModels;
+
+namespace RestaurantManagement.Areas.Dashboard.ViewModels
 {
-    public class DetailsViewModel
+    public class DetailsViewModel : BaseQuery
     {            
         public decimal TotalSales { get; set; }
         public int TotalOrders { get; set; }
         public decimal TodaySales { get; set; }
         public int TodayOrders { get; set; }
-        public List<DailySalesViewModel> SalesLast7Days { get; set; } = [];
-        public List<TopSellingItemViewModel> TopSellingItems { get; set; } = [];
-        public List<CategorySalesViewModel> SalesByCategory { get; set; } = [];
-        public List<TopSellingItemViewModel> MostPopularToday { get; set; } = [];
+        public List<DailySales> SalesLast7Days { get; set; } = [];
+        public List<TopSellingItem> TopSellingItems { get; set; } = [];
+        public List<CategorySales> SalesByCategory { get; set; } = [];
+        public List<TopSellingItem> MostPopularToday { get; set; } = [];
     }
-    public class DailySalesViewModel
+    public class DailySales
     {
         public DateTime Date { get; set; }
 
@@ -19,7 +21,7 @@
     }
 
 
-    public class TopSellingItemViewModel
+    public class TopSellingItem
     {
         public Guid ItemId { get; set; }
 
@@ -31,7 +33,7 @@
     }
 
 
-    public class CategorySalesViewModel
+    public class CategorySales
     {
         public Guid CategoryId { get; set; }
 

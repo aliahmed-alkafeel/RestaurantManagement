@@ -14,6 +14,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         public async Task<bool> CreateDiscountAsync(DiscountViewModel model)
         {
             if (model is null) throw new ArgumentNullException();
+            //if (model.DiscountStartingDate < model.DiscountEndingDate) return false;
             Discount discount = new Discount
             {
                 Id = Guid.NewGuid(),
@@ -71,7 +72,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         {
             var discount = await unitOfWork.Discounts.GetByIdAsync(modelId);
             if (discount is null) throw new InvalidOperationException("There is no such discount");
-            unitOfWork.Discounts.Delete(discount, ModifierId);
+            unitOfWork.Discounts.Delete(discount);
             await unitOfWork.SaveChangesAsync();
             return true;
         }
@@ -90,7 +91,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             foreach (var oldItem in toRemove)
             {
                 oldItem.Discount = null;
-                unitOfWork.Items.Update(oldItem, ModifierId);
+                unitOfWork.Items.Update(oldItem);
             }
             
             foreach (var itemId in model.ItemIds)
@@ -99,7 +100,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 if (item is null) continue;
                 discount.Items.Add(item);
             }
-            unitOfWork.Discounts.Update(discount, ModifierId);
+            unitOfWork.Discounts.Update(discount);
             await unitOfWork.SaveChangesAsync();
             return true;
         }

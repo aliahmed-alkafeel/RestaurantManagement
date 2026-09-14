@@ -2,7 +2,7 @@
 
 namespace RestaurantManagement.ViewModels
 {
-    public class CreateItemOrderViewModel
+    public class CreateItemOrderViewModel 
     {
         [Required]
         public Guid ItemId { get; set; }
