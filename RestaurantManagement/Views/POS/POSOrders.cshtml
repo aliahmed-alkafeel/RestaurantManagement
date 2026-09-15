@@ -126,66 +126,7 @@
                     }
 
                 </tbody>
-                <tbody>
 
-                    @foreach (var order in Model)
-                    {
-                        <tr data-table="@order.TableId"
-                            data-order-id="@order.Id"
-                            class="order-row status-@order.OrderStatus.ToString().ToLower()">
-                            <td>
-                                <div class="table-info">
-                                    <span class="table-icon">
-                                        <svg viewBox="0 0 24 24"
-                                             fill="none"
-                                             stroke="currentColor"
-                                             stroke-width="1.8"
-                                             stroke-linecap="round"
-                                             stroke-linejoin="round">
-                                            <rect x="3" y="8" width="18" height="3" rx="1" />
-                                            <path d="M6 11v7" />
-                                            <path d="M18 11v7" />
-                                        </svg>
-                                    </span>
-
-                                    <div>
-                                        <span class="table-label">Table</span>
-                                        <strong>@order.TableId</strong>
-                                    </div>
-                                </div>
-                            </td>
-
-                            <td>
-                                <span class="total-price">
-                                    @order.TotalPrice.ToString("F2")
-                                </span>
-                            </td>
-
-                            <td>
-                                <select class="status-select"
-                                        data-order-id="@order.Id">
-
-                                    @foreach (var status in Enum.GetValues<OrderStatus>())
-                                    {
-                                        <option value="@((int)status)"
-                                                selected="@(status == order.OrderStatus)">
-                                            @status
-                                        </option>
-                                    }
-
-                                </select>
-                            </td>
-
-                            <td>
-                                <span class="order-date">
-                                    @order.OrderDate.ToString("dd/MM/yyyy HH:mm")
-                                </span>
-                            </td>
-
-                        </tr>
-                    }
-
-                </tbody>
 
             </table>
 

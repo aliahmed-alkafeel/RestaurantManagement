@@ -1,13 +1,17 @@
-﻿
+﻿/* =========================================================
+   POS ORDERS
+========================================================= */
+
 .pos-orders {
     padding: 28px;
     background: #f3f6f5;
-    margin-top:70px
+    margin-top: 70px;
 }
 
-/* =========================
+
+/* =========================================================
    Header
-========================= */
+========================================================= */
 
 .pos-header {
     display: flex;
@@ -30,22 +34,22 @@
     }
 
 
-/* =========================
+/* =========================================================
    Search
-========================= */
+========================================================= */
 
 .search-box {
     width: 280px;
     height: 44px;
     display: flex;
     align-items: center;
-    margin-left:12px;
+    margin-left: 12px;
     gap: 10px;
     padding: 0 14px;
-    background: white;
+    background: #fff;
     border: 1px solid #e5e5e5;
     border-radius: 10px;
-    transition: .2s;
+    transition: 0.2s;
 }
 
     .search-box:focus-within {
@@ -67,9 +71,9 @@
     }
 
 
-/* =========================
+/* =========================================================
    Card
-========================= */
+========================================================= */
 
 .orders-card {
     background: #fff;
@@ -83,13 +87,14 @@
 }
 
 
-/* =========================
+/* =========================================================
    Table
-========================= */
+========================================================= */
 
 .orders-table {
     width: 100%;
     border-collapse: collapse;
+    border-spacing: 0;
 }
 
     .orders-table thead {
@@ -97,23 +102,27 @@
     }
 
     .orders-table th {
-        padding: 16px 20px;
+        padding: 13px 20px;
         text-align: left;
         font-size: 12px;
         font-weight: 600;
-        color: white;
+        color: #fff;
         text-transform: uppercase;
-        letter-spacing: .03em;
+        letter-spacing: 0.03em;
         border-bottom: 1px solid #eee;
     }
 
     .orders-table td {
-        padding: 17px 20px;
+        box-sizing: border-box;
+        padding: 17px 24px;
         border-bottom: 1px solid #f0f0f0;
+        vertical-align: middle;
+        line-height: 1.2;
     }
 
     .orders-table tbody tr {
-        transition: background .15s;
+        height: auto;
+        transition: background-color 0.15s ease, opacity 0.25s ease;
     }
 
         .orders-table tbody tr:hover {
@@ -125,73 +134,114 @@
         }
 
 
-/* =========================
-   Table info
-========================= */
+/* =========================================================
+   Order Row
+========================================================= */
+
+.order-row {
+    height: auto;
+    transition: background-color 0.25s ease, opacity 0.25s ease;
+}
+
+
+    /* =========================================================
+   Status Row Colors
+========================================================= */
+
+    .order-row.status-confirmed td {
+        background-color: #dbeafe;
+    }
+
+    .order-row.status-preparing td {
+        background-color: #ffedd5;
+    }
+
+    .order-row.status-pending td {
+        background-color: #fef3c7;
+    }
+
+    .order-row.status-ready td {
+        background-color: #d1fae5;
+    }
+
+    .order-row.status-cancelled td {
+        background-color: #fee2e2;
+    }
+
+
+/* =========================================================
+   Table Info
+========================================================= */
 
 .table-info {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
 }
 
 .table-icon {
-    width: 38px;
-    height: 38px;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     background: #f5f5f5;
-    border-radius: 9px;
+    border-radius: 8px;
 }
 
     .table-icon svg {
-        width: 20px;
-        height: 20px;
+        width: 18px;
+        height: 18px;
     }
 
 .table-info div:last-child {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 1px;
 }
 
 .table-label {
-    font-size: 11px;
+    font-size: 10px;
     color: #999;
+    line-height: 1;
 }
 
 .table-info strong {
-    font-size: 15px;
+    font-size: 14px;
+    line-height: 1.1;
 }
 
 
-/* =========================
+/* =========================================================
    Price
-========================= */
+========================================================= */
 
 .total-price {
+    display: inline-block;
+    font-size: 14px;
     font-weight: 700;
-    font-size: 15px;
+    line-height: 1.1;
 }
 
 
-/* =========================
+/* =========================================================
    Status
-========================= */
+========================================================= */
 
 .status-select {
-    min-width: 135px;
-    height: 36px;
-    padding: 0 32px 0 11px;
+    min-width: 125px;
+    height: 32px;
+    padding: 0 30px 0 10px;
     border: 1px solid #ddd;
-    border-radius: 8px;
+    border-radius: 7px;
     background-color: #fff;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
+    line-height: 1;
     outline: none;
     cursor: pointer;
-    transition: .2s;
+    transition: 0.2s;
 }
 
     .status-select:hover {
@@ -203,7 +253,7 @@
     }
 
     .status-select:disabled {
-        opacity: .6;
+        opacity: 0.6;
         cursor: wait;
     }
 
@@ -212,19 +262,76 @@
     }
 
 
-/* =========================
-   Date
-========================= */
+/* =========================================================
+   Items
+========================================================= */
 
-.order-date {
-    color: #777;
-    font-size: 13px;
+.order-items {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: 0;
+    padding: 0;
+    max-width: 500px;
+}
+
+.order-item {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    height: 30px;
+    min-height: 25px;
+    max-height: 35px;
+    margin: 0;
+    padding: 15px 7px;
+    gap: 6px;
+    border: 1px solid #635bff;
+    border-radius: 6px;
+    background: rgba(99, 91, 255, 0.06);
+    white-space: nowrap;
+    font-size: 12px;
+    line-height: 1;
+}
+
+.item-name {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.item-quantity {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    color: #635bff;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
 }
 
 
-/* =========================
+/* =========================================================
+   Date
+========================================================= */
+
+.order-date {
+    display: inline-block;
+    color: #777;
+    font-size: 12px;
+    line-height: 1.1;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
    Empty
-========================= */
+========================================================= */
 
 .empty-orders {
     padding: 70px 20px;
@@ -259,9 +366,9 @@
 }
 
 
-/* =========================
+/* =========================================================
    Responsive
-========================= */
+========================================================= */
 
 @media (max-width: 700px) {
 
@@ -276,69 +383,38 @@
 
     .search-box {
         width: 100%;
+        margin-left: 0;
     }
 
     .orders-table th,
     .orders-table td {
-        padding: 13px 14px;
-    }
-}
-
-
-.order-row {
-    transition: background-color 0.25s ease, opacity 0.25s ease;
-}
-
-    /* Confirmed - Blue */
-    .order-row.status-confirmed td {
-        background-color: #dbeafe;
+        padding: 17px 24px;
     }
 
-    /* Preparing - Orange */
-    .order-row.status-preparing td {
-        background-color: #ffedd5;
+    .order-items {
+        max-width: 300px;
     }
 
-    /* Pending - Yellow */
-    .order-row.status-pending td {
-        background-color: #fef3c7;
+    .order-item {
+        height: 25px;
+        min-height: 25px;
+        max-height: 25px;
+        padding: 0 6px;
+        font-size: 11px;
     }
 
-    /* Ready - Green */
-    .order-row.status-ready td {
-        background-color: #d1fae5;
+    .item-name,
+    .item-quantity {
+        font-size: 11px;
     }
 
-    /* Cancelled - Red */
-    .order-row.status-cancelled td {
-        background-color: #fee2e2;
+    .table-icon {
+        width: 30px;
+        height: 30px;
     }
 
-
-
-.order-items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
-}
-
-.order-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 3px 5px;
-    border: 1px solid #635bff;
-    border-radius: 8px;
-    background: rgba(99, 91, 255, 0.06);
-    white-space: nowrap;
-}
-
-.item-name {
-    font-weight: 600;
-}
-
-.item-quantity {
-    color: #635bff;
-    font-weight: 700;
+    .status-select {
+        min-width: 115px;
+        height: 30px;
+    }
 }
