@@ -26,7 +26,8 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         public async Task<List<OrderViewModel>> GetAllOrdersAsync()
         {
-            var orders = await unitOfWork.Orders.GetAllOrdersWithItemsAsync();
+            var orders = await unitOfWork.Orders.NoTrackingSelect().OrderByDescending(o=>o.OrderDate)
+                .Include(o => o.ItemOrders).ThenInclude(io => io.Item).ThenInclude(i => i.Discount).ToListAsync();
             List<OrderViewModel> ordersVm = [];
             foreach (Order order in orders)
             {
@@ -42,9 +43,9 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             return ordersVm;
         }
 
-        public async Task<OrderViewModel> GetOrderByIdAsync(Guid Id)
+        public async Task<OrderViewModel> GetOrderByIdAsync(Guid id)
         {
-            var order = await unitOfWork.Orders.GetOrderWithItemsByIdAsync(Id);
+            var order = await unitOfWork.Orders.GetOrderWithItemsByIdAsync(id);
             if (order is null) throw new KeyNotFoundException("There is no such order");
             OrderViewModel orderVm = new()
             {
@@ -157,47 +158,129 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                     await unitOfWork.ItemOrders.AddAsync(itemOrder);
                 }
                 newItemsTotal += finalPrice * newItem.Quantity;
-            }
+}
             order.TotalPrice = newItemsTotal;
             unitOfWork.Orders.Update(order);
             await unitOfWork.SaveChangesAsync();
             return true;
         }
 
-        public async Task<List<OrderViewModel>> GetPOSOrders()
+
+
+        public async Task<POSOrdersViewModel> GetPOSOrdersAsync(
+            POSOrdersFilterViewModel filter,
+            CancellationToken cancellationToken = default)
         {
+            // -----------------------------
+            // Base query
+            // Last 24 hours only
+            // -----------------------------
+
             var fromDate = DateTime.UtcNow.AddHours(-24);
 
-            return await unitOfWork.Orders.NoTrackingSelect()
+            var query = unitOfWork.Orders
+                .NoTrackingSelect()
                 .Where(o =>
                     o.OrderDate > fromDate &&
                     o.OrderStatus != OrderStatus.Cancelled &&
-                    o.OrderStatus != OrderStatus.Completed)
-                .OrderByDescending(o => o.OrderDate)
+                    o.OrderStatus != OrderStatus.Completed);
+
+            // -----------------------------
+            // Search
+            // TableId OR ItemName
+            // -----------------------------
+
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+            {
+                var search = filter.Search.Trim();
+
+                query = query.Where(o =>
+                    EF.Functions.Like(
+                        o.TableId.ToString(),
+                        $"%{search}%")
+                    ||
+                    o.ItemOrders.Any(io =>
+                        EF.Functions.Like(
+                            io.Item.ItemName,
+                            $"%{search}%"))
+                );
+            }
+
+            // -----------------------------
+            // Status filter
+            // -----------------------------
+
+            if (filter.Status.HasValue)
+            {
+                query = query.Where(o =>
+                    o.OrderStatus == filter.Status.Value);
+            }
+
+            // -----------------------------
+            // Sorting
+            // -----------------------------
+
+            query = filter.Sort switch
+            {
+                "newest" =>
+                    query
+                        .OrderByDescending(o => o.OrderDate)
+                        .ThenByDescending(o => o.Id),
+
+                "price-high" =>
+                    query
+                        .OrderByDescending(o => o.TotalPrice)
+                        .ThenByDescending(o => o.OrderDate),
+
+                "price-low" =>
+                    query
+                        .OrderBy(o => o.TotalPrice)
+                        .ThenByDescending(o => o.OrderDate),
+
+                _ =>
+                    query
+                        .OrderBy(o => o.OrderDate)
+                        .ThenBy(o => o.Id)
+            };
+
+            // -----------------------------
+            // Get ALL orders
+            // -----------------------------
+
+            var orders = await query
                 .Select(o => new OrderViewModel
                 {
                     Id = o.Id,
                     TableId = o.TableId,
                     OrderDate = o.OrderDate,
-                    OrderStatus = o.OrderStatus,
                     TotalPrice = o.TotalPrice,
+                    OrderStatus = o.OrderStatus,
+
                     ItemOrders = o.ItemOrders
                         .Select(io => new ItemOrderViewModel
                         {
                             ItemId = io.ItemId,
-                            DiscountPercentage = io.Item.Discount != null
-                                ? io.Item.Discount.DiscountPercentage
-                                : null,
-                            ItemName = io.Item.ItemName,
                             OrderId = io.OrderId,
+                            ItemName = io.Item.ItemName,
+                            Quantity = io.Quantity,
                             Price = io.Price,
-                            Quantity = io.Quantity
+
+                            DiscountPercentage =
+                                io.Item.Discount != null
+                                    ? io.Item.Discount.DiscountPercentage
+                                    : null
                         })
                         .ToList()
                 })
-                .ToListAsync();
-        }
+                .ToListAsync(cancellationToken);
 
+            return new POSOrdersViewModel
+            {
+                Orders = orders,
+                Filter = filter,
+                TotalCount = orders.Count
+            };
+        }
         public async Task<bool> UpdateOrderAsync(OrderStatusViewModel model, Guid ModifierId)
         {
             if (model is null) throw new ArgumentNullException();

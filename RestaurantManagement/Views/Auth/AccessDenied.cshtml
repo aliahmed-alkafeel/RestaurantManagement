@@ -4,7 +4,7 @@
     var returnUrl = ViewData["ReturnUrl"] as string;
 
     var isDashboard =
-        returnUrl?.StartsWith("/Dashboard", StringComparison.OrdinalIgnoreCase) == true;
+        returnUrl?.StartsWith("/Dashboard", StringComparison.OrdinalIgnoreCase) == true || !User.IsInRole(nameof(UserRole.ManageOrders));
 
     Layout = isDashboard
         ? "/Areas/Dashboard/Views/Shared/DashLayout.cshtml"

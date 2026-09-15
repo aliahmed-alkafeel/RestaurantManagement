@@ -12,20 +12,20 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
     [Route("[area]/[controller]")]
     public class GroupsController(IGroupsService groupsService) : Controller
     {
-        [Authorize(Roles = nameof(UserRole.AccessEmployees))]
+        [Authorize(Roles = nameof(UserRole.AccessGroups))]
         [HttpGet("")]
         public async Task<IActionResult> Groups()
         {
             var groupsVm = await groupsService.GetAllGroupsAsync();
             return View(groupsVm);
         }
-        [Authorize(Roles = nameof(UserRole.ManageEmployees))]
+        [Authorize(Roles = nameof(UserRole.ManageGroups))]
         [HttpGet("CreateGroup")]
         public async Task<IActionResult> CreateGroup()
         {
             return View("ManageGroup", new GroupViewModel());
         }
-        [Authorize(Roles = nameof(UserRole.ManageEmployees))]
+        [Authorize(Roles = nameof(UserRole.ManageGroups))]
         [HttpPost("CreateGroup")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateGroup(GroupViewModel model)
@@ -39,7 +39,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             }
             return RedirectToAction(nameof(Groups));
         }
-        [Authorize(Roles = nameof(UserRole.ManageEmployees))]
+        [Authorize(Roles = nameof(UserRole.ManageGroups))]
         [HttpGet("DeleteGroup/{id:guid}")]
         public async Task<IActionResult> DeleteGroup(Guid id)
         {
@@ -47,7 +47,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             return View(emps);
         }
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = nameof(UserRole.ManageEmployees))]
+        [Authorize(Roles = nameof(UserRole.ManageGroups))]
         [HttpPost("ConfirmedDeleteGroup/{id:guid}")]
         public async Task<IActionResult> ConfirmedDeleteGroup(Guid id)
         {
@@ -55,7 +55,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             if (!result) return RedirectToAction("AccessDenied", "Auth", new { area = "", returnUrl = "/Dashboard" });
             return RedirectToAction(nameof(Groups));
         }
-        [Authorize(Roles = nameof(UserRole.ManageEmployees))]
+        [Authorize(Roles = nameof(UserRole.ManageGroups))]
         [HttpGet("EditGroup/{id:guid}")]
         public async Task<IActionResult> EditGroup(Guid id)
         {
@@ -63,7 +63,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             return View("ManageGroup",groupVm);
         }
 
-        [Authorize(Roles = nameof(UserRole.ManageEmployees))]
+        [Authorize(Roles = nameof(UserRole.ManageGroups))]
         [HttpPost("EditGroup/{id:guid}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditGroup(GroupViewModel model)

@@ -11,8 +11,8 @@ namespace RestaurantManagement.Models
     public enum UserRole
     {
         Unclassified = 0,
-        AccessEmployees,
         ManageEmployees,
+        AccessEmployees,
 
         AccessItems,
         ManageItems,
@@ -25,10 +25,8 @@ namespace RestaurantManagement.Models
 
         AccessDiscounts,
         ManageDiscounts,
-
-        AccessPayments,
-        ManagePayments,
-
+        AccessGroups,
+        ManageGroups,
         AccessDetails,
     }
 }

@@ -11,7 +11,7 @@
     --dark: #1B1A2E;
     --text: #2E2D40;
     --muted: #8A87A3;
-    --background: #F6F5FC;
+    --background: #f3f6f5;
     --white: #FFFFFF;
     --border: #E4E2F5;
     --sidebar-width: 250px;
@@ -70,6 +70,8 @@ button {
 
 a {
     text-decoration: none;
+    -webkit-user-drag: none;
+    user-select: none;
 }
 
 

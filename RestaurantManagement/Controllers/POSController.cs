@@ -15,6 +15,7 @@ namespace RestaurantManagement.Controllers
     public class POSController(IItemsService itemsService,IOrdersService ordersService) : Controller
     {
         [HttpGet]
+        [Authorize(Roles = nameof(UserRole.ManageOrders))]
         public async Task<IActionResult> NewOrder()
         {
             var items = await itemsService.GetAllItemsAsync();
@@ -53,12 +54,17 @@ namespace RestaurantManagement.Controllers
                 message = "Order created successfully."
             });
         }
-        [Authorize(Roles = nameof(UserRole.AccessOrders))]
+        [Authorize(Roles = nameof(UserRole.ManageOrders))]
         [HttpGet]
-        public async Task<IActionResult> POSOrders()
+        public async Task<IActionResult> POSOrders(
+            POSOrdersFilterViewModel filter,
+            CancellationToken cancellationToken)
         {
-            var orders = await ordersService.GetPOSOrders();
-            return View(orders);
+            var result = await ordersService.GetPOSOrdersAsync(
+                filter,
+                cancellationToken);
+
+            return View(result);
         }
         [Authorize(Roles = nameof(UserRole.ManageOrders))]
         [HttpPost]

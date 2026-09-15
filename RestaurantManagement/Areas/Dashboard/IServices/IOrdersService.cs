@@ -12,6 +12,8 @@ namespace RestaurantManagement.Areas.Dashboard.IServices
         Task<bool> UpdateOrderAsync(OrderStatusViewModel model, Guid ModifierId);
         Task<bool> CreateOrderAsync(CreateOrderViewModel model);
         Task<bool> DeleteOrderAsync(Guid id, Guid ModifierId);
-        Task<List<OrderViewModel>> GetPOSOrders();
+        Task<POSOrdersViewModel> GetPOSOrdersAsync(
+            POSOrdersFilterViewModel filter,
+            CancellationToken cancellationToken = default);
     }
 }

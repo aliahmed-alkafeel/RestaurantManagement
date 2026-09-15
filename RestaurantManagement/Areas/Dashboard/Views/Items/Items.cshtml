@@ -248,13 +248,15 @@
                         Availability
                     </h6>
                 </th>
+            @if (User.IsInRole(nameof(UserRole.ManageItems)))
+                {
+                    <th>
 
-                <th>
-                    <h6 class="fs-4 fw-semibold mb-0">
-                        Operations
-                    </h6>
-                </th>
-
+                        <h6 class="fs-4 fw-semibold mb-0">
+                            Operations
+                        </h6>
+                    </th>
+                }
             </tr>
 
         </thead>
@@ -306,10 +308,10 @@
                             ? "Available"
                             : "Not Available")
                     </td>
+                    @if (User.IsInRole(UserRole.ManageItems.ToString()))
+                    {
+                        <td>
 
-                    <td>
-                                    @if (User.IsInRole(UserRole.ManageItems.ToString()))
-                        {
                             <a class="action edit-action"
                                asp-area="Dashboard"
                                asp-controller="Items"
@@ -318,18 +320,18 @@
                                 Edit
                             </a>
 
-                        }
-                     
-                        <a class="action delete-action"
-                           asp-area="Dashboard"
-                           asp-controller="Items"
-                           asp-action="DeleteItem"
-                           asp-route-id="@item.Id">
-                            Delete
-                        </a>
 
-                    </td>
 
+                            <a class="action delete-action"
+                               asp-area="Dashboard"
+                               asp-controller="Items"
+                               asp-action="DeleteItem"
+                               asp-route-id="@item.Id">
+                                Delete
+                            </a>
+
+                        </td>
+                    }
                 </tr>
             }
 
@@ -454,27 +456,29 @@
 
 
 <!-- Add New Item -->
+@if (User.IsInRole(nameof(UserRole.ManageItems)))
+{
+    <a asp-area="Dashboard"
+       asp-controller="Items"
+       asp-action="CreateItem"
+       class="add-btn">
 
-<a asp-area="Dashboard"
-   asp-controller="Items"
-   asp-action="CreateItem"
-   class="add-btn">
+        <svg viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2"
+             stroke-linecap="round"
+             stroke-linejoin="round">
 
-    <svg viewBox="0 0 24 24"
-         fill="none"
-         stroke="currentColor"
-         stroke-width="2"
-         stroke-linecap="round"
-         stroke-linejoin="round">
+            <path d="M12 5v14"/>
+            <path d="M5 12h14"/>
 
-        <path d="M12 5v14" />
-        <path d="M5 12h14" />
+        </svg>
 
-    </svg>
+        Add New Item
 
-    Add New Item
-
-</a>
+    </a>
+}
 <script>
 
     const typeFilter = document.getElementById("typeFilter");

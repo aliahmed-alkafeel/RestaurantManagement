@@ -12,12 +12,12 @@
 </header>
 <div class="table-responsive">
 
-<table id="table" class="table text-nowrap mb-0 align-middle">
-    <thead class="text-dark fs-4">
+    <table id="table" class="table text-nowrap mb-0 align-middle">
+        <thead class="text-dark fs-4">
         <tr>
-                <th class="sort" data-sort="table-number">
-                    <h6 class="fs-4 fw-semibold mb-0" >Table Number</h6>
-                </th>
+            <th class="sort" data-sort="table-number">
+                <h6 class="fs-4 fw-semibold mb-0" >Table Number</h6>
+            </th>
             <th>
                 <h6 class="fs-4 fw-semibold mb-0">Total Price</h6>
             </th>
@@ -27,25 +27,26 @@
             <th>
                 <h6 class="fs-4 fw-semibold mb-0">Order Date</h6>
             </th>
-
-            <th>
-                <h6 class="fs-4 fw-semibold mb-0">Operations</h6>
-            </th>
-
+            @if (User.IsInRole(nameof(UserRole.ManageOrders)))
+            {
+                <th>
+                    <h6 class="fs-4 fw-semibold mb-0">Operations</h6>
+                </th>
+            }
         </tr>
-    </thead>
-    <tbody class="list">
+        </thead>
+        <tbody class="list">
         @foreach (var order in Model)
         {
             <tr>
                 <td class="table-number">
-                @order.TableId
+                    @order.TableId
                 </td>
                 <td>
-                @order.TotalPrice        
+                    @order.TotalPrice        
                 </td>
                 <td>
-                @order.OrderStatus.ToString()        
+                    @order.OrderStatus.ToString()        
                 </td>
                 <td>
                     <span class="order-date"
@@ -53,33 +54,38 @@
                     </span>
                     
                 </td>
-                <td>
-                    <a class="action edit-action" asp-area="Dashboard" asp-controller="Orders" asp-action="EditOrder" asp-route-id="@order.Id">Edit</a>
-                    <a class="action delete-action" asp-area="Dashboard" asp-controller="Orders"
-                       asp-action="DeleteOrder" asp-route-id="@order.Id">Delete</a>
-                </td>
+                @if (User.IsInRole(nameof(UserRole.ManageOrders)))
+                {
+                    <td>
+                        <a class="action edit-action" asp-area="Dashboard" asp-controller="Orders" asp-action="EditOrder" asp-route-id="@order.Id">Edit</a>
+                        <a class="action delete-action" asp-area="Dashboard" asp-controller="Orders"
+                           asp-action="DeleteOrder" asp-route-id="@order.Id">Delete</a>
+                    </td>
+                }
             </tr>
         }
-    </tbody>
-</table>
+        </tbody>
+    </table>
 </div>
-<a asp-controller="POS"
-   asp-action="NewOrder"
-   class="add-btn">
-    <svg viewBox="0 0 24 24"
-         fill="none"
-         stroke="currentColor"
-         stroke-width="2"
-         stroke-linecap="round"
-         stroke-linejoin="round">
-        <path d="M12 5v14" />
-        <path d="M5 12h14" />
-    </svg>
+@if (User.IsInRole(nameof(UserRole.ManageOrders)))
+{
+    <a asp-controller="POS"
+       asp-action="NewOrder"
+       class="add-btn">
+        <svg viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2"
+             stroke-linecap="round"
+             stroke-linejoin="round">
+            <path d="M12 5v14"/>
+            <path d="M5 12h14"/>
+        </svg>
 
-    Add New Order
-</a>
+        Add New Order
+    </a>
 
-
+}
 <script>
     const options = {
         valueNames: ["table-number"]

@@ -76,9 +76,10 @@ app.MapControllers();
 //app.MapControllerRoute(
 //    name: "areas",
 //    pattern: "{area:exists}/{Controller}/{Action}");
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=POS}/{action=NewOrder}/{id?}")
+    pattern: "{controller=POS}/{action=NewOrder}/")
     .WithStaticAssets();
 
 app.Run();

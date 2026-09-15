@@ -28,9 +28,9 @@
          PROJECT CSS
          ===================================================== -->
 
-    <link rel="stylesheet"
+  @*   <link rel="stylesheet"
           href="~/RestaurantManagement.styles.css"
-          asp-append-version="true" />
+          asp-append-version="true" /> *@
 
 
     <!-- =====================================================
@@ -123,73 +123,80 @@
         <!-- Desktop navigation -->
 
 <nav class="main-navigation">
+    @if (User.IsInRole(UserRole.ManageOrders.ToString()))
+    {
+        <!-- New Order -->
+        <a asp-controller="POS"
+           asp-action="NewOrder"
+           class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "POS" &&
+                           ViewContext.RouteData.Values["Action"]?.ToString() == "NewOrder"
+                               ? "active"
+                               : "")">
 
-    <!-- New Order -->
-    <a asp-controller="POS"
-       asp-action="NewOrder"
-       class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "POS" &&
-                          ViewContext.RouteData.Values["Action"]?.ToString() == "NewOrder"
-                          ? "active" : "")">
+            <span class="nav-link-icon">
+                <svg viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.8">
 
-        <span class="nav-link-icon">
-            <svg viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="1.8">
+                    <path d="M12 5v14"/>
+                    <path d="M5 12h14"/>
 
-                <path d="M12 5v14" />
-                <path d="M5 12h14" />
+                </svg>
+            </span>
 
-            </svg>
-        </span>
+            <span>New Order</span>
 
-        <span>New Order</span>
+        </a>
 
-    </a>
+        <!-- Orders -->
+        <a asp-controller="POS"
+           asp-action="POSOrders"
+           class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "POS" &&
+                           ViewContext.RouteData.Values["Action"]?.ToString() == "POSOrders"
+                               ? "active"
+                               : "")">
 
+            <span class="nav-link-icon">
+                <svg viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.8">
 
-    <!-- Orders -->
-    <a asp-controller="POS"
-       asp-action="POSOrders"
-       class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "POS" &&
-                          ViewContext.RouteData.Values["Action"]?.ToString() == "POSOrders"
-                          ? "active" : "")">
+                    <path d="M6 3h12v18H6z"/>
+                    <path d="M9 7h6"/>
+                    <path d="M9 11h6"/>
+                    <path d="M9 15h4"/>
 
-        <span class="nav-link-icon">
-            <svg viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="1.8">
+                </svg>
+            </span>
 
-                <path d="M6 3h12v18H6z" />
-                <path d="M9 7h6" />
-                <path d="M9 11h6" />
-                <path d="M9 15h4" />
+            <span>Orders</span>
 
-            </svg>
-        </span>
+        </a>
 
-        <span>Orders</span>
+    }
+    @if (User.IsInRole(nameof(UserRole.AccessDetails)) ||
+         User.IsInRole(nameof(UserRole.AccessEmployees)) ||
+         User.IsInRole(nameof(UserRole.AccessItems)) ||
+         User.IsInRole(nameof(UserRole.AccessCategories)) ||
+         User.IsInRole(nameof(UserRole.AccessOrders)) ||
+         User.IsInRole(nameof(UserRole.AccessDiscounts)) ||
+         User.IsInRole(nameof(UserRole.AccessGroups)))
+    {
+        <!-- Menu -->
+        <a asp-controller="Redirect"
+           asp-action="Index"
+           class="nav-link">
 
-    </a>
+            <span class="nav-link-icon">
+                <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><g id="SVGRepo_bgCarrier"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>dashboard-tile-setting</title> <g id="Layer_2" data-name="Layer 2"> <g id="invisible_box" data-name="invisible box"> <rect width="48" height="48" fill="none"></rect> </g> <g id="Q3_icons" data-name="Q3 icons"> <path d="M39.6,18.7l.9-.2,3.3-.4A7.5,7.5,0,0,0,44,16a7.5,7.5,0,0,0-.2-2.1l-3.3-.4-.9-.2L39,11.9l.5-.8,2-2.7a13.3,13.3,0,0,0-2.9-2.9l-2.7,2-.8.5-1.4-.6-.2-.9-.4-3.3A7.5,7.5,0,0,0,31,3a7.5,7.5,0,0,0-2.1.2l-.4,3.3-.2.9L26.9,8l-.8-.5-2.7-2a13.3,13.3,0,0,0-2.9,2.9l2,2.7.5.8-.6,1.4-.9.2-3.3.4A7.5,7.5,0,0,0,18,16a7.5,7.5,0,0,0,.2,2.1l3.3.4.9.2.6,1.4-.5.8-2,2.7a13.3,13.3,0,0,0,2.9,2.9l2.7-2,.8-.5,1.4.6.2.9.4,3.3A7.5,7.5,0,0,0,31,29a7.5,7.5,0,0,0,2.1-.2l.4-3.3.2-.9,1.4-.6.8.5,2.7,2a13.3,13.3,0,0,0,2.9-2.9l-2-2.7-.5-.8ZM31,20a4,4,0,1,1,4-4A4,4,0,0,1,31,20Z"></path> <path d="M16,35v6H8V35h8m2-4H6a2,2,0,0,0-2,2V43a2,2,0,0,0,2,2H18a2,2,0,0,0,2-2V33a2,2,0,0,0-2-2Z"></path> <path d="M18,7h0a2,2,0,0,0-2-2H6A2,2,0,0,0,4,7V25a2,2,0,0,0,2,2H16a2,2,0,0,0,2-2h0a2,2,0,0,0-2-2H8V9h8A2,2,0,0,0,18,7Z"></path> <path d="M36,33v8H28V33a2,2,0,0,0-2-2h0a2,2,0,0,0-2,2V43a2,2,0,0,0,2,2H38a2,2,0,0,0,2-2V33a2,2,0,0,0-2-2h0A2,2,0,0,0,36,33Z"></path> </g> </g> </g></svg>
+            </span>
 
+            <span>Dashboard</span>
 
-
-    <!-- Menu -->
-    <a asp-controller="Details"
-       asp-action="Details"
-       asp-area="Dashboard"
-       class="nav-link">
-
-        <span class="nav-link-icon">
-<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"      fill="currentColor"        
-               ><g id="SVGRepo_bgCarrier"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>dashboard-tile-setting</title> <g id="Layer_2" data-name="Layer 2"> <g id="invisible_box" data-name="invisible box"> <rect width="48" height="48" fill="none"></rect> </g> <g id="Q3_icons" data-name="Q3 icons"> <path d="M39.6,18.7l.9-.2,3.3-.4A7.5,7.5,0,0,0,44,16a7.5,7.5,0,0,0-.2-2.1l-3.3-.4-.9-.2L39,11.9l.5-.8,2-2.7a13.3,13.3,0,0,0-2.9-2.9l-2.7,2-.8.5-1.4-.6-.2-.9-.4-3.3A7.5,7.5,0,0,0,31,3a7.5,7.5,0,0,0-2.1.2l-.4,3.3-.2.9L26.9,8l-.8-.5-2.7-2a13.3,13.3,0,0,0-2.9,2.9l2,2.7.5.8-.6,1.4-.9.2-3.3.4A7.5,7.5,0,0,0,18,16a7.5,7.5,0,0,0,.2,2.1l3.3.4.9.2.6,1.4-.5.8-2,2.7a13.3,13.3,0,0,0,2.9,2.9l2.7-2,.8-.5,1.4.6.2.9.4,3.3A7.5,7.5,0,0,0,31,29a7.5,7.5,0,0,0,2.1-.2l.4-3.3.2-.9,1.4-.6.8.5,2.7,2a13.3,13.3,0,0,0,2.9-2.9l-2-2.7-.5-.8ZM31,20a4,4,0,1,1,4-4A4,4,0,0,1,31,20Z"></path> <path d="M16,35v6H8V35h8m2-4H6a2,2,0,0,0-2,2V43a2,2,0,0,0,2,2H18a2,2,0,0,0,2-2V33a2,2,0,0,0-2-2Z"></path> <path d="M18,7h0a2,2,0,0,0-2-2H6A2,2,0,0,0,4,7V25a2,2,0,0,0,2,2H16a2,2,0,0,0,2-2h0a2,2,0,0,0-2-2H8V9h8A2,2,0,0,0,18,7Z"></path> <path d="M36,33v8H28V33a2,2,0,0,0-2-2h0a2,2,0,0,0-2,2V43a2,2,0,0,0,2,2H38a2,2,0,0,0,2-2V33a2,2,0,0,0-2-2h0A2,2,0,0,0,36,33Z"></path> </g> </g> </g></svg>
-        </span>
-
-        <span>Dashboard</span>
-
-    </a>
-
+        </a>
+    }
 </nav>
 
 
@@ -296,8 +303,8 @@
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="~/js/site.js"
-            asp-append-version="true"></script>
+    @* <script src="~/js/site.js"
+            asp-append-version="true"></script> *@
 
     @await RenderSectionAsync("Scripts", required: false)
 
