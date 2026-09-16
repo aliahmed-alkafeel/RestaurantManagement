@@ -8,11 +8,15 @@ using RestaurantManagement.ViewModels;
 using System.Diagnostics;
 using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
+using RestaurantManagement.IServices;
 
 namespace RestaurantManagement.Controllers
 {
     [Authorize]
-    public class POSController(IItemsService itemsService,IOrdersService ordersService) : Controller
+    //[Area("")]
+    //[Route("[controller]/[action]")]
+    public class POSController(IItemsService itemsService,IOrdersService ordersService,
+        IItemAvailabilityService itemAvailabilityService) : Controller
     {
         [HttpGet]
         [Authorize(Roles = nameof(UserRole.ManageOrders))]
@@ -100,6 +104,75 @@ namespace RestaurantManagement.Controllers
             return Ok(new
             {
                 success = true
+            });
+        }
+
+        [HttpGet]
+        [Authorize(Roles = nameof(UserRole.AccessItems))]
+        public async Task<IActionResult> ItemsAvailability(
+            CancellationToken cancellationToken)
+        {
+            var model =
+                await itemAvailabilityService
+                    .GetAvailabilityAsync(
+                        cancellationToken);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = nameof(UserRole.ManageItems))]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleAvailability(
+            Guid id,
+            CancellationToken cancellationToken)
+        {
+            var item =
+                await itemAvailabilityService
+                    .ToggleAvailabilityAsync(
+                        id,
+                        cancellationToken);
+
+
+            if (item is null)
+            {
+                return NotFound(new
+                {
+                    success = false,
+                    message = "Item not found."
+                });
+            }
+
+
+            return Json(new
+            {
+                success = true,
+
+                id = item.Id,
+
+                isAvailable =
+                    item.IsAvailable,
+
+                itemName =
+                    item.ItemName,
+
+                price =
+                    item.Price,
+
+                categoryId =
+                    item.CategoryId,
+
+                categoryName =
+                    item.CategoryName,
+
+                type =
+                    (int)item.Type,
+
+                typeName =
+                    item.TypeName,
+
+                imageUrl =
+                    item.ImageUrl
             });
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

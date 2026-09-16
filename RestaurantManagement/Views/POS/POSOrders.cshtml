@@ -64,18 +64,21 @@
 
                 @foreach (var status in Enum.GetValues<OrderStatus>())
                 {
-                    if (Model.Filter.Status == status)
+                    if (status.ToString() != "Cancelled" && status.ToString() != "Completed")
                     {
-                        <option value="@status"
-                                selected>
-                            @status
-                        </option>
-                    }
-                    else
-                    {
-                        <option value="@status">
-                            @status
-                        </option>
+                        if (Model.Filter.Status == status)
+                        {
+                            <option value="@status"
+                                    selected>
+                                @status
+                            </option>
+                        }
+                        else
+                        {
+                            <option value="@status">
+                                @status
+                            </option>
+                        }
                     }
                 }
 

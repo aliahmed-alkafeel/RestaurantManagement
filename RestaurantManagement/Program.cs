@@ -48,6 +48,7 @@ builder.Services.AddScoped<IItemsService, ItemsService>();
 builder.Services.AddScoped<IOrdersService, OrdersService>();
 builder.Services.AddScoped<IDiscountService, DiscountService>();
 builder.Services.AddScoped<IDetailsService, DetailsService>();
+builder.Services.AddScoped<IItemAvailabilityService, ItemAvailabilityService>();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddHttpContextAccessor();

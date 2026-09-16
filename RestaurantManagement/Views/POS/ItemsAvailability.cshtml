@@ -1,0 +1,435 @@
+﻿@using RestaurantManagement.Areas.Dashboard.ViewModels
+@using RestaurantManagement.Models
+
+@model ItemAvailabilityViewModel
+
+@{
+    ViewData["Title"] = "Item Availability";
+
+    var availableCount = Model.AvailableGroups
+        .SelectMany(x => x.Categories)
+        .SelectMany(x => x.Items)
+        .Count();
+
+    var unavailableCount = Model.UnavailableGroups
+        .SelectMany(x => x.Categories)
+        .SelectMany(x => x.Items)
+        .Count();
+}
+
+<link rel="stylesheet"
+      href="~/css/ItemAvailability.css"
+      asp-append-version="true" />
+
+<div class="availability-page">
+
+    <!-- ===================================================== -->
+    <!-- AVAILABLE -->
+    <!-- ===================================================== -->
+
+    <section class="availability-panel available-panel">
+
+        <header class="panel-header">
+
+            <div class="panel-heading">
+
+                <div class="panel-icon available-icon">
+                    ✓
+                </div>
+
+                <div>
+                    <h1>Available Items</h1>
+                    <p>Items available for ordering</p>
+                </div>
+
+            </div>
+
+            <div class="items-counter available-counter">
+                <span id="availableCount">
+                    @availableCount
+                </span>
+
+                <small>items</small>
+            </div>
+
+        </header>
+
+
+        <!-- SEARCH -->
+
+        <div class="availability-search">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2">
+
+                <circle cx="11"
+                        cy="11"
+                        r="7" />
+
+                <path d="M20 20L16.65 16.65" />
+
+            </svg>
+
+            <input type="search"
+                   id="availableSearch"
+                   placeholder="Search available items..."
+                   autocomplete="off" />
+
+        </div>
+
+
+        <!-- CONTENT -->
+
+        <div class="panel-content"
+             id="availableContainer">
+
+            @foreach (var typeGroup in Model.AvailableGroups)
+            {
+                <div class="type-group"
+                     data-type="@((int)typeGroup.Type)"
+                     data-type-name="@typeGroup.TypeName">
+
+                    <div class="type-header">
+
+                        <span class="type-line"></span>
+
+                        <h2>
+                            @typeGroup.TypeName
+                        </h2>
+
+                    </div>
+
+
+                    <div class="categories-container">
+
+                        @foreach (var category in typeGroup.Categories)
+                        {
+                            <div class="category-group"
+                                 data-category-id="@category.CategoryId"
+                                 data-category-name="@category.CategoryName">
+
+                                <div class="category-header">
+
+                                    <span>
+                                        @category.CategoryName
+                                    </span>
+
+                                    <span class="category-count">
+                                        @category.Items.Count
+                                    </span>
+
+                                </div>
+
+
+                                <div class="items-grid">
+
+                                    @foreach (var item in category.Items)
+                                    {
+                                        <button type="button"
+                                                class="item-card"
+                                                data-item-id="@item.Id"
+                                                data-item-name="@item.ItemName"
+                                                data-category-id="@item.CategoryId"
+                                                data-category-name="@item.CategoryName"
+                                                data-type="@((int)item.Type)"
+                                                data-type-name="@item.TypeName"
+                                                data-price="@item.Price"
+                                                data-image="@Url.Content(item.ImageUrl)"
+                                                data-search="@($"{item.ItemName} {item.CategoryName} {item.TypeName}")">
+
+                                            <div class="item-image-wrapper">
+
+                                                <img src="@Url.Content(item.ImageUrl)"
+                                                     alt="@item.ItemName"
+                                                     class="item-image" />
+
+                                            </div>
+
+
+                                            <div class="item-info">
+
+                                                <span class="item-name">
+                                                    @item.ItemName
+                                                </span>
+
+                                                <span class="item-category">
+                                                    @item.CategoryName
+                                                </span>
+
+                                                <span class="item-price">
+                                                    @item.Price.ToString("0.00")
+                                                </span>
+
+                                            </div>
+
+
+                                            <span class="availability-dot available-dot"></span>
+
+                                        </button>
+                                    }
+
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+            }
+
+
+            <div class="empty-state"
+                 id="availableEmpty"
+                 hidden>
+
+                <div class="empty-state-icon available-empty-icon">
+                    ✓
+                </div>
+
+                <h3>No available items</h3>
+
+                <p>
+                    Items marked as available will appear here.
+                </p>
+
+            </div>
+
+
+            <div class="no-results"
+                 id="availableNoResults"
+                 hidden>
+
+                <div class="empty-state-icon">
+                    🔍
+                </div>
+
+                <h3>No items found</h3>
+
+                <p>
+                    Try searching with a different name,
+                    category, or type.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ===================================================== -->
+    <!-- UNAVAILABLE -->
+    <!-- ===================================================== -->
+
+    <section class="availability-panel unavailable-panel">
+
+        <header class="panel-header">
+
+            <div class="panel-heading">
+
+                <div class="panel-icon unavailable-icon">
+                    ×
+                </div>
+
+                <div>
+                    <h1>Unavailable Items</h1>
+                    <p>Items hidden from ordering</p>
+                </div>
+
+            </div>
+
+
+            <div class="items-counter unavailable-counter">
+
+                <span id="unavailableCount">
+                    @unavailableCount
+                </span>
+
+                <small>items</small>
+
+            </div>
+
+        </header>
+
+
+        <!-- SEARCH -->
+
+        <div class="availability-search">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2">
+
+                <circle cx="11"
+                        cy="11"
+                        r="7" />
+
+                <path d="M20 20L16.65 16.65" />
+
+            </svg>
+
+            <input type="search"
+                   id="unavailableSearch"
+                   placeholder="Search unavailable items..."
+                   autocomplete="off" />
+
+        </div>
+
+
+        <!-- CONTENT -->
+
+        <div class="panel-content"
+             id="unavailableContainer">
+
+            @foreach (var typeGroup in Model.UnavailableGroups)
+            {
+                <div class="type-group"
+                     data-type="@((int)typeGroup.Type)"
+                     data-type-name="@typeGroup.TypeName">
+
+                    <div class="type-header">
+
+                        <span class="type-line"></span>
+
+                        <h2>
+                            @typeGroup.TypeName
+                        </h2>
+
+                    </div>
+
+
+                    <div class="categories-container">
+
+                        @foreach (var category in typeGroup.Categories)
+                        {
+                            <div class="category-group"
+                                 data-category-id="@category.CategoryId"
+                                 data-category-name="@category.CategoryName">
+
+                                <div class="category-header">
+
+                                    <span>
+                                        @category.CategoryName
+                                    </span>
+
+                                    <span class="category-count">
+                                        @category.Items.Count
+                                    </span>
+
+                                </div>
+
+
+                                <div class="items-grid">
+
+                                    @foreach (var item in category.Items)
+                                    {
+                                        <button type="button"
+                                                class="item-card unavailable-card"
+                                                data-item-id="@item.Id"
+                                                data-item-name="@item.ItemName"
+                                                data-category-id="@item.CategoryId"
+                                                data-category-name="@item.CategoryName"
+                                                data-type="@((int)item.Type)"
+                                                data-type-name="@item.TypeName"
+                                                data-price="@item.Price"
+                                                data-image="@Url.Content(item.ImageUrl)"
+                                                data-search="@($"{item.ItemName} {item.CategoryName} {item.TypeName}")">
+
+                                            <div class="item-image-wrapper">
+
+                                                <img src="@Url.Content(item.ImageUrl)"
+                                                     alt="@item.ItemName"
+                                                     class="item-image" />
+
+                                            </div>
+
+
+                                            <div class="item-info">
+
+                                                <span class="item-name">
+                                                    @item.ItemName
+                                                </span>
+
+                                                <span class="item-category">
+                                                    @item.CategoryName
+                                                </span>
+
+                                                <span class="item-price">
+                                                    @item.Price.ToString("0.00")
+                                                </span>
+
+                                            </div>
+
+
+                                            <span class="availability-dot unavailable-dot"></span>
+
+                                        </button>
+                                    }
+
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+            }
+
+
+            <div class="empty-state"
+                 id="unavailableEmpty"
+                 hidden>
+
+                <div class="empty-state-icon unavailable-empty-icon">
+                    ×
+                </div>
+
+                <h3>No unavailable items</h3>
+
+                <p>
+                    All items are currently available.
+                </p>
+
+            </div>
+
+
+            <div class="no-results"
+                 id="unavailableNoResults"
+                 hidden>
+
+                <div class="empty-state-icon">
+                    🔍
+                </div>
+
+                <h3>No items found</h3>
+
+                <p>
+                    Try searching with a different name,
+                    category, or type.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- ANTIFORGERY TOKEN -->
+<!-- ========================================================= -->
+
+<form id="availabilityTokenForm">
+    @Html.AntiForgeryToken()
+</form>
+
+
+<script src="~/js/ItemAvailability.js"
+        asp-append-version="true"></script>
