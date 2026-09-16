@@ -9,6 +9,27 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
         <input type="text" id="search" placeholder="Search Items...">
     </div>
+    <div>
+        @if (User.IsInRole(nameof(UserRole.ManageEmployees)))
+        {
+            <a asp-area="Dashboard" asp-controller="Employees"
+               asp-action="CreateEmployee"
+               class="add-btn">
+
+                <svg viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+                    <path d="M12 5v14"/>
+                    <path d="M5 12h14"/>
+                </svg>
+
+                Add New Employee
+            </a>
+        }
+    </div>
 </header>
 <div class="table-responsive">
 
@@ -82,25 +103,7 @@
         </tbody>
     </table>
 </div>
-@if (User.IsInRole(nameof(UserRole.ManageEmployees)))
-{
-    <a asp-area="Dashboard" asp-controller="Employees"
-       asp-action="CreateEmployee"
-       class="add-btn">
 
-        <svg viewBox="0 0 24 24"
-             fill="none"
-             stroke="currentColor"
-             stroke-width="2"
-             stroke-linecap="round"
-             stroke-linejoin="round">
-            <path d="M12 5v14"/>
-            <path d="M5 12h14"/>
-        </svg>
-
-        Add New Employee
-    </a>
-}
 <script>
     const options = {
         valueNames: ["employee-name"]

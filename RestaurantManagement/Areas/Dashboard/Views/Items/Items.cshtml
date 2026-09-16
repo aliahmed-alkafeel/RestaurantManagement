@@ -1,7 +1,7 @@
 ﻿@model ItemsPageViewModel
 
 <header class="item-filter">
-
+    <div class="filter-row">
     <form method="get"
           asp-area="Dashboard"
           asp-controller="Items"
@@ -157,7 +157,7 @@
             </option>
             <option value="isAvailable_asc"
                     selected="@(Model.Filter.Sort == "isAvailable_asc")">
-               Available → UnAvailable
+                Available → UnAvailable
             </option>
             <option value="isAvailable_desc"
                     selected="@(Model.Filter.Sort == "isAvailable_desc")">
@@ -190,15 +190,42 @@
         <button type="submit" class="btn btn-primary">
             Apply
         </button>
-    </form>
-    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-    {
-        <div class="text-danger">
-            @error.ErrorMessage
-        </div>
-    }
-</header>
 
+
+    </form>    
+
+    @if (User.IsInRole(nameof(UserRole.ManageItems)))
+    {
+        <a asp-area="Dashboard"
+           asp-controller="Items"
+           asp-action="CreateItem"
+           class="add-btn" style="padding:12px 10px">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round">
+
+                <path d="M12 5v14" />
+                <path d="M5 12h14" />
+
+            </svg>
+
+            Add New Item
+
+        </a>
+    }
+    </div>
+  
+</header>
+@foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+{
+    <div class="text-danger">
+        @error.ErrorMessage
+    </div>
+}
 <div class="table-responsive bg-white mb-0">
 
     <table class="table text-nowrap mb-0 align-middle">
@@ -455,30 +482,8 @@
 
 
 
-<!-- Add New Item -->
-@if (User.IsInRole(nameof(UserRole.ManageItems)))
-{
-    <a asp-area="Dashboard"
-       asp-controller="Items"
-       asp-action="CreateItem"
-       class="add-btn">
 
-        <svg viewBox="0 0 24 24"
-             fill="none"
-             stroke="currentColor"
-             stroke-width="2"
-             stroke-linecap="round"
-             stroke-linejoin="round">
 
-            <path d="M12 5v14"/>
-            <path d="M5 12h14"/>
-
-        </svg>
-
-        Add New Item
-
-    </a>
-}
 <script>
 
     const typeFilter = document.getElementById("typeFilter");
