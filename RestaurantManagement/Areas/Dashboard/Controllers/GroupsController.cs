@@ -30,7 +30,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateGroup(GroupViewModel model)
         {
-            if (!ModelState.IsValid) return View(model);
+            if (!ModelState.IsValid) return View("ManageGroup",model);
             var result = await groupsService.CreateGroupAsync(model);
             if (result is false)
             {

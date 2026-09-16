@@ -2,7 +2,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     width: 100%;
-    height: calc(100vh - 70px);
+    height: 100vh;
     min-height: 0;
     background: #f3f6f5;
 }
@@ -31,6 +31,7 @@
 /* ========================================================= */
 
 .panel-header {
+    margin-top: 70px;
     display: flex;
     align-items: center;
     justify-content: space-between;

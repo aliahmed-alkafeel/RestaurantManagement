@@ -78,6 +78,13 @@ namespace RestaurantManagement.Controllers
                 {
                     area = "Dashboard"
                 });
+            }          
+            if (User.IsInRole(nameof(UserRole.ManageItems)))
+            {
+                return RedirectToAction("ItemsAvailability", "POS", new
+                {
+                    area = "Dashboard"
+                });
             }
 
             return RedirectToAction("Index", "Redirect", new

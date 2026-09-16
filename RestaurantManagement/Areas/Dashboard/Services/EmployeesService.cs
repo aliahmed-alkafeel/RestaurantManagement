@@ -64,7 +64,8 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 EmployeeEndingDate = emp.EmployeeEndingDate,
                 Username = emp.Username,
                 Email = emp.Email,
-                Group = emp.Group!.GroupName,
+                Group = emp.GroupId,            
+                GroupName = emp.Group!.GroupName,
                 Groups = groups
             };
             return empvm;
@@ -94,7 +95,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 GetEmployeeWithGroupAsync(modifierId);
 
 
-            if (model.Group == InitUserGroup.Administrator.ToString() && modifier!.Group!.GroupName != InitUserGroup.Administrator.ToString())
+            if (model.GroupName == InitUserGroup.Administrator.ToString() && modifier!.Group!.GroupName != InitUserGroup.Administrator.ToString())
                 return false;
 
             var employee = new Employee
@@ -105,7 +106,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 LastName = model.LastName,
                 EmployeeStartingDate = DateTime.UtcNow,
                 PhoneNumber = model.PhoneNumber,
-                GroupId = Guid.Parse(model.Group)
+                GroupId = model.Group
             };
             employee.PasswordHash = _passwordHasher.HashPassword(employee, model.Password);
             await _unitOfWork.Employees.AddAsync(employee);
@@ -139,7 +140,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             employee.LastName = model.LastName;
             employee.EmployeeStartingDate = model.EmployeeStartingDate;
             employee.PhoneNumber = model.PhoneNumber;
-            employee.GroupId = Guid.Parse(model.Group);
+            employee.GroupId = model.Group;
             employee.EmployeeEndingDate = model.EmployeeEndingDate;
 
         if(model.Password is not null && model.Password == model.ConfirmPassword)

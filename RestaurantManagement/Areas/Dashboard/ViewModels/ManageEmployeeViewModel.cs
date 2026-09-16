@@ -28,8 +28,11 @@ namespace RestaurantManagement.Areas.Dashboard.ViewModels
         [Required]
         [MaxLength(50)]
         public string Username { get; set; } = null!;
-        [Required]
-        public string Group { get; set; } = null!;
+
+        [Required] 
+        public Guid Group { get; set; } 
+        [MaxLength(50)]
+        public string? GroupName { get; set; } = null!;
         public List<SelectListItem> Groups = [];
 
         [Required(ErrorMessage = "Password is required")]
