@@ -15,7 +15,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         public async Task<bool> CreateItemAsync(ItemViewModel model)
         {
             if (model is null) throw new ArgumentNullException();
-            var items = await unitOfWork.Items.GetAllAsync();
+            var items = await unitOfWork.Items.GetAllAsync(model.CancellationToken);
             foreach (Item i in items)
             {
                 if(i.ItemName == model.ItemName && i.CategoryId == model.CategoryId)
@@ -25,7 +25,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             }
             var imageResult = await InsertImage(model);
             if (!imageResult) return false;
-            var category = await unitOfWork.Categories.GetByIdAsync(model.CategoryId);
+            var category = await unitOfWork.Categories.GetByIdAsync(model.CategoryId, model.CancellationToken);
             Item item = new Item
             {
                 Id = Guid.NewGuid(),
@@ -37,22 +37,22 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 IsAvailable = model.IsAvailable,
                 ImageUrl = model.ImageUrl
             };
-            await unitOfWork.Items.AddAsync(item);
-            await unitOfWork.SaveChangesAsync();
+            await unitOfWork.Items.AddAsync(item, model.CancellationToken);
+            await unitOfWork.SaveChangesAsync(model.CancellationToken);
             return true;
         }
 
-        public async Task<bool> DeleteItemAsync(Guid modelId)
+        public async Task<bool> DeleteItemAsync(Guid modelId, CancellationToken cancellationToken = default)
         {
-            var item = await unitOfWork.Items.GetByIdAsync(modelId);
+            var item = await unitOfWork.Items.GetByIdAsync(modelId, cancellationToken);
             if (item is null) throw new InvalidOperationException("There is no such Item");
             DeleteImage(item); 
             unitOfWork.Items.Delete(item);
-            await unitOfWork.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync(cancellationToken);
             return true;
         }
 
-        public async Task<List<ItemByCategoryViewModel>> GetItemsByType(CategoryType type)
+        public async Task<List<ItemByCategoryViewModel>> GetItemsByType(CategoryType type, CancellationToken cancellationToken = default)
         {
             return await unitOfWork.Items
                 .NoTrackingSelect()
@@ -70,7 +70,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                             ? i.Discount.DiscountPercentage
                             : null
                 })
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
         public void DeleteImage(Item item)
@@ -85,16 +85,16 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 }
             }
         }
-        public async Task<List<ItemViewModel>> GetAllItemsAsync()
+        public async Task<List<ItemViewModel>> GetAllItemsAsync(CancellationToken cancellationToken = default)
         {
-            var items = await unitOfWork.Items.NoTrackingSelect().Include(i => i.Category).Include(i => i.Discount).ToListAsync();
+            var items = await unitOfWork.Items.NoTrackingSelect().Include(i => i.Category).Include(i => i.Discount).ToListAsync(cancellationToken);
             List<ItemViewModel> itemsVm = [];
             foreach (Item item in items)
             {
             //Console.WriteLine(item.Discount != null ?item.Discount.DiscountPercentage: "not");
                 if (!item.IsDeleted)
                 {
-                    var category = await unitOfWork.Categories.GetByIdAsync(item.CategoryId);
+                    var category = await unitOfWork.Categories.GetByIdAsync(item.CategoryId, cancellationToken);
                     itemsVm.Add(new ItemViewModel
                     {
                         Id = item.Id,
@@ -114,11 +114,11 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             return itemsVm;
         }
 
-        public async Task<ItemViewModel> GetItemByIdAsync(Guid Id)
+        public async Task<ItemViewModel> GetItemByIdAsync(Guid Id, CancellationToken cancellationToken = default)
         {
-            var item = await unitOfWork.Items.GetByIdAsync(Id);
+            var item = await unitOfWork.Items.GetByIdAsync(Id, cancellationToken);
             if (item is null) throw new KeyNotFoundException("There is no such Item");
-            var category = await unitOfWork.Categories.GetByIdAsync(item.CategoryId);
+            var category = await unitOfWork.Categories.GetByIdAsync(item.CategoryId, cancellationToken);
             ItemViewModel ItemVm = new ItemViewModel
             {
                 Id = item.Id,
@@ -162,7 +162,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         public async Task<bool> UpdateItemAsync(ItemViewModel model)
         {
             if (model is null) throw new ArgumentNullException();
-            var Items = await unitOfWork.Items.GetAllAsync();
+            var Items = await unitOfWork.Items.GetAllAsync(model.CancellationToken);
             foreach (Item i in Items)
             {
                 if ((i.ItemName == model.ItemName && i.Id != model.Id) &&
@@ -175,7 +175,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             if (item is null) return false;
             if (!await InsertImage(model)) return false;
             DeleteImage(item);
-            Category? category = await unitOfWork.Categories.GetByIdAsync(model.CategoryId);
+            Category? category = await unitOfWork.Categories.GetByIdAsync(model.CategoryId, model.CancellationToken);
             item.ItemName = model.ItemName;
             item.Category = category!;
             item.Price = model.Price;
@@ -183,15 +183,16 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             item.IsAvailable = model.IsAvailable;
             item.ImageUrl = model.ImageUrl;
             unitOfWork.Items.Update(item);
-            await unitOfWork.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync(model.CancellationToken);
             return true;
         }
-        public async Task<IEnumerable<Category>> GetCategoriesByTypeAsync(CategoryType type)
+        public async Task<IEnumerable<Category>> GetCategoriesByTypeAsync(CategoryType type, CancellationToken cancellationToken = default)
         {
             
-            return (await unitOfWork.Categories.GetAllAsync()).Where(c => c.Type == type);
+            return (await unitOfWork.Categories.GetAllAsync(cancellationToken)).Where(c => c.Type == type);
         }
-        public async Task<List<ItemByCategoryViewModel>> GetItemsByCategoryId(Guid categoryId)
+        public async Task<List<ItemByCategoryViewModel>> GetItemsByCategoryId(Guid categoryId,
+            CancellationToken cancellationToken = default)
         {
             return await unitOfWork.Items.Select().Where(i => i.CategoryId == categoryId)
                 .Select(i => new ItemByCategoryViewModel
@@ -203,7 +204,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                     DiscountPercentage = i.Discount != null &&
                         i.Discount.DiscountStartingDate <= DateTime.UtcNow && i.Discount.DiscountEndingDate >= DateTime.UtcNow
                         ? i.Discount.DiscountPercentage : null
-                }).ToListAsync();
+                }).ToListAsync(cancellationToken);
         }
 
         public async Task<ItemsPageViewModel> GetPagedItemsAsync(ItemFilterViewModel model)
@@ -212,7 +213,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             if (model.PageSize < 1) model.PageSize = 10;
 
             var items = unitOfWork.Items.NoTrackingSelect().Include(x => x.Category).Where(x => !x.Category.IsDeleted).AsNoTracking();
-            var categories = await unitOfWork.Categories.NoTrackingSelect().ToListAsync();
+            var categories = await unitOfWork.Categories.NoTrackingSelect().ToListAsync(model.CancellationToken);
 
             if (!string.IsNullOrEmpty(model.Search))
             {
@@ -254,9 +255,9 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
                 _ => items.OrderBy(x => x.IsActive).OrderBy(x => x.ItemName)
             };
-            var totalCount = await items.CountAsync();
+            var totalCount = await items.CountAsync(model.CancellationToken);
             var totalPages = (int)Math.Ceiling(totalCount /(double) model.PageSize);
-            var finalItems = await items.Skip((model.Page - 1) * model.PageSize).Take(model.PageSize).ToListAsync();
+            var finalItems = await items.Skip((model.Page - 1) * model.PageSize).Take(model.PageSize).ToListAsync(model.CancellationToken);
             var result = new PaginatedList<Item>
             {
                 Items = finalItems,

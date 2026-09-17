@@ -4,7 +4,7 @@ namespace RestaurantManagement.IRepositories
 {
     public interface IDiscountRepository : IRepository<Discount>
     {
-        public Task<List<Discount>> GetAllDiscountsWithItemsAsync();
-        public Task<Discount?> GetDiscountWithItemsByIdAsync(Guid id);
+        public Task<List<Discount>> GetAllDiscountsWithItemsAsync(CancellationToken cancellationToken = default);
+        public Task<Discount?> GetDiscountWithItemsByIdAsync(Guid id,CancellationToken cancellationToken);
     }
 }

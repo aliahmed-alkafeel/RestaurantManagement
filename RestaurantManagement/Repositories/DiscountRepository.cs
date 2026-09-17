@@ -11,14 +11,14 @@ namespace RestaurantManagement.Repositories
         {
         }
 
-        public async Task<List<Discount>> GetAllDiscountsWithItemsAsync()
+        public async Task<List<Discount>> GetAllDiscountsWithItemsAsync(CancellationToken cancellationToken = default)
         {
-            return await _dbSet.Include(i => i.Items).ToListAsync();
+            return await _dbSet.OrderBy(d=>d.DiscountStartingDate).Include(i => i.Items).ToListAsync(cancellationToken);
         }
 
-        public async Task<Discount?> GetDiscountWithItemsByIdAsync(Guid id)
+        public async Task<Discount?> GetDiscountWithItemsByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await _dbSet.Where(d => d.Id == id).Include(i => i.Items).FirstOrDefaultAsync();
+            return await _dbSet.Where(d => d.Id == id).Include(i => i.Items).FirstOrDefaultAsync(cancellationToken);
         }
     }
 }

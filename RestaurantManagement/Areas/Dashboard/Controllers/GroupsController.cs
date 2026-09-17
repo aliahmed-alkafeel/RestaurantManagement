@@ -14,9 +14,9 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
     {
         [Authorize(Roles = nameof(UserRole.AccessGroups))]
         [HttpGet("")]
-        public async Task<IActionResult> Groups()
+        public async Task<IActionResult> Groups(CancellationToken cancellationToken)
         {
-            var groupsVm = await groupsService.GetAllGroupsAsync();
+            var groupsVm = await groupsService.GetAllGroupsAsync(cancellationToken);
             return View(groupsVm);
         }
         [Authorize(Roles = nameof(UserRole.ManageGroups))]
@@ -41,25 +41,25 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         }
         [Authorize(Roles = nameof(UserRole.ManageGroups))]
         [HttpGet("DeleteGroup/{id:guid}")]
-        public async Task<IActionResult> DeleteGroup(Guid id)
+        public async Task<IActionResult> DeleteGroup(Guid id, CancellationToken cancellationToken)
         {
-            var emps = await groupsService.GetGroupByIdAsync(id);
+            var emps = await groupsService.GetGroupByIdAsync(id, cancellationToken);
             return View(emps);
         }
         [ValidateAntiForgeryToken]
         [Authorize(Roles = nameof(UserRole.ManageGroups))]
         [HttpPost("ConfirmedDeleteGroup/{id:guid}")]
-        public async Task<IActionResult> ConfirmedDeleteGroup(Guid id)
+        public async Task<IActionResult> ConfirmedDeleteGroup(Guid id, CancellationToken cancellationToken)
         {
-            var result = await groupsService.DeleteGroupAsync(id);
+            var result = await groupsService.DeleteGroupAsync(id, cancellationToken);
             if (!result) return RedirectToAction("AccessDenied", "Auth", new { area = "", returnUrl = "/Dashboard" });
             return RedirectToAction(nameof(Groups));
         }
         [Authorize(Roles = nameof(UserRole.ManageGroups))]
         [HttpGet("EditGroup/{id:guid}")]
-        public async Task<IActionResult> EditGroup(Guid id)
+        public async Task<IActionResult> EditGroup(Guid id, CancellationToken cancellationToken)
         {
-            var groupVm = await groupsService.GetGroupByIdAsync(id);
+            var groupVm = await groupsService.GetGroupByIdAsync(id, cancellationToken);
             return View("ManageGroup",groupVm);
         }
 

@@ -32,10 +32,10 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [Authorize(Roles = nameof(UserRole.ManageCategories))]
         [HttpPost("CreateCategory")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateCategory(CategoryViewModel model)
+        public async Task<IActionResult> CreateCategory(CategoryViewModel model, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid) return View(model);
-            var result = await categoriesService.CreateCategoryAsync(model,model.CancellationToken);
+            var result = await categoriesService.CreateCategoryAsync(model);
             if (result is false)
             {
                 ModelState.AddModelError("", "The Category is Regestered");
@@ -78,9 +78,9 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [ValidateAntiForgeryToken]
         [Authorize(Roles = nameof(UserRole.ManageCategories))]
         [HttpPost("ConfirmedDeleteCategory/{id:guid}")]
-        public async Task<IActionResult> ConfirmedDeleteCategory(Guid id)
+        public async Task<IActionResult> ConfirmedDeleteCategory(Guid id, CancellationToken cancellationToken)
         {
-            await categoriesService.DeleteCategoryAsync(id);
+            await categoriesService.DeleteCategoryAsync(id, cancellationToken);
             return RedirectToAction(nameof(Categories));
         }
 

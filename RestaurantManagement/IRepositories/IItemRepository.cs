@@ -4,6 +4,6 @@ namespace RestaurantManagement.IRepositories
 {
     public interface IItemRepository : IRepository<Item>
     {
-        public Task<List<Item>> GetItemsWithCategories();
+        public Task<List<Item>> GetItemsWithCategories(CancellationToken cancellationToken = default);
     }
 }

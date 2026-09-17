@@ -20,9 +20,9 @@ namespace RestaurantManagement.Controllers
     {
         [HttpGet]
         [Authorize(Roles = nameof(UserRole.ManageOrders))]
-        public async Task<IActionResult> NewOrder()
+        public async Task<IActionResult> NewOrder(CancellationToken cancellationToken)  
         {
-            var items = await itemsService.GetAllItemsAsync();
+            var items = await itemsService.GetAllItemsAsync(cancellationToken);
             return View(items);
         }
         public IActionResult Privacy()

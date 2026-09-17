@@ -2,7 +2,7 @@
 
 namespace RestaurantManagement.ViewModels
 {
-    public class ItemAvailabilityViewModel
+    public class ItemAvailabilityViewModel: BaseDto
     {
         public List<ItemAvailabilityTypeViewModel> AvailableGroups { get; set; } = [];
 

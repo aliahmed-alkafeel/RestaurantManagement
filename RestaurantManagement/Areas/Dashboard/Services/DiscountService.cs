@@ -24,18 +24,18 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             };
             foreach(var itemId in model.ItemIds)
             {
-                var item = await unitOfWork.Items.GetByIdAsync(itemId);
+                var item = await unitOfWork.Items.GetByIdAsync(itemId,model.CancellationToken);
                 if (item is null) continue;
                 discount.Items.Add(item);
             }
-            await unitOfWork.Discounts.AddAsync(discount);
-            await unitOfWork.SaveChangesAsync();
+            await unitOfWork.Discounts.AddAsync(discount,model.CancellationToken);
+            await unitOfWork.SaveChangesAsync(model.CancellationToken);
             return true;
         }
 
-        public async Task<List<DiscountViewModel>> GetAllDiscountsAsync()
+        public async Task<List<DiscountViewModel>> GetAllDiscountsAsync(CancellationToken cancellationToken)
         {
-            var discounts = await unitOfWork.Discounts.GetAllDiscountsWithItemsAsync();
+            var discounts = await unitOfWork.Discounts.GetAllDiscountsWithItemsAsync(cancellationToken);
             List<DiscountViewModel> discountsVm = [];
             foreach (Discount discount in discounts)
             {
@@ -52,9 +52,9 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             return discountsVm;
         }
 
-        public async Task<DiscountViewModel> GetDiscountByIdAsync(Guid Id)
+        public async Task<DiscountViewModel> GetDiscountByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            var discount = await unitOfWork.Discounts.GetDiscountWithItemsByIdAsync(Id);
+            var discount = await unitOfWork.Discounts.GetDiscountWithItemsByIdAsync(id,cancellationToken);
             if (discount is null) throw new KeyNotFoundException("There is no such discount");
             DiscountViewModel discountVm = new DiscountViewModel
             {
@@ -68,19 +68,19 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         }
 
-        public async Task<bool> DeleteDiscountAsync(Guid modelId)
+        public async Task<bool> DeleteDiscountAsync(Guid modelId, CancellationToken cancellationToken)
         {
-            var discount = await unitOfWork.Discounts.GetByIdAsync(modelId);
+            var discount = await unitOfWork.Discounts.GetByIdAsync(modelId,cancellationToken);
             if (discount is null) throw new InvalidOperationException("There is no such discount");
             unitOfWork.Discounts.Delete(discount);
-            await unitOfWork.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync(cancellationToken);
             return true;
         }
 
         public async Task<bool> UpdateDiscountAsync(DiscountViewModel model)
         {
             if (model is null) throw new ArgumentNullException();
-            var discount = await unitOfWork.Discounts.GetDiscountWithItemsByIdAsync(model.Id);
+            var discount = await unitOfWork.Discounts.GetDiscountWithItemsByIdAsync(model.Id, model.CancellationToken);
             if (discount is null) return false;
             discount.DiscountPercentage = model.DiscountPercentage;
             discount.DiscountEndingDate = model.DiscountEndingDate;
@@ -96,12 +96,12 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             
             foreach (var itemId in model.ItemIds)
             {
-                var item = await unitOfWork.Items.GetByIdAsync(itemId);
+                var item = await unitOfWork.Items.GetByIdAsync(itemId, model.CancellationToken);
                 if (item is null) continue;
                 discount.Items.Add(item);
             }
             unitOfWork.Discounts.Update(discount);
-            await unitOfWork.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync(model.CancellationToken);
             return true;
         }
     }

@@ -11,23 +11,23 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 {
     public class OrdersService(IUnitOfWork unitOfWork) : IOrdersService
     {
-        public async Task<bool> DeleteOrderAsync(Guid modelId)
+        public async Task<bool> DeleteOrderAsync(Guid modelId, CancellationToken cancellationToken = default)
         {
-            var order = await unitOfWork.Orders.GetOrderWithItemsByIdAsync(modelId);
+            var order = await unitOfWork.Orders.GetOrderWithItemsByIdAsync(modelId, cancellationToken);
             if (order is null) throw new InvalidOperationException("There is no such order");
             unitOfWork.Orders.Delete(order);
             foreach(ItemOrder itemOrder in order.ItemOrders)
             {
             unitOfWork.ItemOrders.Delete(itemOrder);
             }
-            await unitOfWork.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync(cancellationToken);
             return true;
         }
 
-        public async Task<List<OrderViewModel>> GetAllOrdersAsync()
+        public async Task<List<OrderViewModel>> GetAllOrdersAsync(CancellationToken cancellationToken = default)
         {
             var orders = await unitOfWork.Orders.NoTrackingSelect().OrderByDescending(o=>o.OrderDate)
-                .Include(o => o.ItemOrders).ThenInclude(io => io.Item).ThenInclude(i => i.Discount).ToListAsync();
+                .Include(o => o.ItemOrders).ThenInclude(io => io.Item).ThenInclude(i => i.Discount).ToListAsync(cancellationToken);
             List<OrderViewModel> ordersVm = [];
             foreach (Order order in orders)
             {
@@ -43,9 +43,9 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             return ordersVm;
         }
 
-        public async Task<OrderViewModel> GetOrderByIdAsync(Guid id)
+        public async Task<OrderViewModel> GetOrderByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var order = await unitOfWork.Orders.GetOrderWithItemsByIdAsync(id);
+            var order = await unitOfWork.Orders.GetOrderWithItemsByIdAsync(id, cancellationToken);
             if (order is null) throw new KeyNotFoundException("There is no such order");
             OrderViewModel orderVm = new()
             {
@@ -80,10 +80,10 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 TableId = model.TableId,
                 OrderDate = DateTime.UtcNow
             };
-            await unitOfWork.Orders.AddAsync(order);
+            await unitOfWork.Orders.AddAsync(order,model.CancellationToken);
             decimal newItemsTotal = 0;
 
-            var items = await unitOfWork.Items.Select().Include(i => i.Category).Include(i => i.Discount).ToListAsync();
+            var items = await unitOfWork.Items.Select().Include(i => i.Category).Include(i => i.Discount).ToListAsync(model.CancellationToken);
             foreach (var newItem in model.ItemOrders)
             {
                 if (newItem.Quantity == 0) continue;
@@ -104,18 +104,18 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                         Quantity = newItem.Quantity,
                         Price = finalPrice,
                     };
-                    await unitOfWork.ItemOrders.AddAsync(itemOrder);
+                    await unitOfWork.ItemOrders.AddAsync(itemOrder, model.CancellationToken);
                 
                 newItemsTotal += finalPrice * newItem.Quantity;
             }
             order.TotalPrice = newItemsTotal;
-            await unitOfWork.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync(model.CancellationToken);
             return true;
         }
         public async Task<bool> UpdateOrderAsync(OrderViewModel model)
         {
             if (model is null || model.ItemOrders is null) throw new ArgumentNullException();
-            var order = await unitOfWork.Orders.GetOrderWithItemsByIdAsync(model.Id);
+            var order = await unitOfWork.Orders.GetOrderWithItemsByIdAsync(model.Id, model.CancellationToken);
             if (order is null) return false;
             order.OrderStatus = model.OrderStatus;
             order.TableId = model.TableId;
@@ -133,7 +133,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             
             foreach(var newItem in model.ItemOrders)
                 {
-                    var item = await unitOfWork.Items.GetByIdAsync(newItem.ItemId);
+                    var item = await unitOfWork.Items.GetByIdAsync(newItem.ItemId, model.CancellationToken);
                     if(item is null) throw new ArgumentNullException("One of items is not exists");
 
                     if (!item.IsAvailable || !item.IsActive)
@@ -163,13 +163,13 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                         Quantity = newItem.Quantity,
                         Price = finalPrice
                     };
-                    await unitOfWork.ItemOrders.AddAsync(itemOrder);
+                    await unitOfWork.ItemOrders.AddAsync(itemOrder, model.CancellationToken);
                 }
                 newItemsTotal += finalPrice * newItem.Quantity;
 }
             order.TotalPrice = newItemsTotal;
             unitOfWork.Orders.Update(order);
-            await unitOfWork.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync(model.CancellationToken);
             return true;
         }
 
@@ -292,7 +292,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         public async Task<bool> UpdateOrderAsync(OrderStatusViewModel model)
         {
             if (model is null) throw new ArgumentNullException();
-            var order = await unitOfWork.Orders.Select().Where(o => o.Id == model.OrderId).FirstOrDefaultAsync();
+            var order = await unitOfWork.Orders.Select().Where(o => o.Id == model.OrderId).FirstOrDefaultAsync(model.CancellationToken);
             if (order is null) return false;
             order.OrderStatus = model.Status;
             unitOfWork.Orders.Update(order);

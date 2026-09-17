@@ -14,16 +14,16 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
     {
         [Authorize(Roles = nameof(UserRole.AccessOrders))]
         [HttpGet("")]
-        public async Task<IActionResult> Orders()
+        public async Task<IActionResult> Orders(CancellationToken cancellationToken)
         {
-            var Orders = await ordersService.GetAllOrdersAsync();
+            var Orders = await ordersService.GetAllOrdersAsync(cancellationToken);
             return View(Orders);
         }
         [Authorize(Roles = nameof(UserRole.AccessOrders))]
         [HttpGet("OrderDetails/{id:guid}")]
-        public async Task<IActionResult> OrderDetails(Guid id)
+        public async Task<IActionResult> OrderDetails(Guid id, CancellationToken cancellationToken)
         {
-            var Orders = await ordersService.GetOrderByIdAsync(id);
+            var Orders = await ordersService.GetOrderByIdAsync(id, cancellationToken);
             return View(Orders);
         }
 
@@ -35,9 +35,9 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         }
         [Authorize(Roles = nameof(UserRole.ManageOrders))]
         [HttpGet("EditOrder/{id:guid}")]
-        public async Task<IActionResult> EditOrder(Guid id)
+        public async Task<IActionResult> EditOrder(Guid id, CancellationToken cancellationToken)
         {
-            var order = await ordersService.GetOrderByIdAsync(id);
+            var order = await ordersService.GetOrderByIdAsync(id, cancellationToken);
             return View(order);
         }
 
@@ -63,17 +63,17 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
 
         [Authorize(Roles = nameof(UserRole.ManageOrders))]
         [HttpGet("DeleteOrder/{id:guid}")]
-        public async Task<IActionResult> DeleteOrder(Guid id)
+        public async Task<IActionResult> DeleteOrder(Guid id, CancellationToken cancellationToken)
         {
-            var emps = await ordersService.GetOrderByIdAsync(id);
+            var emps = await ordersService.GetOrderByIdAsync(id, cancellationToken);
             return View(emps);
         }
         [ValidateAntiForgeryToken]
         [Authorize(Roles = nameof(UserRole.ManageOrders))]
         [HttpPost("ConfirmedDeleteOrder/{id:guid}")]
-        public async Task<IActionResult> ConfirmedDeleteOrder(Guid id)
+        public async Task<IActionResult> ConfirmedDeleteOrder(Guid id, CancellationToken cancellationToken)
         {
-            await ordersService.DeleteOrderAsync(id);
+            await ordersService.DeleteOrderAsync(id, cancellationToken);
             return RedirectToAction(nameof(Orders));
         }
     }

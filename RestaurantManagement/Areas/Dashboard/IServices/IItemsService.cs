@@ -6,14 +6,14 @@ namespace RestaurantManagement.Areas.Dashboard.IServices
 {
     public interface IItemsService
     {
-        Task<List<ItemViewModel>> GetAllItemsAsync();
-        Task<ItemViewModel> GetItemByIdAsync(Guid Id);
+        Task<List<ItemViewModel>> GetAllItemsAsync(CancellationToken cancellationToken = default);
+        Task<ItemViewModel> GetItemByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<bool> CreateItemAsync(ItemViewModel model);
         Task<bool> UpdateItemAsync(ItemViewModel model);
-        Task<bool> DeleteItemAsync(Guid id);
-        Task<List<ItemByCategoryViewModel>> GetItemsByType(CategoryType type);
-        Task<IEnumerable<Category>> GetCategoriesByTypeAsync(CategoryType type);
-        public Task<List<ItemByCategoryViewModel>> GetItemsByCategoryId(Guid categoryId);
+        Task<bool> DeleteItemAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<List<ItemByCategoryViewModel>> GetItemsByType(CategoryType type, CancellationToken cancellationToken = default);
+        Task<IEnumerable<Category>> GetCategoriesByTypeAsync(CategoryType type, CancellationToken cancellationToken = default);
+        public Task<List<ItemByCategoryViewModel>> GetItemsByCategoryId(Guid categoryId, CancellationToken cancellationToken = default);
         public Task<ItemsPageViewModel> GetPagedItemsAsync(ItemFilterViewModel model);
     }
 }

@@ -11,9 +11,9 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
     public class DetailsController(IDetailsService DetailsService) : Controller
     {
         [Authorize(Roles = nameof(UserRole.AccessDetails))]
-        public async Task<IActionResult> Details()
+        public async Task<IActionResult> Details(CancellationToken cancellationToken)
         {
-            var model = await DetailsService.GetDetailsAsync();
+            var model = await DetailsService.GetDetailsAsync(cancellationToken);
 
             return View(model);
         }

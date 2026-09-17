@@ -9,9 +9,9 @@ namespace RestaurantManagement.Repositories
         public GroupRoleRepository(AppDbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
-        public async Task DeleteByGroupIdAsync(Guid id)
+        public async Task DeleteByGroupIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var groupRoles = await _dbSet.Where(g => g.GroupId == id).ToListAsync();
+            var groupRoles = await _dbSet.Where(g => g.GroupId == id).ToListAsync(cancellationToken);
             _dbSet.RemoveRange(groupRoles);
         }
     }

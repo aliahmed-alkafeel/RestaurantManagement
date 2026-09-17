@@ -10,9 +10,9 @@ namespace RestaurantManagement.Repositories
         public RoleRepository(AppDbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
-        public async Task<List<Role>> GetRolesByNamesAsync(List<UserRole> rolesNames)
+        public async Task<List<Role>> GetRolesByNamesAsync(List<UserRole> rolesNames, CancellationToken cancellationToken = default)
         {
-            return await _dbSet.Where(r => rolesNames.Contains(r.RoleName)).ToListAsync();
+            return await _dbSet.Where(r => rolesNames.Contains(r.RoleName)).ToListAsync(cancellationToken);
         }
     }
 }

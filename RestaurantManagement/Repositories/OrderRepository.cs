@@ -11,13 +11,13 @@ namespace RestaurantManagement.Repositories
         public OrderRepository(AppDbContext context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
-        public async Task<List<Order>> GetAllOrdersWithItemsAsync()
+        public async Task<List<Order>> GetAllOrdersWithItemsAsync(CancellationToken cancellationToken = default)
         {
-            return await _dbSet.Include(o => o.ItemOrders).ThenInclude(io => io.Item).ThenInclude(i => i.Discount).ToListAsync();
+            return await _dbSet.Include(o => o.ItemOrders).ThenInclude(io => io.Item).ThenInclude(i => i.Discount).ToListAsync(cancellationToken);
         }
-        public async Task<Order?> GetOrderWithItemsByIdAsync(Guid id)
+        public async Task<Order?> GetOrderWithItemsByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await _dbSet.Where(o => o.Id == id).Include(o => o.ItemOrders).ThenInclude(io => io.Item).ThenInclude(i => i.Discount).FirstOrDefaultAsync();
+            return await _dbSet.Where(o => o.Id == id).Include(o => o.ItemOrders).ThenInclude(io => io.Item).ThenInclude(i => i.Discount).FirstOrDefaultAsync(cancellationToken);
         }
 
     }

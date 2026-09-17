@@ -10,10 +10,10 @@ namespace RestaurantManagement.Areas.Dashboard.Services
     public class CategoriesService(IUnitOfWork unitOfWork) : ICategoriesService
     {
 
-        public async Task<bool> CreateCategoryAsync(CategoryViewModel model, CancellationToken cancellationToken = default)
+        public async Task<bool> CreateCategoryAsync(CategoryViewModel model)
         {
             if (model is null) throw new ArgumentNullException();
-            var categories = await unitOfWork.Categories.GetAllAsync();
+            var categories = await unitOfWork.Categories.GetAllAsync(model.CancellationToken);
             foreach(Category cat in categories)
             {
                 if(cat.CategoryName == model.CategoryName && cat.Type == model.Type)
@@ -27,8 +27,8 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 CategoryName = model.CategoryName,
                 Type = model.Type
             };
-            await unitOfWork.Categories.AddAsync(category);
-            await unitOfWork.SaveChangesAsync();
+            await unitOfWork.Categories.AddAsync(category, model.CancellationToken);
+            await unitOfWork.SaveChangesAsync(model.CancellationToken);
             return true;
         }
 
@@ -65,19 +65,19 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         }
 
-        public async Task<bool> DeleteCategoryAsync(Guid id)
+        public async Task<bool> DeleteCategoryAsync(Guid id, CancellationToken cancellationToken)
         {
-            var category = await unitOfWork.Categories.GetByIdAsync(id);
+            var category = await unitOfWork.Categories.GetByIdAsync(id,cancellationToken);
             if (category is null) throw new InvalidOperationException("There is no such category");
             unitOfWork.Categories.Delete(category);
-            await unitOfWork.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync(cancellationToken);
             return true;
         }
 
         public async Task<bool> UpdateCategoryAsync(CategoryViewModel model)
         {
             if (model is null) throw new ArgumentNullException();
-            var categories = await unitOfWork.Categories.GetAllAsync();
+            var categories = await unitOfWork.Categories.GetAllAsync(model.CancellationToken);
             foreach (Category cat in categories)
             {
                 if ((cat.CategoryName == model.CategoryName && cat.Id != model.Id) &&
@@ -91,7 +91,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             category.CategoryName = model.CategoryName;
             category.Type = model.Type;
             unitOfWork.Categories.Update(category);
-            await unitOfWork.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync(model.CancellationToken);
             return true;
         }
 

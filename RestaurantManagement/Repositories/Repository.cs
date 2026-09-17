@@ -64,7 +64,7 @@ namespace RestaurantManagement.Repositories
             await _dbSet.AddAsync(obj,cancellationToken);
         }
 
-        public void Update(T obj, CancellationToken cancellationToken = default)
+        public void Update(T obj)
         {
             obj.UpdatedAt = DateTime.UtcNow;
             obj.UpdatedById = userId;

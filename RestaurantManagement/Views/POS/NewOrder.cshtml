@@ -737,43 +737,70 @@
                    SIDEBAR
                    ================================================= */
 
+                // function openSidebar() {
+
+                //     sidebar?.classList.add("open");
+
+                //     sidebarOverlay?.classList.add("show");
+
+                //     document.body.classList.add("sidebar-open");
+                // }
+
+
+                // function closeSidebar() {
+
+                //     sidebar?.classList.remove("open");
+
+                //     sidebarOverlay?.classList.remove("show");
+
+                //     document.body.classList.remove("sidebar-open");
+                // }
+
+
+                // sidebarOpen?.addEventListener(
+                //     "click",
+                //     openSidebar
+                // );
+
+
+                // sidebarClose?.addEventListener(
+                //     "click",
+                //     closeSidebar
+                // );
+
                 function openSidebar() {
 
                     sidebar?.classList.add("open");
-
                     sidebarOverlay?.classList.add("show");
-
                     document.body.classList.add("sidebar-open");
                 }
-
 
                 function closeSidebar() {
 
                     sidebar?.classList.remove("open");
-
                     sidebarOverlay?.classList.remove("show");
-
                     document.body.classList.remove("sidebar-open");
                 }
 
+                function toggleSidebar() {
+
+                    if (sidebar?.classList.contains("open")) {
+                        closeSidebar();
+                    }
+                    else {
+                        openSidebar();
+                    }
+                }
 
                 sidebarOpen?.addEventListener(
                     "click",
-                    openSidebar
+                    toggleSidebar
                 );
-
-
-                sidebarClose?.addEventListener(
-                    "click",
-                    closeSidebar
-                );
-
 
                 sidebarOverlay?.addEventListener(
                     "click",
                     closeSidebar
                 );
-
 
                 /* =================================================
                    FILTER

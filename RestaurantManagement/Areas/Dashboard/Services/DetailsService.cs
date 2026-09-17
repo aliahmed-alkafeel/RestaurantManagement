@@ -8,30 +8,30 @@ namespace RestaurantManagement.Areas.Details.Services
 {
     public class DetailsService(IUnitOfWork unitOfWork) : IDetailsService
     {
-        public async Task<DetailsViewModel> GetDetailsAsync()
+        public async Task<DetailsViewModel> GetDetailsAsync(CancellationToken cancellationToken = default)
         {
             var today = DateTime.UtcNow.Date;
             var tomorrow = today.AddDays(1);
             var startDate = today.AddDays(-6);
             var totalSales = await unitOfWork.ItemOrders
                 .NoTrackingSelect().Where(io => io.Order.OrderStatus == Models.OrderStatus.Completed)
-                .SumAsync(io => io.Price * io.Quantity);
+                .SumAsync(io => io.Price * io.Quantity, cancellationToken);
 
             var totalOrders = await unitOfWork.Orders
                 .NoTrackingSelect().Where(o => o.OrderStatus == Models.OrderStatus.Completed)
-                .CountAsync();
+                .CountAsync(cancellationToken);
 
             var todaySales = await unitOfWork.ItemOrders
                 .NoTrackingSelect()
                 .Where(io =>
                     io.Order.OrderDate >= today &&
-                    io.Order.OrderDate < tomorrow && io.Order.OrderStatus == Models.OrderStatus.Completed).SumAsync(io => io.Price * io.Quantity);
+                    io.Order.OrderDate < tomorrow && io.Order.OrderStatus == Models.OrderStatus.Completed).SumAsync(io => io.Price * io.Quantity, cancellationToken);
 
             var todayOrders = await unitOfWork.Orders
                 .NoTrackingSelect()
                 .Where(o =>
                     o.OrderDate >= today &&
-                    o.OrderDate < tomorrow && o.OrderStatus == Models.OrderStatus.Completed).CountAsync();
+                    o.OrderDate < tomorrow && o.OrderStatus == Models.OrderStatus.Completed).CountAsync(cancellationToken);
 
             var salesLast7Days = await unitOfWork.ItemOrders
                 .NoTrackingSelect()
@@ -43,7 +43,7 @@ namespace RestaurantManagement.Areas.Details.Services
                     Date = g.Key,
                     Sales = g.Sum(io => io.Price * io.Quantity)
                 })
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
             var completeSalesLast7Days = Enumerable
     .Range(0, 7)
     .Select(i =>
@@ -80,7 +80,7 @@ namespace RestaurantManagement.Areas.Details.Services
                 })
                 .OrderByDescending(x => x.Quantity)
                 .Take(5)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
                  var salesByCategory = await unitOfWork.ItemOrders
                 .NoTrackingSelect().Where(io => io.Order.OrderStatus == Models.OrderStatus.Completed)
@@ -97,7 +97,7 @@ namespace RestaurantManagement.Areas.Details.Services
                         x.Price * x.Quantity)
                 })
                 .OrderByDescending(x => x.TotalSales)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
                  var mostPopularToday = await unitOfWork.ItemOrders
                 .NoTrackingSelect()
@@ -119,7 +119,7 @@ namespace RestaurantManagement.Areas.Details.Services
                 })
                 .OrderByDescending(x => x.Quantity)
                 .Take(5)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
                 return new DetailsViewModel
                 {

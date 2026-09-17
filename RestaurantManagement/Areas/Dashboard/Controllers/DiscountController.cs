@@ -13,9 +13,9 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
     {
             [Authorize(Roles = nameof(UserRole.AccessDiscounts))]
             [HttpGet("")]
-            public async Task<IActionResult> Discounts()
+            public async Task<IActionResult> Discounts(CancellationToken cancellationToken)
             {
-                var discounts = await discountsService.GetAllDiscountsAsync();
+                var discounts = await discountsService.GetAllDiscountsAsync(cancellationToken);
                 return View(discounts);
             }
 
@@ -42,9 +42,9 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             }
             [Authorize(Roles = nameof(UserRole.ManageDiscounts))]
             [HttpGet("EditDiscount/{id:guid}")]
-            public async Task<IActionResult> EditDiscount(Guid id)
+            public async Task<IActionResult> EditDiscount(Guid id,CancellationToken cancellationToken)
             {
-                var discount = await discountsService.GetDiscountByIdAsync(id);
+                var discount = await discountsService.GetDiscountByIdAsync(id, cancellationToken);
                 return View("ManageDiscount", discount);
             }
             [Authorize(Roles = nameof(UserRole.ManageDiscounts))]
@@ -67,17 +67,17 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
 
             [Authorize(Roles = nameof(UserRole.ManageDiscounts))]
             [HttpGet("DeleteDiscount/{id:guid}")]
-            public async Task<IActionResult> DeleteDiscount(Guid id)
+            public async Task<IActionResult> DeleteDiscount(Guid id,CancellationToken cancellationToken)
             {
-                var emps = await discountsService.GetDiscountByIdAsync(id);
+                var emps = await discountsService.GetDiscountByIdAsync(id, cancellationToken);
                 return View(emps);
             }
             [ValidateAntiForgeryToken]
             [Authorize(Roles = nameof(UserRole.ManageDiscounts))]
             [HttpPost("ConfirmedDeleteDiscount/{id:guid}")]
-            public async Task<IActionResult> ConfirmedDeleteDiscount(Guid id)
+            public async Task<IActionResult> ConfirmedDeleteDiscount(Guid id,CancellationToken cancellationToken)
             {
-                await discountsService.DeleteDiscountAsync(id);
+                await discountsService.DeleteDiscountAsync(id, cancellationToken);
                 return RedirectToAction(nameof(Discounts));
             }
 

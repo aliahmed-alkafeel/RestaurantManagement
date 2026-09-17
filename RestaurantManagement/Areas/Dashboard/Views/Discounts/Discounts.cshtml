@@ -32,7 +32,7 @@
         }
     </div>
 </header>
-<div class="table-responsive">
+<div class="table-responsive" id="discountTable">
 
     <table class="table text-nowrap mb-0 align-middle">
         <thead class="text-dark fs-4">
@@ -98,7 +98,7 @@
     const options = {
         valueNames: ["discount-name"]
     };
-    const list = new List("itemTable", options);
+    const list = new List("discountTable", options);
     const searchInput = document.getElementById("search");
     searchInput.addEventListener("input", function() {
         list.search(this.value)

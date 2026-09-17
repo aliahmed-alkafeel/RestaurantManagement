@@ -11,9 +11,9 @@ namespace RestaurantManagement.Repositories
         {
         }
 
-        public async Task<List<Item>> GetItemsWithCategories()
+        public async Task<List<Item>> GetItemsWithCategories(CancellationToken cancellationToken = default)
         {
-            return await Select().Include(i => i.Category).ToListAsync();
+            return await Select().Include(i => i.Category).ToListAsync(cancellationToken);
         }
     }
 }
