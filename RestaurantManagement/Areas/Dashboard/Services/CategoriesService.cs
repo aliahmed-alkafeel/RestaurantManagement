@@ -10,7 +10,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
     public class CategoriesService(IUnitOfWork unitOfWork) : ICategoriesService
     {
 
-        public async Task<bool> CreateCategoryAsync(CategoryViewModel model)
+        public async Task<bool> CreateCategoryAsync(CategoryViewModel model, CancellationToken cancellationToken = default)
         {
             if (model is null) throw new ArgumentNullException();
             var categories = await unitOfWork.Categories.GetAllAsync();
@@ -32,9 +32,9 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             return true;
         }
 
-        public async Task<List<CategoryViewModel>> GetAllCategoriesAsync()
+        public async Task<List<CategoryViewModel>> GetAllCategoriesAsync(CancellationToken cancellationToken)
         {
-            var categories = await unitOfWork.Categories.GetAllAsync();
+            var categories = await unitOfWork.Categories.GetAllAsync(cancellationToken);
             List<CategoryViewModel> categoriesVm = [];
             foreach (Category category in categories)
             {
@@ -51,9 +51,9 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             return categoriesVm;
         }
 
-        public async Task<CategoryViewModel> GetCategoryByIdAsync(Guid Id)
+        public async Task<CategoryViewModel> GetCategoryByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            var category = await unitOfWork.Categories.GetByIdAsync(Id);
+            var category = await unitOfWork.Categories.GetByIdAsync(id,cancellationToken);
             if (category is null) throw new KeyNotFoundException("There is no such category");
             CategoryViewModel categoryVm = new CategoryViewModel
             {
@@ -65,7 +65,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         }
 
-        public async Task<bool> DeleteCategoryAsync(Guid id, Guid ModifierId)
+        public async Task<bool> DeleteCategoryAsync(Guid id)
         {
             var category = await unitOfWork.Categories.GetByIdAsync(id);
             if (category is null) throw new InvalidOperationException("There is no such category");
@@ -74,7 +74,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             return true;
         }
 
-        public async Task<bool> UpdateCategoryAsync(CategoryViewModel model, Guid ModifierId)
+        public async Task<bool> UpdateCategoryAsync(CategoryViewModel model)
         {
             if (model is null) throw new ArgumentNullException();
             var categories = await unitOfWork.Categories.GetAllAsync();

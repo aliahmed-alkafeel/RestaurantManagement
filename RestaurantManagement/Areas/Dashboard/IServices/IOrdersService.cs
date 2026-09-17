@@ -8,10 +8,10 @@ namespace RestaurantManagement.Areas.Dashboard.IServices
     {
         Task<List<OrderViewModel>> GetAllOrdersAsync();
         Task<OrderViewModel> GetOrderByIdAsync(Guid Id);
-        Task<bool> UpdateOrderAsync(OrderViewModel model, Guid ModifierId);
-        Task<bool> UpdateOrderAsync(OrderStatusViewModel model, Guid ModifierId);
+        Task<bool> UpdateOrderAsync(OrderViewModel model);
+        Task<bool> UpdateOrderAsync(OrderStatusViewModel model);
         Task<bool> CreateOrderAsync(CreateOrderViewModel model);
-        Task<bool> DeleteOrderAsync(Guid id, Guid ModifierId);
+        Task<bool> DeleteOrderAsync(Guid id);
         Task<POSOrdersViewModel> GetPOSOrdersAsync(
             POSOrdersFilterViewModel filter,
             CancellationToken cancellationToken = default);

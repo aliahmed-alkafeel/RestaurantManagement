@@ -68,7 +68,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         }
 
-        public async Task<bool> DeleteDiscountAsync(Guid modelId, Guid ModifierId)
+        public async Task<bool> DeleteDiscountAsync(Guid modelId)
         {
             var discount = await unitOfWork.Discounts.GetByIdAsync(modelId);
             if (discount is null) throw new InvalidOperationException("There is no such discount");
@@ -77,7 +77,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             return true;
         }
 
-        public async Task<bool> UpdateDiscountAsync(DiscountViewModel model, Guid ModifierId)
+        public async Task<bool> UpdateDiscountAsync(DiscountViewModel model)
         {
             if (model is null) throw new ArgumentNullException();
             var discount = await unitOfWork.Discounts.GetDiscountWithItemsByIdAsync(model.Id);

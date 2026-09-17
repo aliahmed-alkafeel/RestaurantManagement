@@ -56,7 +56,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
                 {
                     return View("ManageDiscount",model);
                 }
-                var result = await discountsService.UpdateDiscountAsync(model, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
+                var result = await discountsService.UpdateDiscountAsync(model);
                 if (!result)
                 {
                     ModelState.AddModelError("", "This update is not allowed");
@@ -77,7 +77,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             [HttpPost("ConfirmedDeleteDiscount/{id:guid}")]
             public async Task<IActionResult> ConfirmedDeleteDiscount(Guid id)
             {
-                await discountsService.DeleteDiscountAsync(id, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
+                await discountsService.DeleteDiscountAsync(id);
                 return RedirectToAction(nameof(Discounts));
             }
 

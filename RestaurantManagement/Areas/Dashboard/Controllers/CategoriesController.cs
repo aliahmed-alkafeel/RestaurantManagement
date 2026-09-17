@@ -15,9 +15,9 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
     {
         [Authorize(Roles = nameof(UserRole.AccessCategories))]
         [HttpGet("")]
-        public async Task<IActionResult> Categories()
+        public async Task<IActionResult> Categories(CancellationToken cancellationToken)
         {
-            var categories = await categoriesService.GetAllCategoriesAsync();
+            var categories = await categoriesService.GetAllCategoriesAsync(cancellationToken);
             return View(categories);
         }
 
@@ -35,7 +35,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         public async Task<IActionResult> CreateCategory(CategoryViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
-            var result = await categoriesService.CreateCategoryAsync(model);
+            var result = await categoriesService.CreateCategoryAsync(model,model.CancellationToken);
             if (result is false)
             {
                 ModelState.AddModelError("", "The Category is Regestered");
@@ -45,9 +45,9 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         }
         [Authorize(Roles = nameof(UserRole.ManageCategories))]
         [HttpGet("EditCategory/{id:guid}")]
-        public async Task<IActionResult> EditCategory(Guid id)
+        public async Task<IActionResult> EditCategory(Guid id, CancellationToken cancellationToken)
         {
-            var order = await categoriesService.GetCategoryByIdAsync(id);
+            var order = await categoriesService.GetCategoryByIdAsync(id, cancellationToken);
             return View(order);
         }
         [Authorize(Roles = nameof(UserRole.ManageCategories))]
@@ -59,7 +59,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             {
                 return View(model);
             }
-            var result = await categoriesService.UpdateCategoryAsync(model, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
+            var result = await categoriesService.UpdateCategoryAsync(model);
             if (!result)
             {
                 ModelState.AddModelError("", "This update is not allowed");
@@ -70,9 +70,9 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
 
         [Authorize(Roles = nameof(UserRole.ManageCategories))]
         [HttpGet("DeleteCategory/{id:guid}")]
-        public async Task<IActionResult> DeleteCategory(Guid id)
+        public async Task<IActionResult> DeleteCategory(Guid id, CancellationToken cancellationToken)
         {
-            var emps = await categoriesService.GetCategoryByIdAsync(id);
+            var emps = await categoriesService.GetCategoryByIdAsync(id, cancellationToken);
             return View(emps);
         }
         [ValidateAntiForgeryToken]
@@ -80,7 +80,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [HttpPost("ConfirmedDeleteCategory/{id:guid}")]
         public async Task<IActionResult> ConfirmedDeleteCategory(Guid id)
         {
-            await categoriesService.DeleteCategoryAsync(id, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
+            await categoriesService.DeleteCategoryAsync(id);
             return RedirectToAction(nameof(Categories));
         }
 

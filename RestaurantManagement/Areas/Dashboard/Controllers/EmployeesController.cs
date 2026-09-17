@@ -48,7 +48,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             {                             
                     return View(model);
             }
-            var result = await employeesService.UpdateEmployeeAsync(model, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
+            var result = await employeesService.UpdateEmployeeAsync(model);
             if(!result)
             {
                 ModelState.AddModelError("","This update is not allowed");
@@ -69,7 +69,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [HttpPost("ConfirmedTerminateEmployee/{id:guid}")]
         public async Task<IActionResult> ConfirmedTerminateEmployee(Guid id)
         {
-            var result = await employeesService.TerminateEmployeeAsync(id, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
+            var result = await employeesService.TerminateEmployeeAsync(id);
             if (!result) return RedirectToAction("AccessDenied", "Auth", new {area="",returnUrl="/Dashboard"});
             return RedirectToAction(nameof(Employees));
         }

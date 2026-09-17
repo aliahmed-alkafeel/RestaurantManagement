@@ -89,7 +89,7 @@ namespace RestaurantManagement.Controllers
                 User.FindFirstValue(ClaimTypes.NameIdentifier)!
             );
 
-            var result = await ordersService.UpdateOrderAsync(model, modifierId);
+            var result = await ordersService.UpdateOrderAsync(model);
 
             if (!result)
             {

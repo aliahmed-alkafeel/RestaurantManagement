@@ -7,7 +7,7 @@ namespace RestaurantManagement.Areas.Dashboard.IServices
         Task<List<DiscountViewModel>> GetAllDiscountsAsync();
         Task<DiscountViewModel> GetDiscountByIdAsync(Guid Id);
         Task<bool> CreateDiscountAsync(DiscountViewModel model);
-        Task<bool> UpdateDiscountAsync(DiscountViewModel model, Guid ModifierId);
-        Task<bool> DeleteDiscountAsync(Guid modelId, Guid ModifierId);
+        Task<bool> UpdateDiscountAsync(DiscountViewModel model);
+        Task<bool> DeleteDiscountAsync(Guid modelId);
     }
 }

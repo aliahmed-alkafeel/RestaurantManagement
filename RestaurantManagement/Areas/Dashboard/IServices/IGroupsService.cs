@@ -6,8 +6,8 @@ namespace RestaurantManagement.Areas.Dashboard.IServices
     {
         Task<List<GroupViewModel>> GetAllGroupsAsync();
         Task<GroupViewModel> GetGroupByIdAsync(Guid Id);
-        Task<bool> UpdateGroupAsync(GroupViewModel model, Guid ModifierId);
+        Task<bool> UpdateGroupAsync(GroupViewModel model );
         Task<bool> CreateGroupAsync(GroupViewModel model);
-        Task<bool> DeleteGroupAsync(Guid modelId, Guid ModifierId);
+        Task<bool> DeleteGroupAsync(Guid modelId);
     }
 }

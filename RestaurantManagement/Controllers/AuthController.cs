@@ -37,15 +37,15 @@ namespace RestaurantManagement.Controllers
             {
                 return Redirect(returnUrl);
             }
-            return RedirectToAction("NewOrder", "POS");
+            return RedirectToAction("DashToHome", "Redirect");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Logout(LoginViewModel model)
+        public async Task<IActionResult> Logout()
         {
             await _authService.LogoutAsync();
-            return RedirectToAction("NewOrder", "POS");
+            return RedirectToAction(nameof(Login));
         }
         [HttpGet]
         public IActionResult AccessDenied(string? returnUrl)

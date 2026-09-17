@@ -18,7 +18,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             var items = await unitOfWork.Items.GetAllAsync();
             foreach (Item i in items)
             {
-                if (i.ItemName == model.ItemName && i.CategoryId == model.CategoryId)
+                if(i.ItemName == model.ItemName && i.CategoryId == model.CategoryId)
                 {
                     return false;
                 }
@@ -42,7 +42,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             return true;
         }
 
-        public async Task<bool> DeleteItemAsync(Guid modelId, Guid ModifierId)
+        public async Task<bool> DeleteItemAsync(Guid modelId)
         {
             var item = await unitOfWork.Items.GetByIdAsync(modelId);
             if (item is null) throw new InvalidOperationException("There is no such Item");
@@ -51,6 +51,28 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             await unitOfWork.SaveChangesAsync();
             return true;
         }
+
+        public async Task<List<ItemByCategoryViewModel>> GetItemsByType(CategoryType type)
+        {
+            return await unitOfWork.Items
+                .NoTrackingSelect()
+                .Where(i => i.Category.Type == type)
+                .Select(i => new ItemByCategoryViewModel
+                {
+                    Id = i.Id,
+                    ItemName = i.ItemName,
+                    Price = i.Price,
+                    Image = i.ImageUrl,
+                    DiscountPercentage =
+                        i.Discount != null &&
+                        i.Discount.DiscountStartingDate <= DateTime.UtcNow &&
+                        i.Discount.DiscountEndingDate >= DateTime.UtcNow
+                            ? i.Discount.DiscountPercentage
+                            : null
+                })
+                .ToListAsync();
+        }
+
         public void DeleteImage(Item item)
         {
             if (!item.ImageUrl.EndsWith("default.jpg"))
@@ -137,7 +159,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             return true;
         }
 
-        public async Task<bool> UpdateItemAsync(ItemViewModel model, Guid ModifierId)
+        public async Task<bool> UpdateItemAsync(ItemViewModel model)
         {
             if (model is null) throw new ArgumentNullException();
             var Items = await unitOfWork.Items.GetAllAsync();

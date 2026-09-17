@@ -1,4 +1,5 @@
-﻿const addItemBtn =
+﻿
+const addItemBtn =
     document.getElementById("addItemBtn");
 
 const itemType =
@@ -25,10 +26,14 @@ const itemIdsContainer =
 // for this discount.
 //
 
-let discountItems = [...initialDiscountItems];
-
-renderItems();
-updateHiddenInputs();
+let discountItems =
+    Array.isArray(initialDiscountItems)
+        ? initialDiscountItems.map(item => ({
+            itemId: String(item.itemId),
+            itemName: item.itemName,
+            price: Number(item.price)
+        }))
+        : [];
 
 
 // ==================================================
@@ -48,14 +53,23 @@ itemType.addEventListener(
     "change",
     async function () {
 
-        const type = this.value;
+        const type =
+            this.value;
 
+
+        // ------------------------------------------
+        // Reset Category
+        // ------------------------------------------
 
         resetSelect(
             itemCategory,
             "Select Category"
         );
 
+
+        // ------------------------------------------
+        // Reset Item
+        // ------------------------------------------
 
         resetSelect(
             itemSelect,
@@ -67,15 +81,20 @@ itemType.addEventListener(
         itemSelect.disabled = true;
 
 
+        // ------------------------------------------
+        // No Type
+        // ------------------------------------------
+
         if (!type)
             return;
 
 
         try {
 
-            const response = await fetch(
-                `/Dashboard/Items/GetCategoriesByType?type=${type}`
-            );
+            const response =
+                await fetch(
+                    `/Dashboard/Items/GetCategoriesByType?type=${ encodeURIComponent(type) }`
+                );
 
 
             if (!response.ok)
@@ -87,6 +106,10 @@ itemType.addEventListener(
             const categories =
                 await response.json();
 
+
+            // --------------------------------------
+            // Add Categories
+            // --------------------------------------
 
             categories.forEach(category => {
 
@@ -107,7 +130,8 @@ itemType.addEventListener(
             });
 
 
-            itemCategory.disabled = false;
+            itemCategory.disabled =
+                false;
 
         }
         catch (error) {
@@ -132,8 +156,13 @@ itemCategory.addEventListener(
     "change",
     async function () {
 
-        const categoryId = this.value;
+        const categoryId =
+            this.value;
 
+
+        // ------------------------------------------
+        // Reset Item
+        // ------------------------------------------
 
         resetSelect(
             itemSelect,
@@ -141,8 +170,13 @@ itemCategory.addEventListener(
         );
 
 
-        itemSelect.disabled = true;
+        itemSelect.disabled =
+            true;
 
+
+        // ------------------------------------------
+        // No Category
+        // ------------------------------------------
 
         if (!categoryId)
             return;
@@ -150,9 +184,10 @@ itemCategory.addEventListener(
 
         try {
 
-            const response = await fetch(
-                `/Dashboard/Items/GetItemsByCategory?categoryId=${categoryId}`
-            );
+            const response =
+                await fetch(
+                    `/Dashboard/Items/GetItemsByCategory?categoryId=${ encodeURIComponent(categoryId) }`
+                );
 
 
             if (!response.ok)
@@ -165,17 +200,23 @@ itemCategory.addEventListener(
                 await response.json();
 
 
+            // --------------------------------------
+            // Add Items To Select
+            // --------------------------------------
+
             items.forEach(item => {
 
-                // Don't add an item that is
-                // already selected.
+                // Do not show already selected items.
 
                 if (
                     discountItems.some(
-                        x => x.itemId === item.id
+                        x =>
+                            String(x.itemId) ===
+                            String(item.id)
                     )
-                )
+                ) {
                     return;
+                }
 
 
                 const option =
@@ -194,12 +235,15 @@ itemCategory.addEventListener(
                     item.price;
 
 
-                itemSelect.appendChild(option);
+                itemSelect.appendChild(
+                    option
+                );
 
             });
 
 
-            itemSelect.disabled = false;
+            itemSelect.disabled =
+                false;
 
         }
         catch (error) {
@@ -217,104 +261,244 @@ itemCategory.addEventListener(
 
 
 // ==================================================
-// Add Item
+// Add
 // ==================================================
 
 addItemBtn.addEventListener(
     "click",
-    function () {
+    async function () {
+
+        const type =
+            itemType.value;
+
+
+        const categoryId =
+            itemCategory.value;
+
 
         const itemId =
             itemSelect.value;
 
 
-        const selectedOption =
-            itemSelect.options[
-            itemSelect.selectedIndex
-            ];
-
-
-        const itemName =
-            selectedOption?.textContent;
-
-
-        const price =
-            Number(
-                selectedOption?.dataset.price
-            );
-
-
-        // ------------------------------------------
+        // ==================================================
         // Validation
-        // ------------------------------------------
+        // ==================================================
 
-        if (!itemId) {
+        if (!type) {
 
             alert(
-                "Please select an item."
+                "Please select a type."
             );
 
             return;
         }
+
+
+        // Prevent double clicking.
+
+        addItemBtn.disabled =
+            true;
+
+
+        try {
+
+            // ==================================================
+            // 1. Type only
+            // ==================================================
+
+            if (!categoryId) {
+
+                const response =
+                    await fetch(
+                        `/Dashboard/Items/GetItemsByType?type=${encodeURIComponent(type)}`
+                    );
+
+
+                if (!response.ok)
+                    throw new Error(
+                        "Failed to load items by type."
+                    );
+
+
+                const items =
+                    await response.json();
+
+
+                addItems(
+                    items
+                );
+            }
+
+
+            // ==================================================
+            // 2. Type + Category
+            // ==================================================
+
+            else if (!itemId) {
+
+                const response =
+                    await fetch(
+                        `/Dashboard/Items/GetItemsByCategory?categoryId=${encodeURIComponent(categoryId)}`
+                    );
+
+
+                if (!response.ok)
+                    throw new Error(
+                        "Failed to load items by category."
+                    );
+
+
+                const items =
+                    await response.json();
+
+
+                addItems(
+                    items
+                );
+            }
+
+
+            // ==================================================
+            // 3. Type + Category + Item
+            // ==================================================
+
+            else {
+
+                const selectedOption =
+                    itemSelect.options[
+                        itemSelect.selectedIndex
+                    ];
+
+
+                if (!selectedOption) {
+
+                    alert(
+                        "Please select an item."
+                    );
+
+                    return;
+                }
+
+
+                const item = {
+
+                    id:
+                        itemId,
+
+                    itemName:
+                        selectedOption.textContent.trim(),
+
+                    price:
+                        Number(
+                            selectedOption.dataset.price
+                        )
+
+                };
+
+
+                addItems([
+                    item
+                ]);
+            }
+
+
+            // ==================================================
+            // Update UI
+            // ==================================================
+
+            renderItems();
+
+            updateHiddenInputs();
+
+
+            // ==================================================
+            // Reset Item Select
+            // ==================================================
+
+            resetSelect(
+                itemSelect,
+                "Select Item"
+            );
+
+
+            itemSelect.disabled =
+                true;
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+            alert(
+                error.message ??
+                "Failed to add items."
+            );
+
+        }
+        finally {
+
+            addItemBtn.disabled =
+                false;
+
+        }
+
+    }
+);
+
+
+// ==================================================
+// Add Items
+// ==================================================
+//
+// Adds one or multiple items.
+//
+// Duplicate items are ignored.
+//
+
+function addItems(items) {
+
+    items.forEach(item => {
+
+        const itemId =
+            String(item.id);
 
 
         // ------------------------------------------
         // Prevent Duplicate
         // ------------------------------------------
 
-        const existingItem =
-            discountItems.find(
-                x => x.itemId === itemId
+        const exists =
+            discountItems.some(
+                x =>
+                    String(x.itemId) ===
+                    itemId
             );
 
 
-        if (existingItem) {
-
-            alert(
-                "This item is already selected."
-            );
-
+        if (exists)
             return;
-        }
 
 
         // ------------------------------------------
-        // Create Item
+        // Add
         // ------------------------------------------
 
-        const item = {
+        discountItems.push({
 
-            itemId: itemId,
+            itemId:
+                itemId,
 
-            itemName: itemName,
+            itemName:
+                item.itemName,
 
-            price: price
+            price:
+                Number(item.price)
 
-        };
+        });
 
+    });
 
-        discountItems.push(item);
-
-
-        // ------------------------------------------
-        // Update UI
-        // ------------------------------------------
-
-        renderItems();
-
-        updateHiddenInputs();
-
-
-        // ------------------------------------------
-        // Remove From Select
-        // ------------------------------------------
-
-        selectedOption.remove();
-
-        itemSelect.value = "";
-
-    }
-);
+}
 
 
 // ==================================================
@@ -323,7 +507,8 @@ addItemBtn.addEventListener(
 
 function renderItems() {
 
-    itemsTableBody.innerHTML = "";
+    itemsTableBody.innerHTML =
+        "";
 
 
     discountItems.forEach(item => {
@@ -334,12 +519,12 @@ function renderItems() {
 
         row.innerHTML = `
 
-            <td>
-                ${escapeHtml(item.itemName)}
-            </td>
+    <td>
+    ${ escapeHtml(item.itemName) }
+            </td >
 
             <td>
-                ${item.price}
+                ${Number(item.price).toFixed(2)}
             </td>
 
             <td class="text-end">
@@ -355,10 +540,12 @@ function renderItems() {
 
             </td>
 
-        `;
+`;
 
 
-        itemsTableBody.appendChild(row);
+        itemsTableBody.appendChild(
+            row
+        );
 
     });
 
@@ -387,7 +574,9 @@ itemsTableBody.addEventListener(
             deleteButton.dataset.itemId;
 
 
-        removeItem(itemId);
+        removeItem(
+            itemId
+        );
 
     }
 );
@@ -401,13 +590,30 @@ function removeItem(itemId) {
 
     discountItems =
         discountItems.filter(
-            x => x.itemId !== itemId
+            x =>
+                String(x.itemId) !==
+                String(itemId)
         );
 
 
     renderItems();
 
     updateHiddenInputs();
+
+
+    // ------------------------------------------
+    // Refresh current category items
+    // ------------------------------------------
+
+    if (
+        itemCategory.value
+    ) {
+
+        itemCategory.dispatchEvent(
+            new Event("change")
+        );
+
+    }
 
 }
 
@@ -418,7 +624,8 @@ function removeItem(itemId) {
 
 function updateHiddenInputs() {
 
-    itemIdsContainer.innerHTML = "";
+    itemIdsContainer.innerHTML =
+        "";
 
 
     discountItems.forEach(item => {
@@ -427,16 +634,21 @@ function updateHiddenInputs() {
             document.createElement("input");
 
 
-        input.type = "hidden";
+        input.type =
+            "hidden";
 
 
-        input.name = "ItemIds";
+        input.name =
+            "ItemIds";
 
 
-        input.value = item.itemId;
+        input.value =
+            item.itemId;
 
 
-        itemIdsContainer.appendChild(input);
+        itemIdsContainer.appendChild(
+            input
+        );
 
     });
 
@@ -452,20 +664,25 @@ function resetSelect(
     placeholder
 ) {
 
-    select.innerHTML = "";
+    select.innerHTML =
+        "";
 
 
     const option =
         document.createElement("option");
 
 
-    option.value = "";
+    option.value =
+        "";
+
 
     option.textContent =
         placeholder;
 
 
-    select.appendChild(option);
+    select.appendChild(
+        option
+    );
 
 }
 
@@ -477,10 +694,31 @@ function resetSelect(
 function escapeHtml(value) {
 
     return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
 
 }
+

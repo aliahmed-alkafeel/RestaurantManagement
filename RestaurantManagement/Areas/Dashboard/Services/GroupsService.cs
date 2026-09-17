@@ -33,7 +33,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             await unitOfWork.SaveChangesAsync();
             return true;
         }
-        public async Task<bool> DeleteGroupAsync(Guid modelId, Guid ModifierId)
+        public async Task<bool> DeleteGroupAsync(Guid modelId)
         {
             var group = await unitOfWork.Groups.GetByIdAsync(modelId);
             if (group is null) throw new InvalidOperationException("There is no such group");
@@ -70,7 +70,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             return (groupVm);
         }
 
-        public async Task<bool> UpdateGroupAsync(GroupViewModel model, Guid ModifierId)
+        public async Task<bool> UpdateGroupAsync(GroupViewModel model)
         {
             if (model is null) throw new ArgumentNullException();
             var group = await unitOfWork.Groups.GetByIdAsync(model.Id);

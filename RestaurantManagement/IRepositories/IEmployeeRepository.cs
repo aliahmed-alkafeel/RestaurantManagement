@@ -9,7 +9,7 @@ namespace RestaurantManagement.IRepositories
         Task<Employee> GetEmployeeWithGroupAsync(Guid id);
         Task<Employee> GetEmployeeWithGroupByUsernameAsync(string username);
         Task<Employee?> GetEmployeeByUsernameAsync(string username);
-        void Terminate(Employee employee, Guid createdById, CancellationToken cancellationToken = default);
+        void Terminate(Employee employee);
 
     }
 }

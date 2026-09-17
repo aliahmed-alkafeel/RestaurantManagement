@@ -74,7 +74,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
                 {
                     return View(model);
                 }
-                var result = await itemsService.UpdateItemAsync(model, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
+                var result = await itemsService.UpdateItemAsync(model);
                 if (!result)
                 {
                     ModelState.AddModelError("", "This update is not allowed");
@@ -95,8 +95,17 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             [HttpPost("ConfirmedDeleteItem/{id:guid}")]
             public async Task<IActionResult> ConfirmedDeleteItem(Guid id)
             {
-                await itemsService.DeleteItemAsync(id, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
+                await itemsService.DeleteItemAsync(id);
                 return RedirectToAction(nameof(Items));
+            }
+
+            [HttpGet("GetItemsByType")]
+        [Authorize(Roles = nameof(UserRole.AccessItems))]
+        public async Task<IActionResult> GetItemsByType(CategoryType type)
+        {
+            var items = await itemsService.GetItemsByType(type);
+
+                return Json(items);
             }
         [HttpGet("GetCategoriesByType")]
         [Authorize(Roles = nameof(UserRole.AccessCategories))]

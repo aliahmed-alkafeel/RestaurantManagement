@@ -558,10 +558,10 @@
 
 @media (max-width: 800px) {
 
-    .pos-orders {
+/*    .pos-orders {
         padding: 16px;
     }
-
+*/
     .orders-header {
         gap: 12px;
     }
@@ -592,10 +592,10 @@
 
 @media (max-width: 600px) {
 
-    .pos-orders {
+/*    .pos-orders {
         padding: 10px;
     }
-
+*/
     .orders-header {
         flex-direction: column;
         align-items: flex-start;

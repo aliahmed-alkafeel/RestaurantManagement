@@ -9,9 +9,8 @@ namespace RestaurantManagement.Areas.Dashboard.IServices
         Task<List<EmployeeViewModel>> GetAllEmployeesAsync();
         Task<ManageEmployeeViewModel> GetEmployeeByIdAsync(Guid Id);
         Task<bool> CreateEmployeeAsync(ManageEmployeeViewModel model);
-        Task<bool> UpdateEmployeeAsync(ManageEmployeeViewModel model, Guid ModifierId);
-        Task<bool> TerminateEmployeeAsync(Guid modelId, Guid ModifierId);
+        Task<bool> UpdateEmployeeAsync(ManageEmployeeViewModel model);
+        Task<bool> TerminateEmployeeAsync(Guid modelId);
         Task<List<SelectListItem>> ShowCreateEmployeeAsync();
-
     }
 }

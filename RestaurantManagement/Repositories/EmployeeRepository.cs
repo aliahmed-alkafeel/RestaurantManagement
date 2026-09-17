@@ -37,12 +37,12 @@ namespace RestaurantManagement.Repositories
             return emp;
         }
 
-        public void Terminate(Employee employee, Guid createdById, CancellationToken cancellationToken = default)
+        public void Terminate(Employee employee)
         {
             employee.EmployeeEndingDate = DateTime.UtcNow;
             employee.IsDeleted = true;
             employee.DeletedAt = DateTime.UtcNow;
-            employee.DeletedById = createdById;
+            employee.DeletedById = userId;
             _dbSet.Update(employee);
         
     }

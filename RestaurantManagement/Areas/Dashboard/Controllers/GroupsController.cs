@@ -51,7 +51,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [HttpPost("ConfirmedDeleteGroup/{id:guid}")]
         public async Task<IActionResult> ConfirmedDeleteGroup(Guid id)
         {
-            var result = await groupsService.DeleteGroupAsync(id, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
+            var result = await groupsService.DeleteGroupAsync(id);
             if (!result) return RedirectToAction("AccessDenied", "Auth", new { area = "", returnUrl = "/Dashboard" });
             return RedirectToAction(nameof(Groups));
         }
@@ -68,7 +68,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditGroup(GroupViewModel model)
         {
-            var result = await groupsService.UpdateGroupAsync(model, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
+            var result = await groupsService.UpdateGroupAsync(model);
             if (!result)
             {
                 ModelState.AddModelError("", "This update is not allowed");

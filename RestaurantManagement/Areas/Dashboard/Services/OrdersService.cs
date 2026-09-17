@@ -11,7 +11,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 {
     public class OrdersService(IUnitOfWork unitOfWork) : IOrdersService
     {
-        public async Task<bool> DeleteOrderAsync(Guid modelId, Guid ModifierId)
+        public async Task<bool> DeleteOrderAsync(Guid modelId)
         {
             var order = await unitOfWork.Orders.GetOrderWithItemsByIdAsync(modelId);
             if (order is null) throw new InvalidOperationException("There is no such order");
@@ -89,6 +89,11 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 if (newItem.Quantity == 0) continue;
                 var item = items.FirstOrDefault(x => x.Id == newItem.ItemId);
                 if (item is null) throw new ArgumentNullException("One of items is not exists");
+
+                if (!item.IsAvailable || !item.IsActive)
+                    throw new InvalidOperationException(
+                        $"Item '{item.ItemName}' is not available");
+
                 decimal? hasDiscount = item.Discount != null && item.Discount.DiscountStartingDate <= DateTime.UtcNow && item.Discount.DiscountEndingDate >= DateTime.UtcNow
                         ? item.Discount.DiscountPercentage : null;
                 var finalPrice = hasDiscount != null ? item.Price * (1 - (item.Discount!.DiscountPercentage / 100)) : item.Price;
@@ -107,7 +112,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             await unitOfWork.SaveChangesAsync();
             return true;
         }
-        public async Task<bool> UpdateOrderAsync(OrderViewModel model, Guid ModifierId)
+        public async Task<bool> UpdateOrderAsync(OrderViewModel model)
         {
             if (model is null || model.ItemOrders is null) throw new ArgumentNullException();
             var order = await unitOfWork.Orders.GetOrderWithItemsByIdAsync(model.Id);
@@ -116,10 +121,10 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             order.TableId = model.TableId;
             order.OrderDate = model.OrderDate.AddHours(-3);
             var existingItemOrders = order.ItemOrders.ToList();
-            var ItemIds = model.ItemOrders.Select(x => x.ItemId).ToList();
+            var itemIds = model.ItemOrders.Select(x => x.ItemId).ToList();
             decimal newItemsTotal = 0;
 
-            var toRemove = existingItemOrders.Where(io => !ItemIds.Contains(io.ItemId));
+            var toRemove = existingItemOrders.Where(io => !itemIds.Contains(io.ItemId));
             
             foreach(var oldItemOrder in toRemove)
             {
@@ -131,7 +136,10 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                     var item = await unitOfWork.Items.GetByIdAsync(newItem.ItemId);
                     if(item is null) throw new ArgumentNullException("One of items is not exists");
 
-                 decimal finalPrice = item.Discount != null &&
+                    if (!item.IsAvailable || !item.IsActive)
+                        throw new InvalidOperationException(
+                            $"Item '{item.ItemName}' is not available");
+                decimal finalPrice = item.Discount != null &&
                  item.Discount.DiscountStartingDate <= DateTime.UtcNow &&
                  item.Discount.DiscountEndingDate >= DateTime.UtcNow ?
                  item.Price * (1 - (item.Discount.DiscountPercentage / 100)) : item.Price;
@@ -281,7 +289,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 TotalCount = orders.Count
             };
         }
-        public async Task<bool> UpdateOrderAsync(OrderStatusViewModel model, Guid ModifierId)
+        public async Task<bool> UpdateOrderAsync(OrderStatusViewModel model)
         {
             if (model is null) throw new ArgumentNullException();
             var order = await unitOfWork.Orders.Select().Where(o => o.Id == model.OrderId).FirstOrDefaultAsync();

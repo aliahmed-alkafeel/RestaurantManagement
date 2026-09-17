@@ -51,7 +51,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             {
                 return View(model);
             }
-            var result = await ordersService.UpdateOrderAsync(model, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
+            var result = await ordersService.UpdateOrderAsync(model);
             if (!result)
             {
                 ModelState.AddModelError("", "This update is not allowed");
@@ -73,7 +73,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [HttpPost("ConfirmedDeleteOrder/{id:guid}")]
         public async Task<IActionResult> ConfirmedDeleteOrder(Guid id)
         {
-            await ordersService.DeleteOrderAsync(id, Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!));
+            await ordersService.DeleteOrderAsync(id);
             return RedirectToAction(nameof(Orders));
         }
     }

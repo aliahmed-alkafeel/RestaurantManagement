@@ -14,7 +14,7 @@ namespace RestaurantManagement.Repositories
     {
         protected readonly DbSet<T> _dbSet;
         //private readonly AppDbContext _context;
-        private Guid? userId;
+        protected Guid? userId;
         public Repository(AppDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             //_context = context;
@@ -60,6 +60,7 @@ namespace RestaurantManagement.Repositories
         public async Task AddAsync(T obj, CancellationToken cancellationToken = default)
         {
             obj.CreatedUserId = userId!.Value;
+            obj.CreatedAt = DateTime.UtcNow;
             await _dbSet.AddAsync(obj,cancellationToken);
         }
 
