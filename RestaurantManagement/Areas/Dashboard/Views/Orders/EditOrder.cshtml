@@ -51,7 +51,7 @@
                     <div class="card-body px-4 pb-4">
 
                         <form asp-area="Dashboard" asp-controller="Orders"
-                              asp-action="EditOrder"
+                              asp-action="EditPostOrder"
                               asp-route-id="@Model.Id"
                               method="post">
                             @Html.AntiForgeryToken()
@@ -310,3 +310,27 @@ const initialOrderItems = @Html.Raw(
 </script>
 
 <script src="~/js/addingItemsModal.js"></script>
+
+@* 
+
+<form asp-controller="Home"
+      asp-action="SubmitData"
+      method="post"
+      data-ajax="true"
+      data-ajax-method="POST"
+      data-ajax-update="#resultContainer"
+      data-ajax-loading="#loadingSpinner"
+      data-ajax-success="onSuccessCallback"
+      data-ajax-failure="onFailureCallback">
+  
+    <div id="resultContainer">
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+
+    </div>
+  
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form> *@

@@ -9,104 +9,112 @@ using System.Security.Claims;
 
 namespace RestaurantManagement.Areas.Dashboard.Controllers
 {
-        [Area("Dashboard")]
-        [Route("[area]/[controller]")]
+    [Area("Dashboard")]
+    [Route("[area]/[controller]")]
     public class ItemsController(IItemsService itemsService) : Controller
     {
-            //[Authorize(Roles = nameof(UserRole.AccessItems))]
-            //[HttpGet("")]
-            //public async Task<IActionResult> Items()
-            //{
-            //    var Items = await itemsService.GetPagedItemsAsync();
-            //    return View(Items);
-            //}
-            [Authorize(Roles = nameof(UserRole.AccessItems))]
-            [HttpGet]
-            public async Task<IActionResult> Items(ItemFilterViewModel model)
-            {
+        //[Authorize(Roles = nameof(UserRole.AccessItems))]
+        //[HttpGet("")]
+        //public async Task<IActionResult> Items()
+        //{
+        //    var Items = await itemsService.GetPagedItemsAsync();
+        //    return View(Items);
+        //}
+        [Authorize(Roles = nameof(UserRole.AccessItems))]
+        [HttpGet]
+        public async Task<IActionResult> Items(ItemFilterViewModel model)
+        {
             if (!ModelState.IsValid)
             {
                 var pageModel = await itemsService.GetPagedItemsAsync(model);
                 pageModel.Filter = model;
-                return View(pageModel); 
-            }
-                var Items = await itemsService.GetPagedItemsAsync(model);
-                return View(Items);
-            }
-            
-
-            [Authorize(Roles = nameof(UserRole.ManageItems))]
-            [HttpGet("CreateItem")]
-            public async Task<IActionResult> CreateItem()
-            {
-                return View();
+                return View(pageModel);
             }
 
-            [Authorize(Roles = nameof(UserRole.ManageItems))]
-            [HttpPost("CreateItem")]
-            [ValidateAntiForgeryToken]
-            public async Task<IActionResult> CreateItem(ItemViewModel model)
-            {
+            var Items = await itemsService.GetPagedItemsAsync(model);
+            return View(Items);
+        }
+
+
+        [Authorize(Roles = nameof(UserRole.ManageItems))]
+        [HttpGet("CreateItem")]
+        public async Task<IActionResult> CreateItem()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = nameof(UserRole.ManageItems))]
+        [HttpPost("CreateItem")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateItem(ItemViewModel model)
+        {
             ModelState.Remove("Category.CategoryName");
             if (!ModelState.IsValid) return View(model);
-                var result = await itemsService.CreateItemAsync(model);
-                if (result is false)
-                {
-                    ModelState.AddModelError("", "The Item is Regestered");
-                    return View(model);
-                }
-                return RedirectToAction(nameof(Items));
-            }
-            [Authorize(Roles = nameof(UserRole.ManageItems))]
-            [HttpGet("EditItem/{id:guid}")]
-            public async Task<IActionResult> EditItem(Guid id)
+            var result = await itemsService.CreateItemAsync(model);
+            if (result is false)
             {
-                var emps = await itemsService.GetItemByIdAsync(id);
-                return View(emps);
+                ModelState.AddModelError("", "The Item is Regestered");
+                return View(model);
             }
-            [Authorize(Roles = nameof(UserRole.ManageItems))]
-            [HttpPost("EditItem/{id:guid}")]
-            [ValidateAntiForgeryToken]
-            public async Task<IActionResult> EditItem(ItemViewModel model)
-            {
+
+            return RedirectToAction(nameof(Items));
+        }
+
+        [Authorize(Roles = nameof(UserRole.ManageItems))]
+        [HttpGet("EditItem/{id:guid}")]
+        public async Task<IActionResult> EditItem(Guid id)
+        {
+            var emps = await itemsService.GetItemByIdAsync(id);
+            return View(emps);
+        }
+
+        [Authorize(Roles = nameof(UserRole.ManageItems))]
+        [HttpPost("EditItem/{id:guid}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditItem(ItemViewModel model)
+        {
             ModelState.Remove("Category.CategoryName");
             if (!ModelState.IsValid)
-                {
-                    return View(model);
-                }
-                var result = await itemsService.UpdateItemAsync(model);
-                if (!result)
-                {
-                    ModelState.AddModelError("", "This update is not allowed");
-                    return View(model);
-                }
-                return RedirectToAction(nameof(Items));
+            {
+                return View(model);
             }
 
-            [Authorize(Roles = nameof(UserRole.ManageItems))]
-            [HttpGet("DeleteItem/{id:guid}")]
-            public async Task<IActionResult> DeleteItem(Guid id)
+            var result = await itemsService.UpdateItemAsync(model);
+            if (!result)
             {
-                var emps = await itemsService.GetItemByIdAsync(id);
-                return View(emps);
-            }
-            [ValidateAntiForgeryToken]
-            [Authorize(Roles = nameof(UserRole.ManageItems))]
-            [HttpPost("ConfirmedDeleteItem/{id:guid}")]
-            public async Task<IActionResult> ConfirmedDeleteItem(Guid id)
-            {
-                await itemsService.DeleteItemAsync(id);
-                return RedirectToAction(nameof(Items));
+                ModelState.AddModelError("", "This update is not allowed");
+                return View(model);
             }
 
-            [HttpGet("GetItemsByType")]
+            return RedirectToAction(nameof(Items));
+        }
+
+        [Authorize(Roles = nameof(UserRole.ManageItems))]
+        [HttpGet("DeleteItem/{id:guid}")]
+        public async Task<IActionResult> DeleteItem([FromQuery]Guid id)
+        {
+            var emps = await itemsService.GetItemByIdAsync(id);
+            return View(emps);
+        }
+
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = nameof(UserRole.ManageItems))]
+        [HttpPost("ConfirmedDeleteItem/{id:guid}")]
+        public async Task<IActionResult> ConfirmedDeleteItem([FromRoute]Guid id)
+        {
+            await itemsService.DeleteItemAsync(id);
+            return RedirectToAction(nameof(Items));
+        }
+
+        [HttpGet("GetItemsByType")]
         [Authorize(Roles = nameof(UserRole.AccessItems))]
         public async Task<IActionResult> GetItemsByType(CategoryType type)
         {
             var items = await itemsService.GetItemsByType(type);
 
-                return Json(items);
-            }
+            return Json(items);
+        }
+
         [HttpGet("GetCategoriesByType")]
         [Authorize(Roles = nameof(UserRole.AccessCategories))]
         public async Task<IActionResult> GetCategoriesByType(CategoryType type)
@@ -118,6 +126,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
                 categoryName = c.CategoryName
             }));
         }
+
         [HttpGet("GetItemsByCategory")]
         [Authorize(Roles = nameof(UserRole.AccessCategories))]
         public async Task<IActionResult> GetItemsByCategory(Guid categoryId)
@@ -125,5 +134,5 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             var items = await itemsService.GetItemsByCategoryId(categoryId);
             return Json(items);
         }
-      }
     }
+}

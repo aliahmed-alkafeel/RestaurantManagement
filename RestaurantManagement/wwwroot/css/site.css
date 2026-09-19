@@ -70,8 +70,8 @@ button {
 
 a {
     text-decoration: none;
-    -webkit-user-drag: none;
-    user-select: none;
+/*    -webkit-user-drag: none;
+    user-select: none;*/
 }
 img {
     -webkit-user-drag: none;

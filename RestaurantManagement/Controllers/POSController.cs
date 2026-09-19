@@ -107,7 +107,7 @@ namespace RestaurantManagement.Controllers
             });
         }
 
-        [HttpGet]
+        [HttpGet()]
         [Authorize(Roles = nameof(UserRole.ManageItems))]
         public async Task<IActionResult> ItemsAvailability(
             CancellationToken cancellationToken)

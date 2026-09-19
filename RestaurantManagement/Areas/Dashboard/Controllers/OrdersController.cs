@@ -19,20 +19,20 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             var Orders = await ordersService.GetAllOrdersAsync(cancellationToken);
             return View(Orders);
         }
-        [Authorize(Roles = nameof(UserRole.AccessOrders))]
-        [HttpGet("OrderDetails/{id:guid}")]
-        public async Task<IActionResult> OrderDetails(Guid id, CancellationToken cancellationToken)
-        {
-            var Orders = await ordersService.GetOrderByIdAsync(id, cancellationToken);
-            return View(Orders);
-        }
+        //[Authorize(Roles = nameof(UserRole.AccessOrders))]
+        //[HttpGet("OrderDetails/{id:guid}")]
+        //public async Task<IActionResult> OrderDetails(Guid id, CancellationToken cancellationToken)
+        //{
+        //    var Orders = await ordersService.GetOrderByIdAsync(id, cancellationToken);
+        //    return View(Orders);
+        //}
 
-        [Authorize(Roles = nameof(UserRole.ManageOrders))]
-        [HttpGet("CreateOrder")]
-        public async Task<IActionResult> CreateOrder()
-        {
-            return View();
-        }
+        //[Authorize(Roles = nameof(UserRole.ManageOrders))]
+        //[HttpGet("CreateOrder")]
+        //public async Task<IActionResult> CreateOrder()
+        //{
+        //    return View();
+        //}
         [Authorize(Roles = nameof(UserRole.ManageOrders))]
         [HttpGet("EditOrder/{id:guid}")]
         public async Task<IActionResult> EditOrder(Guid id, CancellationToken cancellationToken)
@@ -42,9 +42,9 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         }
 
         [Authorize(Roles = nameof(UserRole.ManageOrders))]
-        [HttpPost("EditOrder/{id:guid}")]
+        [HttpPost("EditPostOrder/{id:guid}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditOrder(OrderViewModel model)
+        public async Task<IActionResult> EditPostOrder(OrderViewModel model)
         {
             ModelState.Remove("Order.OrderName");
             if (!ModelState.IsValid)

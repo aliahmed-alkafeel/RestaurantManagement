@@ -482,34 +482,28 @@ function removeItem(itemId) {
 // ==================================================
 
 function updateHiddenInputs() {
-
     itemOrdersContainer.innerHTML = "";
 
+    orderItems.forEach((item, index) => {
+        itemOrdersContainer.innerHTML += `
+            <input type="hidden"
+                   name="ItemOrders.index"
+                   value="${index}" />
 
-    orderItems.forEach(
-        (item, index) => {
+            <input type="hidden"
+                   name="ItemOrders[${index}].ItemId"
+                   value="${item.itemId}" />
 
-            itemOrdersContainer.innerHTML += `
+            <input type="hidden"
+                   name="ItemOrders[${index}].ItemName"
+                   value="${escapeHtml(item.itemName)}" />
 
-                <input type="hidden"
-                       name="ItemOrders[${index}].ItemId"
-                       value="${item.itemId}" />
-
-                <input type="hidden"
-                       name="ItemOrders[${index}].ItemName"
-                       value="${escapeHtml(item.itemName)}" />
-
-                <input type="hidden"
-                       name="ItemOrders[${index}].Quantity"
-                       value="${item.quantity}" />
-
-            `;
-
-        }
-    );
-
+            <input type="hidden"
+                   name="ItemOrders[${index}].Quantity"
+                   value="${item.quantity}" />
+        `;
+    });
 }
-
 
 // ==================================================
 // Reset Modal

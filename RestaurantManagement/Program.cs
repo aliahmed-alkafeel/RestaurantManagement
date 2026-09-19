@@ -80,7 +80,7 @@ app.MapControllers();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Redirect}/{action=DashToHome}/")
+    pattern: "{controller=Redirect}/{action=Opening}/")
     .WithStaticAssets();
 
 app.Run();
