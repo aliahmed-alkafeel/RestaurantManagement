@@ -2,7 +2,7 @@
 
 namespace RestaurantManagement.ViewModels
 {
-    public class POSOrdersViewModel
+    public class POSOrdersViewModel : BaseDto
     {
         public List<OrderViewModel> Orders { get; set; } = [];
 

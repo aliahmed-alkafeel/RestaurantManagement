@@ -1,9 +1,10 @@
 ﻿using RestaurantManagement.Models;
 using System.ComponentModel.DataAnnotations;
+using RestaurantManagement.ViewModels;
 
 namespace RestaurantManagement.Areas.Dashboard.ViewModels
 {
-    public class ItemOrderViewModel
+    public class ItemOrderViewModel : BaseCommand
     {
         public Guid OrderId { get; set; }
         public Guid ItemId { get; set; }
@@ -14,7 +15,6 @@ namespace RestaurantManagement.Areas.Dashboard.ViewModels
         public short Quantity { get; set; }
         public decimal Price { get; set; }
         public decimal? DiscountPercentage { get; set; }
-        //public Order Orders { get; set; } = null!;
-        //public Item Item { get; set; } = null!;
+
     }
 }

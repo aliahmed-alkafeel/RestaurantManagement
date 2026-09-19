@@ -176,8 +176,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
 
         public async Task<POSOrdersViewModel> GetPOSOrdersAsync(
-            POSOrdersFilterViewModel filter,
-            CancellationToken cancellationToken = default)
+            POSOrdersFilterViewModel filter)
         {
             // -----------------------------
             // Base query
@@ -280,7 +279,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                         })
                         .ToList()
                 })
-                .ToListAsync(cancellationToken);
+                .ToListAsync(filter.CancellationToken);
 
             return new POSOrdersViewModel
             {

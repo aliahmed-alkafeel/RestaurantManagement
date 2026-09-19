@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RestaurantManagement.ViewModels
 {
-    public class POSOrdersFilterViewModel
+    public class POSOrdersFilterViewModel : BaseQuery
     {
         public string? Search { get; set; }
 

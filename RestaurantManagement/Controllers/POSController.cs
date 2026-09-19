@@ -65,8 +65,8 @@ namespace RestaurantManagement.Controllers
             CancellationToken cancellationToken)
         {
             var result = await ordersService.GetPOSOrdersAsync(
-                filter,
-                cancellationToken);
+                filter
+                );
 
             return View(result);
         }

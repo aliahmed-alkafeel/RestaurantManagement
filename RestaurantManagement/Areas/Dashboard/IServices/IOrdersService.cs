@@ -13,7 +13,6 @@ namespace RestaurantManagement.Areas.Dashboard.IServices
         Task<bool> CreateOrderAsync(CreateOrderViewModel model);
         Task<bool> DeleteOrderAsync(Guid id, CancellationToken cancellationToken = default);
         Task<POSOrdersViewModel> GetPOSOrdersAsync(
-            POSOrdersFilterViewModel filter,
-            CancellationToken cancellationToken = default);
+            POSOrdersFilterViewModel filter);
     }
 }

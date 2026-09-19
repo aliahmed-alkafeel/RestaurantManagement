@@ -2,7 +2,7 @@
 
 namespace RestaurantManagement.Areas.Dashboard.ViewModels
 {
-    public class DetailsViewModel : BaseQuery
+    public class DetailsViewModel : BaseDto
     {            
         public decimal TotalSales { get; set; }
         public int TotalOrders { get; set; }
