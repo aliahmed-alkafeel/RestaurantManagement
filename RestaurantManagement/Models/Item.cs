@@ -4,7 +4,6 @@ namespace RestaurantManagement.Models
 {
     public class Item : BaseModel
     {
-        public Guid Id { get; set; }
         public Guid? DiscountId { get; set; }
         public Guid CategoryId { get; set; }
         [Required]

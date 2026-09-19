@@ -4,7 +4,6 @@ namespace RestaurantManagement.Models
 {
     public class Employee : BaseModel
     {
-        public Guid Id { get; set; }
         public Guid GroupId { get; set; }
         [Required]
         [MaxLength(50)]

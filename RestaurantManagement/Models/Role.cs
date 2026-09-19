@@ -4,7 +4,6 @@ namespace RestaurantManagement.Models
 {
     public class Role : BaseModel
     {
-        public Guid Id { get; set; }
         public UserRole RoleName { get; set; }
         public ICollection<ItemOrder> ItemOrders { get; set; } = [];
     }

@@ -13,8 +13,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         public async Task<bool> CreateDiscountAsync(DiscountViewModel model)
         {
-            if (model is null) throw new ArgumentNullException();
-            //if (model.DiscountStartingDate < model.DiscountEndingDate) return false;
+            if (model is null) throw new ArgumentNullException(nameof(model));
             Discount discount = new Discount
             {
                 Id = Guid.NewGuid(),
@@ -48,7 +47,8 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                         DiscountEndingDate = discount.DiscountEndingDate,
                         Items = discount.Items
                     });
-                }          
+
+            }          
             return discountsVm;
         }
 

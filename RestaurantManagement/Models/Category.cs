@@ -5,7 +5,6 @@ namespace RestaurantManagement.Models
 {
     public class Category : BaseModel
     {
-        public Guid Id { get; set; }
         public CategoryType Type { get; set; }
         [Required]
         [MaxLength(100)]

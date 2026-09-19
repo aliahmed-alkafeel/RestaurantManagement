@@ -91,7 +91,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
 
         [Authorize(Roles = nameof(UserRole.ManageItems))]
         [HttpGet("DeleteItem/{id:guid}")]
-        public async Task<IActionResult> DeleteItem([FromQuery]Guid id)
+        public async Task<IActionResult> DeleteItem(Guid id)
         {
             var emps = await itemsService.GetItemByIdAsync(id);
             return View(emps);

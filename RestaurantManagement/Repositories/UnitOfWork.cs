@@ -1,39 +1,42 @@
 ﻿using RestaurantManagement.Data;
 using RestaurantManagement.IRepositories;
+using RestaurantManagement.Migrations;
 using RestaurantManagement.Models;
+using System.Text.RegularExpressions;
+using Group = RestaurantManagement.Models.Group;
 
 namespace RestaurantManagement.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly AppDbContext _context;
-        public IEmployeeRepository Employees { get; }
-        public IGroupRepository Groups { get; }
+        public IRepository<Employee> Employees { get; }
+        public IRepository<Group> Groups { get; }
 
-        public IItemRepository Items { get; }
+        public IRepository<Item> Items { get; }
 
         public IRepository<Category> Categories { get; }
 
-        public IOrderRepository Orders { get; }
+        public IRepository<Order> Orders { get; }
 
-        public IDiscountRepository Discounts { get; }
+        public IRepository<Discount> Discounts { get; }
 
         public IRepository<ItemOrder> ItemOrders { get; }
 
-        public IRoleRepository Roles { get; }
+        public IRepository<Role> Roles { get; }
 
-        public IGroupRoleRepository GroupsRoles { get; }
+        public IRepository<GroupRole> GroupsRoles { get; }
         public UnitOfWork(
             AppDbContext context,
-            IEmployeeRepository employees,
-            IItemRepository items,
+            IRepository<Employee> employees,
+            IRepository<Item> items,
             IRepository<Category> categories,
-            IOrderRepository orders,
-            IDiscountRepository discounts,
+            IRepository<Order> orders,
+            IRepository<Discount> discounts,
             IRepository<ItemOrder> itemOrders,
-            IRoleRepository roles,
-            IGroupRepository groups,
-            IGroupRoleRepository groupsRoles)
+            IRepository<Role> roles,
+            IRepository<Group> groups,
+            IRepository<GroupRole> groupsRoles)
             {
             _context = context;
             Employees = employees;

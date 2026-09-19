@@ -4,15 +4,15 @@ namespace RestaurantManagement.IRepositories
 {
     public interface IUnitOfWork
     {
-        IEmployeeRepository Employees { get; }
-        IRoleRepository Roles { get; }
-        IGroupRepository Groups { get; }
-        IItemRepository Items { get; }
+        IRepository<Employee> Employees { get; }
+        IRepository<Role> Roles { get; }
+        IRepository<Group> Groups { get; }
+        IRepository<Item> Items { get; }
         IRepository<Category> Categories { get; }
-        IOrderRepository Orders { get; }
-        IDiscountRepository Discounts { get; }
+        IRepository<Order> Orders { get; }
+        IRepository<Discount> Discounts { get; }
         IRepository<ItemOrder> ItemOrders { get; }
-        IGroupRoleRepository GroupsRoles { get; }
+        IRepository<Category> GroupsRoles { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

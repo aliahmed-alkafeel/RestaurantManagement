@@ -114,12 +114,12 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             return itemsVm;
         }
 
-        public async Task<ItemViewModel> GetItemByIdAsync(Guid Id, CancellationToken cancellationToken = default)
+        public async Task<ItemViewModel> GetItemByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var item = await unitOfWork.Items.GetByIdAsync(Id, cancellationToken);
+            var item = await unitOfWork.Items.GetByIdAsync(id, cancellationToken);
             if (item is null) throw new KeyNotFoundException("There is no such Item");
             var category = await unitOfWork.Categories.GetByIdAsync(item.CategoryId, cancellationToken);
-            ItemViewModel ItemVm = new ItemViewModel
+            ItemViewModel itemVm = new ItemViewModel
             {
                 Id = item.Id,
                 ItemName = item.ItemName,
@@ -129,7 +129,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 IsActive = item.IsActive,
                 IsAvailable = item.IsAvailable
             };
-            return ItemVm;
+            return itemVm;
         }
 
         public async Task<bool> InsertImage(ItemViewModel model)

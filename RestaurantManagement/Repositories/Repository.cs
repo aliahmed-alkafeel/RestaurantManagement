@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -12,9 +13,9 @@ namespace RestaurantManagement.Repositories
 {
     public class Repository<T> : IRepository<T> where T : BaseModel
     {
-        protected readonly DbSet<T> _dbSet;
+        private readonly DbSet<T> _dbSet;
         //private readonly AppDbContext _context;
-        protected Guid? userId;
+        private Guid? userId;
         public Repository(AppDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             //_context = context;
@@ -32,7 +33,6 @@ namespace RestaurantManagement.Repositories
             var isDeleted = status == DeletedStatus.Deleted;
             return _dbSet.AsQueryable().Where(m => m.IsDeleted == isDeleted);
         }
-
         public IQueryable<T> NoTrackingSelect(DeletedStatus status = DeletedStatus.NotDeleted)
         {
             if (status == DeletedStatus.All)
@@ -43,18 +43,15 @@ namespace RestaurantManagement.Repositories
             return _dbSet.AsNoTracking().AsQueryable().Where(m => m.IsDeleted == isDeleted);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default)
-        {
-            return await _dbSet.ToListAsync(cancellationToken: cancellationToken);
-        }
-        public async Task<IEnumerable<T>> GetAllWithDeletedAsync(CancellationToken cancellationToken = default)
-        {
-            return await _dbSet.ToListAsync(cancellationToken);
-        }
 
-        public async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default, DeletedStatus status = DeletedStatus.NotDeleted)
         {
-            return await _dbSet.FindAsync(id, cancellationToken);
+            if (status == DeletedStatus.All)
+            {
+                return await _dbSet.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+            }
+            var isDeleted = status == DeletedStatus.Deleted;
+            return await _dbSet.FirstOrDefaultAsync(x => x.Id == id && x.IsDeleted == isDeleted, cancellationToken);
         }
 
         public async Task AddAsync(T obj, CancellationToken cancellationToken = default)
@@ -79,10 +76,10 @@ namespace RestaurantManagement.Repositories
             _dbSet.Update(obj);
         }
 
-        public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default)
-        {
-            return await GetByIdAsync(id,cancellationToken) != null;
-        }
+        //public async Task<bool> ExistsByIdAsync(Guid id, DeletedStatus status = DeletedStatus.NotDeleted, CancellationToken cancellationToken = default)
+        //{
+        //    return await GetByIdAsync(id, status, cancellationToken) != null;
+        //}
 
        
     }

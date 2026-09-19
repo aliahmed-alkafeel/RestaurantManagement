@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Areas.Dashboard.IServices;
 using RestaurantManagement.Areas.Dashboard.ViewModels;
 using RestaurantManagement.IRepositories;
@@ -12,15 +13,10 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         public async Task<bool> CreateCategoryAsync(CategoryViewModel model)
         {
-            if (model is null) throw new ArgumentNullException();
-            var categories = await unitOfWork.Categories.GetAllAsync(model.CancellationToken);
-            foreach(Category cat in categories)
-            {
-                if(cat.CategoryName == model.CategoryName && cat.Type == model.Type)
-                {
-                    return false;
-                }
-            }
+            if (model is null) throw new ArgumentNullException(nameof(model));
+            var isCategory = await unitOfWork.Categories.NoTrackingSelect().FirstOrDefaultAsync(c =>
+                c.CategoryName == model.CategoryName && c.Type == model.Type, model.CancellationToken);
+            if (isCategory != null) return false;
             Category category = new Category
             {
                 Id = Guid.NewGuid(),
@@ -34,41 +30,32 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         public async Task<List<CategoryViewModel>> GetAllCategoriesAsync(CancellationToken cancellationToken)
         {
-            var categories = await unitOfWork.Categories.GetAllAsync(cancellationToken);
-            List<CategoryViewModel> categoriesVm = [];
-            foreach (Category category in categories)
-            {
-                if (!category.IsDeleted)
+            return await unitOfWork.Categories.NoTrackingSelect().Select(c =>
+                new CategoryViewModel()
                 {
-                    categoriesVm.Add(new CategoryViewModel
-                    {
-                        Id = category.Id,
-                        CategoryName = category.CategoryName,
-                        Type = category.Type
-                    });
+                    Id = c.Id,
+                    CategoryName = c.CategoryName,
+                    Type = c.Type
                 }
-            }
-            return categoriesVm;
+            ).ToListAsync(cancellationToken);
         }
 
         public async Task<CategoryViewModel> GetCategoryByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             var category = await unitOfWork.Categories.GetByIdAsync(id,cancellationToken);
-            if (category is null) throw new KeyNotFoundException("There is no such category");
-            CategoryViewModel categoryVm = new CategoryViewModel
+            if (category is null) throw new ArgumentNullException(nameof(category));
+            return new CategoryViewModel
             {
                 Id = category.Id,
                 CategoryName = category.CategoryName,
                 Type = category.Type
             };
-            return categoryVm;
-
         }
 
         public async Task<bool> DeleteCategoryAsync(Guid id, CancellationToken cancellationToken)
         {
             var category = await unitOfWork.Categories.GetByIdAsync(id,cancellationToken);
-            if (category is null) throw new InvalidOperationException("There is no such category");
+            if (category is null) throw new ArgumentNullException(nameof(category));
             unitOfWork.Categories.Delete(category);
             await unitOfWork.SaveChangesAsync(cancellationToken);
             return true;
@@ -76,25 +63,21 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         public async Task<bool> UpdateCategoryAsync(CategoryViewModel model)
         {
-            if (model is null) throw new ArgumentNullException();
-            var categories = await unitOfWork.Categories.GetAllAsync(model.CancellationToken);
-            foreach (Category cat in categories)
-            {
-                if ((cat.CategoryName == model.CategoryName && cat.Id != model.Id) &&
-                    (cat.Type == model.Type && cat.Id != model.Id))
-                {
-                    return false;
-                }
-            }
-            var category = categories.FirstOrDefault(c => c.Id == model.Id);
+            if (model is null) throw new ArgumentNullException(nameof(model));
+            var category = await unitOfWork.Categories.Select()
+                .FirstOrDefaultAsync(c => c.Id == model.Id, model.CancellationToken);
             if (category is null) return false;
+            if (await unitOfWork.Categories.NoTrackingSelect()
+                    .AnyAsync(c => c.Id != model.Id &&
+                                   c.CategoryName == model.CategoryName &&
+                                   c.Type == model.Type,
+                        model.CancellationToken))
+                return false;
             category.CategoryName = model.CategoryName;
             category.Type = model.Type;
             unitOfWork.Categories.Update(category);
             await unitOfWork.SaveChangesAsync(model.CancellationToken);
             return true;
         }
-
-
     }
 }
