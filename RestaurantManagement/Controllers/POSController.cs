@@ -60,50 +60,49 @@ namespace RestaurantManagement.Controllers
         }
         [Authorize(Roles = nameof(UserRole.ManageOrders))]
         [HttpGet]
-        public async Task<IActionResult> POSOrders(
-            POSOrdersFilterViewModel filter,
-            CancellationToken cancellationToken)
+        public async Task<IActionResult> POSOrders(POSOrdersFilterViewModel model)
         {
-            var result = await ordersService.GetPOSOrdersAsync(
-                filter
-                );
+            var POSOrdersmodel = await ordersService.GetPOSOrdersAsync(model);
 
-            return View(result);
+            if (Request.Headers.XRequestedWith == "XMLHttpRequest")
+            {
+                return PartialView(
+                    "_POSOrdersTable",
+                    POSOrdersmodel);
+            }
+
+            return View(POSOrdersmodel);
         }
         [Authorize(Roles = nameof(UserRole.ManageOrders))]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateOrderStatus(
-            [FromBody] OrderStatusViewModel? model)
+            [FromBody] OrderStatusViewModel model)
         {
             if (model is null)
             {
                 return BadRequest(new
                 {
-                    success = false,
-                    message = "Model is null"
+                    message = "Invalid request."
                 });
             }
 
-            var modifierId = Guid.Parse(
-                User.FindFirstValue(ClaimTypes.NameIdentifier)!
-            );
+            var success = await ordersService.UpdateOrderAsync(
+                model
+                );
 
-            var result = await ordersService.UpdateOrderAsync(model);
-
-            if (!result)
+            if (!success)
             {
                 return BadRequest(new
                 {
-                    success = false,
-                    message = "Order not found",
-                    orderId = model.OrderId
+                    message = "Failed to update order status."
                 });
             }
 
             return Ok(new
             {
-                success = true
+                success = true,
+                message = "Order status updated successfully."
             });
         }
 

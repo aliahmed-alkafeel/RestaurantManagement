@@ -6,6 +6,7 @@ using RestaurantManagement.Migrations;
 using RestaurantManagement.Models;
 using RestaurantManagement.Repositories;
 using RestaurantManagement.ViewModels;
+using System.Net.NetworkInformation;
 
 namespace RestaurantManagement.Areas.Dashboard.Services
 {
@@ -300,10 +301,21 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             var query = unitOfWork.Orders
                 .NoTrackingSelect()
                 .Where(o =>
-                    o.OrderDate > fromDate &&
-                    o.OrderStatus != OrderStatus.Cancelled &&
-                    o.OrderStatus != OrderStatus.Completed);
-
+                    o.OrderDate > fromDate);
+            if (filter.Status.HasValue)
+            {
+                // Specific status
+                query = query.Where(
+                    o => o.OrderStatus == filter.Status.Value);
+            }
+            else if (!filter.ShowAllStatuses)
+            {
+                // Default = active orders only
+                query = query.Where(
+                    o =>
+                        o.OrderStatus != OrderStatus.Completed &&
+                        o.OrderStatus != OrderStatus.Cancelled);
+            }
 
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {

@@ -183,7 +183,10 @@
     border-collapse: collapse;
     table-layout: auto;
 }
-
+    .orders-table th:nth-child(3),
+    .orders-table td:nth-child(3) {
+        width: 550px;
+    }
     /* =========================================================
    TABLE HEADER
 ========================================================= */
@@ -210,12 +213,13 @@
 ========================================================= */
 
     .orders-table td {
-        padding: 8px 18px;
+        padding: 8px 8px;
         border-bottom: 1px solid #f0f0f0;
         vertical-align: middle;
         font-size: 13px;
+        
     }
-
+    
     .orders-table tbody tr:last-child td {
         border-bottom: none;
     }
@@ -333,13 +337,13 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 5px;
-    max-width: 420px;
+/*    max-width: 420px;*/
 }
 .order-item {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    min-height: 28px;
+    min-height: 32px;
     padding: 0 9px;
     border: 1px solid #e4e4f0;
     border-radius: 8px;
@@ -353,6 +357,7 @@
     .order-item .item-name {
         color: #3d3d4d;
         font-weight: 600;
+        font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
     }
 
     .order-item .item-quantity {
@@ -574,14 +579,14 @@
         padding: 13px;
     }
 
-    .filter-select {
+/*    .filter-select {
         min-width: 130px;
-    }
+    }*/
 
     .orders-table th,
     .orders-table td {
-        padding-left: 12px;
-        padding-right: 12px;
+        padding-left: 6px;
+        padding-right: 6px;
     }
 
     .orders-footer {
@@ -612,15 +617,15 @@
     .search-box {
         width: 100%;
     }
-
+/*
     .filter-select {
         width: 100%;
-    }
+    }*/
 
-    .filter-btn {
+/*    .filter-btn {
         width: 100%;
     }
-
+*/
     .orders-table {
         min-width: 850px;
     }
@@ -628,11 +633,284 @@
     .orders-footer {
         padding: 13px;
     }
-
+/*
     .pagination {
         width: 100%;
         overflow-x: auto;
         flex-wrap: nowrap;
         padding-bottom: 2px;
+    }*/
+}
+
+.status-options {
+    display: flex;
+/*    align-items: center;*/
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.status-option {
+    border: 1px solid transparent;
+    border-radius: 7px;
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+
+    /* Confirmed — Pink */
+
+    .status-option.status-confirmed {
+        color: rgb(219, 39, 119);
+        background: rgba(236, 72, 153, 0.10);
+    }
+
+        .status-option.status-confirmed:hover,
+        .status-option.status-confirmed.active {
+            background: rgba(236, 72, 153, 0.18);
+            border-color: rgba(236, 72, 153, 0.35);
+        }
+
+
+    /* Preparing — Amber */
+
+    .status-option.status-preparing {
+        color: rgb(217, 119, 6);
+        background: rgba(245, 158, 11, 0.11);
+    }
+
+        .status-option.status-preparing:hover,
+        .status-option.status-preparing.active {
+            background: rgba(245, 158, 11, 0.18);
+            border-color: rgba(245, 158, 11, 0.35);
+        }
+
+
+    /* Pending — Purple */
+
+    .status-option.status-pending {
+        color: rgb(79, 70, 229);
+        background: rgba(99, 91, 255, 0.10);
+    }
+
+        .status-option.status-pending:hover,
+        .status-option.status-pending.active {
+            background: rgba(99, 91, 255, 0.18);
+            border-color: rgba(99, 91, 255, 0.35);
+        }
+
+
+    /* Ready — Teal */
+
+    .status-option.status-ready {
+        color: rgb(13, 148, 136);
+        background: rgba(42, 175, 163, 0.11);
+    }
+
+        .status-option.status-ready:hover,
+        .status-option.status-ready.active {
+            background: rgba(42, 175, 163, 0.18);
+            border-color: rgba(42, 175, 163, 0.35);
+        }
+
+
+    /* Cancelled — Red */
+
+    .status-option.status-cancelled {
+        color: rgb(220, 38, 38);
+        background: rgba(239, 68, 68, 0.10);
+    }
+
+        .status-option.status-cancelled:hover,
+        .status-option.status-cancelled.active {
+            background: rgba(239, 68, 68, 0.18);
+        }
+
+
+    /* Completed — Green */
+
+    .status-option.status-completed {
+        color: rgb(22, 163, 74);
+        background: rgba(34, 197, 94, 0.10);
+    }
+
+        .status-option.status-completed:hover,
+        .status-option.status-completed.active {
+            background: rgba(34, 197, 94, 0.18);
+        }
+/* =========================================================
+   STATUS FILTER
+========================================================= */
+
+.status-filter {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+
+/* =========================================================
+   STATUS FILTER BUTTON
+========================================================= */
+
+.status-filter-btn {
+    height: 34px;
+    padding: 0 11px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+    .status-filter-btn:hover {
+        transform: translateY(-1px);
+    }
+
+
+    /* =========================================================
+   DEFAULT
+========================================================= */
+
+    .status-filter-btn.status-default {
+        color: #555;
+        background: #f2f2f4;
+    }
+
+        .status-filter-btn.status-default:hover,
+        .status-filter-btn.status-default.active {
+            color: #333;
+            background: #e7e7ea;
+            border-color: #cfcfd4;
+        }
+
+
+    /* =========================================================
+   ALL
+========================================================= */
+
+    .status-filter-btn.status-all {
+        color: #635bff;
+        background: rgba(99, 91, 255, 0.09);
+    }
+
+        .status-filter-btn.status-all:hover,
+        .status-filter-btn.status-all.active {
+            background: rgba(99, 91, 255, 0.17);
+            border-color: rgba(99, 91, 255, 0.35);
+        }
+
+
+    /* =========================================================
+   CONFIRMED — PINK
+========================================================= */
+
+    .status-filter-btn.status-confirmed {
+        color: rgb(219, 39, 119);
+        background: rgba(236, 72, 153, 0.10);
+    }
+
+        .status-filter-btn.status-confirmed:hover,
+        .status-filter-btn.status-confirmed.active {
+            background: rgba(236, 72, 153, 0.18);
+            border-color: rgba(236, 72, 153, 0.35);
+        }
+
+
+    /* =========================================================
+   PREPARING — AMBER
+========================================================= */
+
+    .status-filter-btn.status-preparing {
+        color: rgb(217, 119, 6);
+        background: rgba(245, 158, 11, 0.11);
+    }
+
+        .status-filter-btn.status-preparing:hover,
+        .status-filter-btn.status-preparing.active {
+            background: rgba(245, 158, 11, 0.18);
+            border-color: rgba(245, 158, 11, 0.35);
+        }
+
+
+    /* =========================================================
+   PENDING — PURPLE
+========================================================= */
+
+    .status-filter-btn.status-pending {
+        color: rgb(79, 70, 229);
+        background: rgba(99, 91, 255, 0.10);
+    }
+
+        .status-filter-btn.status-pending:hover,
+        .status-filter-btn.status-pending.active {
+            background: rgba(99, 91, 255, 0.18);
+            border-color: rgba(99, 91, 255, 0.35);
+        }
+
+
+    /* =========================================================
+   READY — TEAL
+========================================================= */
+
+    .status-filter-btn.status-ready {
+        color: rgb(13, 148, 136);
+        background: rgba(42, 175, 163, 0.11);
+    }
+
+        .status-filter-btn.status-ready:hover,
+        .status-filter-btn.status-ready.active {
+            background: rgba(42, 175, 163, 0.18);
+            border-color: rgba(42, 175, 163, 0.35);
+        }
+
+
+    /* =========================================================
+   COMPLETED — GREEN
+========================================================= */
+
+    .status-filter-btn.status-completed {
+        color: rgb(22, 163, 74);
+        background: rgba(34, 197, 94, 0.10);
+    }
+
+        .status-filter-btn.status-completed:hover,
+        .status-filter-btn.status-completed.active {
+            background: rgba(34, 197, 94, 0.18);
+            border-color: rgba(34, 197, 94, 0.35);
+        }
+
+
+    /* =========================================================
+   CANCELLED — RED
+========================================================= */
+
+    .status-filter-btn.status-cancelled {
+        color: rgb(220, 38, 38);
+        background: rgba(239, 68, 68, 0.10);
+    }
+
+        .status-filter-btn.status-cancelled:hover,
+        .status-filter-btn.status-cancelled.active {
+            background: rgba(239, 68, 68, 0.18);
+            border-color: rgba(239, 68, 68, 0.35);
+        }
+@media (max-width: 800px) {
+
+    .status-filter {
+        width: 100%;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 2px;
+    }
+
+    .status-filter-btn {
+        flex-shrink: 0;
     }
 }

@@ -1,5 +1,4 @@
-﻿
-@using RestaurantManagement.Areas.Dashboard.ViewModels
+﻿@using RestaurantManagement.Areas.Dashboard.ViewModels
 @using RestaurantManagement.Models
 
 @model POSOrdersViewModel
@@ -11,26 +10,22 @@
 <link rel="stylesheet"
       href="~/css/POSOrders.css" />
 
-<div class="pos-orders">
-
-
-
-    <!-- =========================
-         Orders Card
-    ========================== -->
+<div class="pos-orders"
+     id="posOrders"
+     data-update-status-url="@Url.Action("UpdateOrderStatus", "POS")"
+     data-orders-url="@Url.Action("POSOrders", "POS")">
 
     <div class="orders-card">
 
-        <!-- =========================
-             Filters
-        ========================== -->
+        <!-- =================================================
+             FILTER TOOLBAR
+        ================================================== -->
 
-        <form asp-action="POSOrders"
-              asp-controller="POS"
-              method="get"
-              class="orders-toolbar">
+        <div id="ordersFilterToolbar"
+             class="orders-toolbar">
 
             <!-- Search -->
+
             <div class="search-box">
 
                 <svg viewBox="0 0 24 24"
@@ -47,54 +42,71 @@
                 </svg>
 
                 <input type="search"
-                       name="Search"
+                       id="ordersSearch"
                        value="@Model.Filter.Search"
                        placeholder="Search table or item..." />
 
             </div>
 
 
-            <!-- Status -->
-            <select name="Status"
-                    class="filter-select">
+            <!-- =================================================
+                 STATUS FILTER
+            ================================================== -->
 
-                <option value="">
-                    All Statuses
-                </option>
+            <div class="status-filter"
+                 id="statusFilter">
+
+                <!-- Default -->
+
+                <button type="button"
+                        class="status-filter-btn status-default @(Model.Filter.Status is null && !Model.Filter.ShowAllStatuses ? "active" : "")"
+                        data-status="default">
+
+                    Default
+
+                </button>
+
+
+                <!-- All -->
+
+                <button type="button"
+                        class="status-filter-btn status-all @(Model.Filter.ShowAllStatuses ? "active" : "")"
+                        data-status="all">
+
+                    All
+
+                </button>
+
+
+                <!-- Statuses -->
 
                 @foreach (var status in Enum.GetValues<OrderStatus>())
                 {
-                    if (status.ToString() != "Cancelled" && status.ToString() != "Completed")
-                    {
-                        if (Model.Filter.Status == status)
-                        {
-                            <option value="@status"
-                                    selected>
-                                @status
-                            </option>
-                        }
-                        else
-                        {
-                            <option value="@status">
-                                @status
-                            </option>
-                        }
-                    }
+                    var isActive =
+                        Model.Filter.Status == status;
+
+                    <button type="button"
+                            class="status-filter-btn status-@status.ToString().ToLower() @(isActive ? "active" : "")"
+                            data-status="@((int)status)">
+
+                        @status
+
+                    </button>
                 }
 
-            </select>
+            </div>
 
 
-            <!-- Sort -->
-            <select name="Sort"
+            <!-- =================================================
+                 SORT
+            ================================================== -->
+
+            <select id="ordersSort"
                     class="filter-select">
-
-    
 
                 @if (Model.Filter.Sort == "oldest")
                 {
-                    <option value="oldest"
-                            selected>
+                    <option value="oldest" selected>
                         Oldest
                     </option>
                 }
@@ -104,10 +116,10 @@
                         Oldest
                     </option>
                 }
+
                 @if (Model.Filter.Sort == "newest")
                 {
-                    <option value="newest"
-                            selected>
+                    <option value="newest" selected>
                         Newest
                     </option>
                 }
@@ -117,10 +129,10 @@
                         Newest
                     </option>
                 }
+
                 @if (Model.Filter.Sort == "price-high")
                 {
-                    <option value="price-high"
-                            selected>
+                    <option value="price-high" selected>
                         Highest Price
                     </option>
                 }
@@ -133,8 +145,7 @@
 
                 @if (Model.Filter.Sort == "price-low")
                 {
-                    <option value="price-low"
-                            selected>
+                    <option value="price-low" selected>
                         Lowest Price
                     </option>
                 }
@@ -147,241 +158,44 @@
 
             </select>
 
+        </div>
 
-            <!-- Submit -->
-            <button type="submit"
-                    class="filter-btn">
-                Apply
-            </button>
 
-        </form>
+        <!-- =================================================
+             ANTI FORGERY
+        ================================================== -->
 
+        @Html.AntiForgeryToken()
 
-        <!-- =========================
-             Table
-        ========================== -->
 
-        <div class="orders-table-wrapper">
+        <!-- =================================================
+             TABLE
+        ================================================== -->
 
-            @Html.AntiForgeryToken()
+        <div id="ordersTableWrapper"
+             class="orders-table-wrapper">
 
-            @if (Model.Orders.Any())
-            {
-                <table id="ordersTable"
-                       class="orders-table">
-
-                    <thead>
-
-                        <tr>
-
-                            <th>Table</th>
-
-                            <th>Total</th>
-
-                            <th>Status</th>
-
-                            <th>Items</th>
-
-                            <th>Order Date</th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        @foreach (var order in Model.Orders)
-                        {
-                            <tr data-table="@order.TableId"
-                                data-order-id="@order.Id"
-                                class="order-row status-@order.OrderStatus.ToString().ToLower()">
-
-                                <!-- =========================
-                                     Table
-                                ========================== -->
-
-                                <td>
-
-                                    <div class="table-info">
-
-                                        <span class="table-icon">
-
-                                            <svg viewBox="0 0 24 24"
-                                                 fill="none"
-                                                 stroke="currentColor"
-                                                 stroke-width="2">
-
-                                                <rect x="3"
-                                                      y="4"
-                                                      width="18"
-                                                      height="16"
-                                                      rx="2" />
-
-                                                <path d="M8 4v16" />
-
-                                                <path d="M16 4v16" />
-
-                                            </svg>
-
-                                        </span>
-
-                                        <div>
-
-                                            <span class="table-label">
-                                                Table
-                                            </span>
-
-                                            <strong>
-                                                @order.TableId
-                                            </strong>
-
-                                        </div>
-
-                                    </div>
-
-                                </td>
-
-
-                                <!-- =========================
-                                     Total
-                                ========================== -->
-
-                                <td>
-
-                                    <span class="total-price">
-                                        @order.TotalPrice.ToString("F2")
-                                    </span>
-
-                                </td>
-
-
-                                <!-- =========================
-                                     Status
-                                ========================== -->
-
-                                <td>
-
-                                    <select class="status-select"
-                                            data-order-id="@order.Id">
-
-                                        @foreach (var status in Enum.GetValues<OrderStatus>())
-                                        {
-                                            if (status == order.OrderStatus)
-                                            {
-                                                <option value="@((int)status)"
-                                                        selected>
-                                                    @status
-                                                </option>
-                                            }
-                                            else
-                                            {
-                                                <option value="@((int)status)">
-                                                    @status
-                                                </option>
-                                            }
-                                        }
-
-                                    </select>
-
-                                </td>
-
-
-                                <!-- =========================
-                                     Items
-                                ========================== -->
-
-                                <td>
-
-                                    <div class="order-items">
-
-                                        @foreach (var item in order.ItemOrders)
-                                        {
-                                            <span class="order-item">
-
-                                                <span class="item-name">
-                                                    @item.ItemName
-                                                </span>
-
-                                                <span class="item-quantity">
-                                                    × @item.Quantity
-                                                </span>
-
-                                            </span>
-                                        }
-
-                                    </div>
-
-                                </td>
-
-
-                                <!-- =========================
-                                     Order Date
-                                ========================== -->
-
-                                <td>
-
-                                    <time class="order-date"
-                                          data-utc="@order.OrderDate.ToString("O")">
-                                    </time>
-
-                                </td>
-
-                            </tr>
-                        }
-
-                    </tbody>
-
-                </table>
-            }
-            else
-            {
-                <!-- =========================
-                     Empty State
-                ========================== -->
-
-                <div class="empty-orders">
-
-                    <div class="empty-icon">
-
-                        <svg viewBox="0 0 24 24"
-                             fill="none"
-                             stroke="currentColor"
-                             stroke-width="2">
-
-                            <circle cx="12"
-                                    cy="12"
-                                    r="9" />
-
-                            <path d="M8 12h8" />
-
-                        </svg>
-
-                    </div>
-
-                    <h3>
-                        No orders found
-                    </h3>
-
-                    <p>
-                        Try changing your search or filters.
-                    </p>
-
-                </div>
-            }
+            @await Html.PartialAsync(
+                "_POSOrdersTable",
+                Model)
 
         </div>
 
 
-        <!-- =========================
-             Footer
-        ========================== -->
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
 
         <div class="orders-footer">
 
             <div class="results-info">
 
                 Showing
-                <strong>@Model.TotalCount</strong>
+
+                <strong id="ordersTotalCount">
+                    @Model.TotalCount
+                </strong>
+
                 orders
 
             </div>
@@ -395,293 +209,7 @@
 
 @section Scripts {
 
-    <script>
+    <script src="~/js/POSOrders.js"
+            asp-append-version="true"></script>
 
-        // =====================================================
-        // Convert UTC date to browser local time
-        // =====================================================
-
-        document.querySelectorAll(".order-date").forEach(element => {
-
-            const utcValue = element.dataset.utc;
-
-            if (!utcValue) {
-                return;
-            }
-
-            const date = new Date(utcValue);
-
-            if (Number.isNaN(date.getTime())) {
-                return;
-            }
-
-            element.textContent = new Intl.DateTimeFormat(
-                undefined,
-                {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit"
-                }
-            ).format(date);
-
-        });
-
-
-        // =====================================================
-        // Update Order Status
-        // =====================================================
-
-        document.querySelectorAll(".status-select")
-            .forEach(select => {
-
-                select.dataset.previousStatus =
-                    select.value;
-
-                select.addEventListener(
-                    "change",
-                    async function() {
-
-                        const orderId =
-                            this.dataset.orderId;
-
-                        const newStatus =
-                            parseInt(this.value);
-
-                        const previousStatus =
-                            this.dataset.previousStatus;
-
-                        const row =
-                            this.closest(".order-row");
-
-                        this.disabled = true;
-
-                        try {
-
-                            const response = await fetch(
-                                '@Url.Action("UpdateOrderStatus", "POS")',
-                                {
-                                    method: "POST",
-
-                                    headers: {
-                                        "Content-Type":
-                                            "application/json",
-
-                                        "RequestVerificationToken":
-                                            document.querySelector(
-                                                'input[name="__RequestVerificationToken"]'
-                                            )?.value ?? ""
-                                    },
-
-                                    body: JSON.stringify({
-                                        orderId: orderId,
-                                        status: newStatus
-                                    })
-                                }
-                            );
-
-
-                            const result =
-                                await response.json();
-
-
-                            if (!response.ok) {
-
-                                throw new Error(
-                                    result.message ??
-                                    "Failed to update order status."
-                                );
-
-                            }
-
-                            if (
-                                newStatus === 4 ||
-                                newStatus === 5
-                            ) {
-                                const row = this.closest(".order-row");
-
-                                row.style.opacity = "0";
-
-                                setTimeout(() => {
-
-                                    row.remove();
-
-                                    // -----------------------------------------
-                                    // Update total count
-                                    // -----------------------------------------
-
-                                    const countElements = document.querySelectorAll(
-                                        ".orders-count, .results-info strong"
-                                    );
-
-                                    countElements.forEach(element => {
-
-                                        let currentCount =
-                                            parseInt(element.textContent);
-
-                                        if (Number.isNaN(currentCount)) {
-                                            return;
-                                        }
-
-                                        currentCount = Math.max(0, currentCount - 1);
-
-                                        if (element.classList.contains("orders-count")) {
-                                            element.textContent =
-                                                `${currentCount} orders`;
-                                        }
-                                        else {
-                                            element.textContent =
-                                                currentCount;
-                                        }
-
-                                    });
-
-
-                                    // -----------------------------------------
-                                    // Show empty state when no orders remain
-                                    // -----------------------------------------
-
-                                    const tbody =
-                                        document.querySelector("#ordersTable tbody");
-
-                                    if (tbody && tbody.children.length === 0) {
-
-                                        const table =
-                                            document.querySelector("#ordersTable");
-
-                                        if (table) {
-                                            table.remove();
-                                        }
-
-                                        const wrapper =
-                                            document.querySelector(".orders-table-wrapper");
-
-                                        if (wrapper) {
-
-                                            wrapper.innerHTML = `
-                            <div class="empty-orders">
-
-                                <div class="empty-icon">
-
-                                    <svg viewBox="0 0 24 24"
-                                         fill="none"
-                                         stroke="currentColor"
-                                         stroke-width="2">
-
-                                        <circle cx="12"
-                                                cy="12"
-                                                r="9" />
-
-                                        <path d="M8 12h8" />
-
-                                    </svg>
-
-                                </div>
-
-                                <h3>No orders found</h3>
-
-                                <p>
-                                    Try changing your search or filters.
-                                </p>
-
-                            </div>
-                        `;
-                                        }
-                                    }
-
-                                }, 250);
-
-                                return;
-                            }
-                            // Remove old status classes
-
-                            row.classList.remove(
-                                "status-confirmed",
-                                "status-preparing",
-                                "status-pending",
-                                "status-ready",
-                                "status-completed",
-                                "status-cancelled"
-                            );
-
-
-                            // Add new status class
-
-                            const statusClasses = {
-
-                                0: "status-confirmed",
-
-                                1: "status-preparing",
-
-                                2: "status-pending",
-
-                                3: "status-ready",
-
-                                4: "status-completed",
-
-                                5: "status-cancelled"
-
-                            };
-
-
-                            const newClass =
-                                statusClasses[newStatus];
-
-
-                            if (newClass) {
-
-                                row.classList.add(
-                                    newClass
-                                );
-
-                            }
-
-
-                            this.dataset.previousStatus =
-                                newStatus;
-
-
-                            this.classList.add(
-                                "status-updated"
-                            );
-
-
-                            setTimeout(() => {
-
-                                this.classList.remove(
-                                    "status-updated"
-                                );
-
-                            }, 700);
-
-                        }
-                        catch (error) {
-
-                            console.error(error);
-
-                            if (previousStatus !== "") {
-
-                                this.value =
-                                    previousStatus;
-
-                            }
-
-                            alert(
-                                error.message ??
-                                "Could not update order status."
-                            );
-
-                        }
-                        finally {
-
-                            this.disabled = false;
-
-                        }
-
-                    });
-
-            });
-
-    </script>
 }

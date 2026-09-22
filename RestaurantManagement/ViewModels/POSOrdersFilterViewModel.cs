@@ -8,7 +8,7 @@ namespace RestaurantManagement.ViewModels
         public string? Search { get; set; }
 
         public OrderStatus? Status { get; set; }
-
+        public bool ShowAllStatuses { get; set; }
         public string Sort { get; set; } = "oldest";
 
     }

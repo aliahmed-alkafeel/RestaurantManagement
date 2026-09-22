@@ -49,13 +49,13 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             ModelState.Remove("Order.OrderName");
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return View("EditOrder",model);
             }
             var result = await ordersService.UpdateOrderAsync(model);
             if (!result)
             {
                 ModelState.AddModelError("", "This update is not allowed");
-                return View(model);
+                return View("EditOrder",model);
             }
             return RedirectToAction(nameof(Orders));
         }
