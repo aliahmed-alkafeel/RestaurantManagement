@@ -11,53 +11,46 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 {
     public class OrdersService(IUnitOfWork unitOfWork) : IOrdersService
     {
-        public async Task<bool> DeleteOrderAsync(Guid modelId, CancellationToken cancellationToken = default)
+        public async Task<bool> DeleteOrderAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var order = await unitOfWork.Orders.GetOrderWithItemsByIdAsync(modelId, cancellationToken);
+            var order = await unitOfWork.Orders.Select()
+                .Include(o => o.ItemOrders).ThenInclude(io => io.Item)
+                .ThenInclude(i => i.Discount).FirstOrDefaultAsync(o => o.Id == id,cancellationToken);
             if (order is null) throw new InvalidOperationException("There is no such order");
-            unitOfWork.Orders.Delete(order);
-            foreach (ItemOrder itemOrder in order.ItemOrders)
-            {
-                unitOfWork.ItemOrders.Delete(itemOrder);
-            }
-
+            unitOfWork.Orders.Delete(order); 
+            unitOfWork.ItemOrders.DeleteRange(order.ItemOrders);
             await unitOfWork.SaveChangesAsync(cancellationToken);
             return true;
         }
 
         public async Task<List<OrderViewModel>> GetAllOrdersAsync(CancellationToken cancellationToken = default)
         {
-            var orders = await unitOfWork.Orders.NoTrackingSelect().OrderByDescending(o => o.OrderDate)
-                .Include(o => o.ItemOrders).ThenInclude(io => io.Item).ThenInclude(i => i.Discount)
-                .ToListAsync(cancellationToken);
-            List<OrderViewModel> ordersVm = [];
-            foreach (Order order in orders)
-            {
-                ordersVm.Add(new OrderViewModel
+            return await unitOfWork.Orders.NoTrackingSelect().OrderByDescending(o => o.OrderDate)
+                .Include(o => o.ItemOrders)
+                .ThenInclude(io => io.Item).ThenInclude(i => i.Discount)
+               .Select(order => new OrderViewModel
                 {
                     Id = order.Id,
                     TableId = order.TableId,
                     OrderDate = order.OrderDate,
                     OrderStatus = order.OrderStatus,
                     TotalPrice = order.TotalPrice
-                });
-            }
-
-            return ordersVm;
+                }).ToListAsync(cancellationToken);
         }
 
         public async Task<OrderViewModel> GetOrderByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var order = await unitOfWork.Orders.GetOrderWithItemsByIdAsync(id, cancellationToken);
-            if (order is null) throw new KeyNotFoundException("There is no such order");
-            OrderViewModel orderVm = new()
+            var order = await unitOfWork.Orders.NoTrackingSelect()
+                .Include(o => o.ItemOrders).ThenInclude(io => io.Item)
+                .ThenInclude(i => i.Discount).FirstOrDefaultAsync(o => o.Id == id,cancellationToken);
+            if (order is null) throw new ArgumentNullException(nameof(order));
+            return new OrderViewModel()
             {
                 Id = order.Id,
                 TableId = order.TableId,
                 OrderStatus = order.OrderStatus,
                 TotalPrice = order.TotalPrice,
                 OrderDate = order.OrderDate,
-
                 ItemOrders = order.ItemOrders.Select(x => new ItemOrderViewModel
                 {
                     ItemId = x.ItemId,
@@ -71,137 +64,236 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                         : x.Item.Price
                 }).ToList()
             };
-            return orderVm;
+        
         }
 
         public async Task<bool> CreateOrderAsync(CreateOrderViewModel model)
         {
-            if (model is null || model.ItemOrders is null) throw new ArgumentNullException();
-            if (!model.ItemOrders.Any()) return false;
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
+            var newItems = model.ItemOrders
+                .Where(x => x.Quantity > 0)
+                .GroupBy(x => x.ItemId)
+                .Select(g => new
+                {
+                    ItemId = g.Key,
+                    Quantity = g.Sum(x => x.Quantity)
+                })
+                .ToList();
+
+            if (newItems.Count == 0)
+                return false;
+
+            var now = DateTime.UtcNow;
+
+            var itemIds = newItems
+                .Select(x => x.ItemId)
+                .ToList();
+
+            var items = await unitOfWork.Items
+                .NoTrackingSelect().Where(i => itemIds.Contains(i.Id))
+                .Include(i => i.Discount)
+                .ToListAsync(model.CancellationToken);
+
+            var itemsById = items.ToDictionary(x => x.Id);
+
             var order = new Order
             {
                 Id = Guid.NewGuid(),
                 OrderStatus = OrderStatus.Pending,
                 TableId = model.TableId,
-                OrderDate = DateTime.UtcNow
+                OrderDate = now
             };
-            await unitOfWork.Orders.AddAsync(order, model.CancellationToken);
-            decimal newItemsTotal = 0;
 
-            var itemIds = model.ItemOrders.Select(x => x.ItemId).Distinct().ToList();
+            decimal totalPrice = 0;
 
-            var items = await unitOfWork.Items.Select()
-                .Include(i => i.Category)
-                .Include(i => i.Discount)
-                .Where(i => itemIds.Contains(i.Id))
-                .AsNoTracking()
-                .ToListAsync(model.CancellationToken);
-            foreach (var newItem in model.ItemOrders)
+            foreach (var newItem in newItems)
             {
-                if (newItem.Quantity == 0) continue;
-                var item = items.FirstOrDefault(x => x.Id == newItem.ItemId);
-                if (item is null) throw new ArgumentNullException("One of items is not exists");
+                if (!itemsById.TryGetValue(newItem.ItemId, out var item))
+                {
+                    throw new InvalidOperationException(
+                        $"Item with ID '{newItem.ItemId}' does not exist.");
+                }
 
                 if (!item.IsAvailable || !item.IsActive)
+                {
                     throw new InvalidOperationException(
-                        $"Item '{item.ItemName}' is not available");
+                        $"Item '{item.ItemName}' is not available.");
+                }
 
-                decimal? hasDiscount = item.Discount != null && item.Discount.DiscountStartingDate <= DateTime.UtcNow &&
-                                       item.Discount.DiscountEndingDate >= DateTime.UtcNow
-                    ? item.Discount.DiscountPercentage
-                    : null;
-                var finalPrice = hasDiscount != null
-                    ? item.Price * (1 - (item.Discount!.DiscountPercentage / 100))
+                var discount = item.Discount;
+
+                var finalPrice = discount is not null &&
+                                 discount.DiscountStartingDate <= now &&
+                                 discount.DiscountEndingDate >= now
+                    ? item.Price * (1 - discount.DiscountPercentage / 100)
                     : item.Price;
+
                 var itemOrder = new ItemOrder
                 {
                     ItemId = item.Id,
                     OrderId = order.Id,
-                    Quantity = newItem.Quantity,
-                    Price = finalPrice,
+                    Quantity = (short) newItem.Quantity,
+                    Price = finalPrice
                 };
-                await unitOfWork.ItemOrders.AddAsync(itemOrder, model.CancellationToken);
 
-                newItemsTotal += finalPrice * newItem.Quantity;
+                await unitOfWork.ItemOrders.AddAsync(
+                    itemOrder,
+                    model.CancellationToken);
+
+                totalPrice += finalPrice * newItem.Quantity;
             }
 
-            order.TotalPrice = newItemsTotal;
+            order.TotalPrice = totalPrice;
+
+            await unitOfWork.Orders.AddAsync(
+                order,
+                model.CancellationToken);
+
             await unitOfWork.SaveChangesAsync(model.CancellationToken);
+
             return true;
         }
-
         public async Task<bool> UpdateOrderAsync(OrderViewModel model)
         {
-            if (model is null || model.ItemOrders is null) throw new ArgumentNullException();
-            var order = await unitOfWork.Orders.GetOrderWithItemsByIdAsync(model.Id, model.CancellationToken);
-            if (order is null) return false;
-            order.OrderStatus = model.OrderStatus;
-            order.TableId = model.TableId;
-            order.OrderDate = model.OrderDate.AddHours(-3);
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
+            if (model.ItemOrders is null)
+                throw new ArgumentNullException(nameof(model.ItemOrders));
+
+            var order = await unitOfWork.Orders
+                .Select()
+                .Include(o => o.ItemOrders)
+                .ThenInclude(io => io.Item)
+                .ThenInclude(i => i.Discount)
+                .FirstOrDefaultAsync(
+                    o => o.Id == model.Id,
+                    model.CancellationToken);
+
+            if (order is null)
+                return false;
+
+            var now = DateTime.UtcNow;
+
+            var newItems = model.ItemOrders
+                .Where(x => x.Quantity > 0)
+                .GroupBy(x => x.ItemId)
+                .Select(g => new
+                {
+                    ItemId = g.Key,
+                    Quantity = (short) g.Sum(x => x.Quantity)
+                })
+                .ToList();
+
+            if (newItems.Count == 0)
+                return false;
+
+            var newItemIds = newItems
+                .Select(x => x.ItemId)
+                .ToHashSet();
+
             var existingItemOrders = order.ItemOrders.ToList();
-            var itemIds = model.ItemOrders.Select(x => x.ItemId).ToList();
-            decimal newItemsTotal = 0;
 
-            var toRemove = existingItemOrders.Where(io => !itemIds.Contains(io.ItemId));
-
-            foreach (var oldItemOrder in toRemove)
+            foreach (var itemOrder in existingItemOrders)
             {
-                unitOfWork.ItemOrders.Delete(oldItemOrder);
+                if (!newItemIds.Contains(itemOrder.ItemId))
+                {
+                    unitOfWork.ItemOrders.Delete(itemOrder);
+                }
             }
 
-            foreach (var newItem in model.ItemOrders)
+            var items = await unitOfWork.Items
+                .NoTrackingSelect()
+                .Include(i => i.Discount)
+                .Where(i => newItemIds.Contains(i.Id))
+                .ToListAsync(model.CancellationToken);
+
+            var itemsById = items.ToDictionary(i => i.Id);
+
+            var existingByItemId = existingItemOrders
+                .ToDictionary(io => io.ItemId);
+
+            decimal newItemsTotal = 0;
+
+            foreach (var newItem in newItems)
             {
-                var item = await unitOfWork.Items.GetByIdAsync(newItem.ItemId, model.CancellationToken);
-                if (item is null) throw new ArgumentNullException("One of items is not exists");
+                if (!itemsById.TryGetValue(newItem.ItemId, out var item))
+                {
+                    throw new InvalidOperationException(
+                        $"Item with ID '{newItem.ItemId}' does not exist.");
+                }
 
                 //if (!item.IsAvailable || !item.IsActive)
+                //{
                 //    throw new InvalidOperationException(
-                //        $"Item '{item.ItemName}' is not available");
-                decimal finalPrice = item.Discount != null &&
-                                     item.Discount.DiscountStartingDate <= DateTime.UtcNow &&
-                                     item.Discount.DiscountEndingDate >= DateTime.UtcNow
-                    ? item.Price * (1 - (item.Discount.DiscountPercentage / 100))
-                    : item.Price;
+                //        $"Item '{item.ItemName}' is not available.");
+                //}
 
-                var existing = existingItemOrders.FirstOrDefault(io => io.ItemId == newItem.ItemId);
-                if (existing is not null)
+                var discount = item.Discount;
+
+                var finalPrice =
+                    discount is not null &&
+                    discount.DiscountStartingDate <= now &&
+                    discount.DiscountEndingDate >= now
+                        ? item.Price * (1 - discount.DiscountPercentage / 100)
+                        : item.Price;
+
+                if (existingByItemId.TryGetValue(newItem.ItemId, out var existingItemOrder))
                 {
-                    existing.IsDeleted = false;
-                    existing.Quantity = newItem.Quantity;
-                    existing.Price = finalPrice;
-                    existing.DeletedAt = null;
-                    existing.DeletedById = null;
-                    unitOfWork.ItemOrders.Update(existing);
+                    if (existingItemOrder.Quantity == newItem.Quantity &&
+                        existingItemOrder.Price == finalPrice)
+                    {
+                        newItemsTotal += finalPrice * newItem.Quantity;
+                        continue;
+                    }
+
+                    unitOfWork.ItemOrders.Delete(existingItemOrder);
+
+                    var newItemOrder = new ItemOrder
+                    {
+                        ItemId = item.Id,
+                        OrderId = order.Id,
+                        Quantity =  newItem.Quantity,
+                        Price = finalPrice
+                    };
+
+                    await unitOfWork.ItemOrders.AddAsync(
+                        newItemOrder,
+                        model.CancellationToken);
                 }
                 else
                 {
-                    var itemOrder = new ItemOrder
+                    var newItemOrder = new ItemOrder
                     {
                         ItemId = item.Id,
-                        OrderId = model.Id,
+                        OrderId = order.Id,
                         Quantity = newItem.Quantity,
                         Price = finalPrice
                     };
-                    await unitOfWork.ItemOrders.AddAsync(itemOrder, model.CancellationToken);
+
+                    await unitOfWork.ItemOrders.AddAsync(
+                        newItemOrder,
+                        model.CancellationToken);
                 }
 
                 newItemsTotal += finalPrice * newItem.Quantity;
             }
 
+            order.OrderStatus = model.OrderStatus;
+            order.TableId = model.TableId;
+            order.OrderDate = model.OrderDate.AddHours(-3);
             order.TotalPrice = newItemsTotal;
             unitOfWork.Orders.Update(order);
             await unitOfWork.SaveChangesAsync(model.CancellationToken);
+
             return true;
         }
-
 
         public async Task<POSOrdersViewModel> GetPOSOrdersAsync(
             POSOrdersFilterViewModel filter)
         {
-            // -----------------------------
-            // Base query
-            // Last 24 hours only
-            // -----------------------------
 
             var fromDate = DateTime.UtcNow.AddHours(-24);
 
@@ -212,10 +304,6 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                     o.OrderStatus != OrderStatus.Cancelled &&
                     o.OrderStatus != OrderStatus.Completed);
 
-            // -----------------------------
-            // Search
-            // TableId OR ItemName
-            // -----------------------------
 
             if (!string.IsNullOrWhiteSpace(filter.Search))
             {
@@ -233,9 +321,6 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 );
             }
 
-            // -----------------------------
-            // Status filter
-            // -----------------------------
 
             if (filter.Status.HasValue)
             {
@@ -243,9 +328,6 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                     o.OrderStatus == filter.Status.Value);
             }
 
-            // -----------------------------
-            // Sorting
-            // -----------------------------
 
             query = filter.Sort switch
             {
@@ -270,9 +352,6 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                         .ThenBy(o => o.Id)
             };
 
-            // -----------------------------
-            // Get ALL orders
-            // -----------------------------
 
             var orders = await query
                 .Select(o => new OrderViewModel
@@ -311,9 +390,9 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         public async Task<bool> UpdateOrderAsync(OrderStatusViewModel model)
         {
-            if (model is null) throw new ArgumentNullException();
-            var order = await unitOfWork.Orders.Select().Where(o => o.Id == model.OrderId)
-                .FirstOrDefaultAsync(model.CancellationToken);
+            if (model is null) throw new ArgumentNullException(nameof(model));
+            var order = await unitOfWork.Orders.Select()
+                .FirstOrDefaultAsync(o => o.Id == model.OrderId,model.CancellationToken);
             if (order is null) return false;
             order.OrderStatus = model.Status;
             unitOfWork.Orders.Update(order);

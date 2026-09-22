@@ -14,8 +14,9 @@ namespace RestaurantManagement.IRepositories
         IQueryable<T> NoTrackingSelect(DeletedStatus status = DeletedStatus.NotDeleted);
         Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default, DeletedStatus status = DeletedStatus.NotDeleted);
         Task AddAsync(T obj, CancellationToken cancellationToken = default);
+        void DeleteRange(IEnumerable<T> objects);
         void Update(T obj);
         void Delete(T obj);
-        //Task<bool> ExistsByIdAsync(Guid id, DeletedStatus status = DeletedStatus.NotDeleted, CancellationToken cancellationToken = default);
+        //Task<bool> ExistsByIdAsync(Guid id, CancellationToken cancellationToken = default, DeletedStatus status = DeletedStatus.NotDeleted);
     }
 }

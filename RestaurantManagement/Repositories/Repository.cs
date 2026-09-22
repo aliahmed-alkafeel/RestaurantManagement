@@ -61,6 +61,19 @@ namespace RestaurantManagement.Repositories
             await _dbSet.AddAsync(obj,cancellationToken);
         }
 
+        public void DeleteRange(IEnumerable<T> objects)
+        {
+            var deletedAt = DateTime.UtcNow;
+
+            foreach (var obj in objects)
+            {
+                obj.IsDeleted = true;
+                obj.DeletedAt = deletedAt;
+                obj.DeletedById = userId;
+            }
+
+            _dbSet.UpdateRange(objects);
+        }
         public void Update(T obj)
         {
             obj.UpdatedAt = DateTime.UtcNow;
@@ -76,11 +89,14 @@ namespace RestaurantManagement.Repositories
             _dbSet.Update(obj);
         }
 
-        //public async Task<bool> ExistsByIdAsync(Guid id, DeletedStatus status = DeletedStatus.NotDeleted, CancellationToken cancellationToken = default)
+        //public async Task<bool> ExistsByIdAsync(Guid id, CancellationToken cancellationToken = default,
+        //    DeletedStatus status = DeletedStatus.NotDeleted)
         //{
-        //    return await GetByIdAsync(id, status, cancellationToken) != null;
+        //    return await GetByIdAsync(id, cancellationToken, status) != null;
         //}
 
-       
+
+
+
     }
 }

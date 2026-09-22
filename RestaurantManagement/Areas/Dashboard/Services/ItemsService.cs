@@ -15,23 +15,24 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         public async Task<bool> CreateItemAsync(ItemViewModel model)
         {
             if (model is null) throw new ArgumentNullException();
-            var items = await unitOfWork.Items.GetAllAsync(model.CancellationToken);
-            foreach (Item i in items)
+            var isExists = await unitOfWork.Items.NoTrackingSelect()
+                .FirstOrDefaultAsync(i => (i.ItemName == model.ItemName && i.Id != model.Id) &&
+                    (i.CategoryId == model.CategoryId && i.Id != model.Id),
+                    model.CancellationToken);
+            if (isExists is null)
             {
-                if(i.ItemName == model.ItemName && i.CategoryId == model.CategoryId)
-                {
-                    return false;
-                }
+                return false;
             }
+
             var imageResult = await InsertImage(model);
             if (!imageResult) return false;
-            var category = await unitOfWork.Categories.GetByIdAsync(model.CategoryId, model.CancellationToken);
+            //var category = await unitOfWork.Categories.GetByIdAsync(model.CategoryId, model.CancellationToken);
             Item item = new Item
             {
                 Id = Guid.NewGuid(),
                 ItemName = model.ItemName,
                 CategoryId = model.CategoryId,
-                Category = category!,
+                //Category = category!,
                 Price = model.Price,
                 IsActive = model.IsActive,
                 IsAvailable = model.IsAvailable,
@@ -42,17 +43,18 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             return true;
         }
 
-        public async Task<bool> DeleteItemAsync(Guid modelId, CancellationToken cancellationToken = default)
+        public async Task<bool> DeleteItemAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var item = await unitOfWork.Items.GetByIdAsync(modelId, cancellationToken);
+            var item = await unitOfWork.Items.GetByIdAsync(id, cancellationToken);
             if (item is null) throw new InvalidOperationException("There is no such Item");
-            DeleteImage(item); 
             unitOfWork.Items.Delete(item);
             await unitOfWork.SaveChangesAsync(cancellationToken);
+            DeleteImage(item);
             return true;
         }
 
-        public async Task<List<ItemByCategoryViewModel>> GetItemsByType(CategoryType type, CancellationToken cancellationToken = default)
+        public async Task<List<ItemByCategoryViewModel>> GetItemsByType(CategoryType type,
+            CancellationToken cancellationToken = default)
         {
             return await unitOfWork.Items
                 .NoTrackingSelect()
@@ -77,49 +79,48 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         {
             if (!item.ImageUrl.EndsWith("default.jpg"))
             {
-                var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", item.ImageUrl.TrimStart('~', '/'));
+                var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot",
+                    item.ImageUrl.TrimStart('~', '/'));
                 if (File.Exists(oldPath))
                 {
-                    var newPath = Path.Combine(Path.GetDirectoryName(oldPath)!, $"deleted_{item.ItemName}_{DateTime.UtcNow:yyyyMMddHHmmss}{Path.GetExtension(oldPath)}");
+                    var newPath = Path.Combine(Path.GetDirectoryName(oldPath)!,
+                        $"deleted_{DateTime.UtcNow:yyyyMMddHHmmss}{Path.GetExtension(oldPath)}");
                     File.Move(oldPath, newPath);
                 }
             }
         }
+
         public async Task<List<ItemViewModel>> GetAllItemsAsync(CancellationToken cancellationToken = default)
         {
-            var items = await unitOfWork.Items.NoTrackingSelect().Include(i => i.Category).Include(i => i.Discount).ToListAsync(cancellationToken);
-            List<ItemViewModel> itemsVm = [];
-            foreach (Item item in items)
-            {
-            //Console.WriteLine(item.Discount != null ?item.Discount.DiscountPercentage: "not");
-                if (!item.IsDeleted)
+            return await unitOfWork.Items.NoTrackingSelect()
+                .Include(i => i.Category)
+                .Include(i => i.Discount)
+                .Select(item => new ItemViewModel
                 {
-                    var category = await unitOfWork.Categories.GetByIdAsync(item.CategoryId, cancellationToken);
-                    itemsVm.Add(new ItemViewModel
-                    {
-                        Id = item.Id,
-                        ItemName = item.ItemName,
-                        Price = item.Price,
-                        IsActive = item.IsActive,
-                        IsAvailable = item.IsAvailable,
-                        Category = category,
-                        CategoryId = item.CategoryId,
-                        ImageUrl = item.ImageUrl,
-                        DiscountPercentage = item.Discount != null &&
-                        item.Discount.DiscountStartingDate <= DateTime.UtcNow && item.Discount.DiscountEndingDate >= DateTime.UtcNow
-                        ? item.Discount.DiscountPercentage : null
-                    });
-                }
-            }
-            return itemsVm;
+                    Id = item.Id,
+                    ItemName = item.ItemName,
+                    Price = item.Price,
+                    IsActive = item.IsActive,
+                    IsAvailable = item.IsAvailable,
+                    Category = item.Category,
+                    CategoryId = item.CategoryId,
+                    ImageUrl = item.ImageUrl,
+                    DiscountPercentage = item.Discount != null &&
+                                         item.Discount.DiscountStartingDate <= DateTime.UtcNow &&
+                                         item.Discount.DiscountEndingDate >= DateTime.UtcNow
+                        ? item.Discount.DiscountPercentage
+                        : null
+                }).ToListAsync(cancellationToken);
         }
+
 
         public async Task<ItemViewModel> GetItemByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var item = await unitOfWork.Items.GetByIdAsync(id, cancellationToken);
-            if (item is null) throw new KeyNotFoundException("There is no such Item");
-            var category = await unitOfWork.Categories.GetByIdAsync(item.CategoryId, cancellationToken);
-            ItemViewModel itemVm = new ItemViewModel
+            if (item is null) throw new InvalidOperationException("There is no such Item");
+            Category? category = await unitOfWork.Categories.GetByIdAsync(item.CategoryId, cancellationToken);
+            if (category is null) throw new InvalidOperationException(nameof(category));
+            return new ItemViewModel
             {
                 Id = item.Id,
                 ItemName = item.ItemName,
@@ -129,29 +130,31 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 IsActive = item.IsActive,
                 IsAvailable = item.IsAvailable
             };
-            return itemVm;
+             
         }
 
         public async Task<bool> InsertImage(ItemViewModel model)
         {
-            var maxLength = 30 * 1024 * 1024;
+            var maxLength = 10 * 1024 * 1024;
             if (model.ItemImage == null || model.ItemImage.Length == 0)
             {
                 return true;
             }
+
             if (model.ItemImage.Length > maxLength)
             {
                 return false;
             }
+
             var allowedExtensions = new[]
             {
-                ".jpg",".jpeg",".png",".webp",".gif"
+                ".jpg", ".jpeg", ".png", ".webp", ".gif"
             };
             var extension = Path.GetExtension(model.ItemImage.FileName);
             if (!allowedExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase)) return false;
             if (!model.ItemImage.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase)) return false;
             var directory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "items");
-            string fileName = Guid.NewGuid() + extension;            
+            string fileName = Guid.NewGuid() + extension;
             string filePath = Path.Combine(directory, fileName);
             await using var stream = new FileStream(filePath, FileMode.Create);
             await model.ItemImage.CopyToAsync(stream);
@@ -162,35 +165,44 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         public async Task<bool> UpdateItemAsync(ItemViewModel model)
         {
             if (model is null) throw new ArgumentNullException();
-            var Items = await unitOfWork.Items.GetAllAsync(model.CancellationToken);
-            foreach (Item i in Items)
-            {
-                if ((i.ItemName == model.ItemName && i.Id != model.Id) &&
-                    (i.CategoryId == model.CategoryId && i.Id != model.Id))
-                {
-                    return false;
-                }
-            }
-            var item = Items.FirstOrDefault(c => c.Id == model.Id);
+            var item = await unitOfWork.Items.Select()
+                .FirstOrDefaultAsync(i => i.Id == model.Id,
+                    model.CancellationToken);
             if (item is null) return false;
+            var exists = await unitOfWork.Items.NoTrackingSelect()
+                .AnyAsync(i => i.Id != model.Id &&
+                               i.ItemName == model.ItemName &&
+                               i.CategoryId == model.CategoryId,
+                    model.CancellationToken);
+
+            if (exists)
+                return false;
             if (!await InsertImage(model)) return false;
-            DeleteImage(item);
-            Category? category = await unitOfWork.Categories.GetByIdAsync(model.CategoryId, model.CancellationToken);
+            var oldImageUrl = item.ImageUrl;
+            //Category? category = await unitOfWork.Categories.GetByIdAsync(model.CategoryId, model.CancellationToken);
+            //if (category is null) throw new InvalidOperationException(nameof(category));
             item.ItemName = model.ItemName;
-            item.Category = category!;
+            //item.Category = category;
+            item.CategoryId = model.CategoryId;
             item.Price = model.Price;
             item.IsActive = model.IsActive;
             item.IsAvailable = model.IsAvailable;
             item.ImageUrl = model.ImageUrl;
             unitOfWork.Items.Update(item);
             await unitOfWork.SaveChangesAsync(model.CancellationToken);
+            if (oldImageUrl != item.ImageUrl)
+            {
+                DeleteImage(item);
+            }
             return true;
         }
-        public async Task<IEnumerable<Category>> GetCategoriesByTypeAsync(CategoryType type, CancellationToken cancellationToken = default)
+
+        public async Task<IEnumerable<Category>> GetCategoriesByTypeAsync(CategoryType type,
+            CancellationToken cancellationToken = default)
         {
-            
-            return (await unitOfWork.Categories.GetAllAsync(cancellationToken)).Where(c => c.Type == type);
+            return await unitOfWork.Categories.NoTrackingSelect().Where(c => c.Type == type).ToListAsync(cancellationToken);
         }
+
         public async Task<List<ItemByCategoryViewModel>> GetItemsByCategoryId(Guid categoryId,
             CancellationToken cancellationToken = default)
         {
@@ -202,8 +214,10 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                     Price = i.Price,
                     Image = i.ImageUrl,
                     DiscountPercentage = i.Discount != null &&
-                        i.Discount.DiscountStartingDate <= DateTime.UtcNow && i.Discount.DiscountEndingDate >= DateTime.UtcNow
-                        ? i.Discount.DiscountPercentage : null
+                                         i.Discount.DiscountStartingDate <= DateTime.UtcNow &&
+                                         i.Discount.DiscountEndingDate >= DateTime.UtcNow
+                        ? i.Discount.DiscountPercentage
+                        : null
                 }).ToListAsync(cancellationToken);
         }
 
@@ -212,34 +226,41 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             if (model.Page < 1) model.Page = 1;
             if (model.PageSize < 1) model.PageSize = 10;
 
-            var items = unitOfWork.Items.NoTrackingSelect().Include(x => x.Category).Where(x => !x.Category.IsDeleted).AsNoTracking();
+            var items = unitOfWork.Items.NoTrackingSelect().Include(x => x.Category).Where(x => !x.Category.IsDeleted)
+                .AsNoTracking();
             var categories = await unitOfWork.Categories.NoTrackingSelect().ToListAsync(model.CancellationToken);
 
             if (!string.IsNullOrEmpty(model.Search))
             {
                 items = items.Where(x => x.ItemName.Contains(model.Search));
             }
-            if(model.Type is not null)
+
+            if (model.Type is not null)
             {
                 items = items.Where(x => x.Category.Type == model.Type.Value);
                 categories = categories.Where(x => x.Type == model.Type.Value).ToList();
             }
-            if(model.CategoryId is not null)
+
+            if (model.CategoryId is not null)
             {
                 items = items.Where(x => x.CategoryId == model.CategoryId.Value);
             }
-            if(model.MinPrice is not null)
+
+            if (model.MinPrice is not null)
             {
                 items = items.Where(x => x.Price >= model.MinPrice.Value);
             }
-            if(model.MaxPrice is not null)
+
+            if (model.MaxPrice is not null)
             {
                 items = items.Where(x => x.Price <= model.MaxPrice.Value);
             }
-            if(model.IsAvailable is not null)
+
+            if (model.IsAvailable is not null)
             {
                 items = items.Where(x => x.IsAvailable == model.IsAvailable);
             }
+
             items = model.Sort switch
             {
                 "name_asc" => items.OrderBy(x => x.ItemName),
@@ -253,11 +274,12 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 "category_asc" => items.OrderBy(x => x.Category.CategoryName),
                 "category_desc" => items.OrderByDescending(x => x.Category.CategoryName),
 
-                _ => items.OrderBy(x => x.IsActive).OrderBy(x => x.ItemName)
+                _ => items.OrderBy(x => x.IsActive).ThenBy(x => x.ItemName)
             };
             var totalCount = await items.CountAsync(model.CancellationToken);
-            var totalPages = (int)Math.Ceiling(totalCount /(double) model.PageSize);
-            var finalItems = await items.Skip((model.Page - 1) * model.PageSize).Take(model.PageSize).ToListAsync(model.CancellationToken);
+            var totalPages = (int)Math.Ceiling(totalCount / (double)model.PageSize);
+            var finalItems = await items.Skip((model.Page - 1) * model.PageSize).Take(model.PageSize)
+                .ToListAsync(model.CancellationToken);
             var result = new PaginatedList<Item>
             {
                 Items = finalItems,
@@ -274,4 +296,4 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             };
         }
     }
-    }
+}

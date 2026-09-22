@@ -8,6 +8,6 @@ namespace RestaurantManagement.Areas.Dashboard.IServices
         Task<DiscountViewModel> GetDiscountByIdAsync(Guid id,CancellationToken cancellationToken = default);
         Task<bool> CreateDiscountAsync(DiscountViewModel model);
         Task<bool> UpdateDiscountAsync(DiscountViewModel model);
-        Task<bool> DeleteDiscountAsync(Guid modelId,CancellationToken cancellationToken = default);
+        Task<bool> DeleteDiscountAsync(Guid id,CancellationToken cancellationToken = default);
     }
 }

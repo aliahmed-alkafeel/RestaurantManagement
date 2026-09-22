@@ -7,6 +7,7 @@ using RestaurantManagement.IServices;
 using RestaurantManagement.Models;
 using RestaurantManagement.ViewModels;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace RestaurantManagement.Services
 {
@@ -25,11 +26,10 @@ namespace RestaurantManagement.Services
 
         public async Task<bool> LoginAsync(LoginViewModel loginViewModel)
         {
-            var employee = await _unitOfWork.Employees.GetEmployeeWithGroupByUsernameAsync(loginViewModel.Username, loginViewModel.CancellationToken);
-            if (employee is null || employee.EmployeeStartingDate > DateTime.UtcNow || employee.EmployeeEndingDate < DateTime.UtcNow)
-            {
-                return false;
-            }
+            var employee = await _unitOfWork.Employees.NoTrackingSelect()
+                .Include(e => e.Group)
+                .FirstOrDefaultAsync(e => e.Username == loginViewModel.Username, loginViewModel.CancellationToken);
+            if (employee is null) return false;
             var result = _passwordHasher.VerifyHashedPassword(employee, employee.PasswordHash, loginViewModel.Password);
             if (result == PasswordVerificationResult.Failed)
             {
@@ -40,11 +40,10 @@ namespace RestaurantManagement.Services
                 new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString()),
                 new Claim(ClaimTypes.Name, employee.Username),
             };
-            var group = await _unitOfWork.Groups.GetGroupWithRolesByIdAsync(employee.GroupId, loginViewModel.CancellationToken);
-            foreach(var role in group.GroupRoles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role.Role.RoleName.ToString()));
-            }
+            var group = await _unitOfWork.Groups.NoTrackingSelect().Include(g => g.GroupRoles).ThenInclude(gr => gr.Role)
+                .FirstOrDefaultAsync(g => g.Id == employee.GroupId, loginViewModel.CancellationToken);
+            if (group is null) throw new InvalidOperationException("The Group Of the User is Deleted!");
+            claims.AddRange(group.GroupRoles.Select(role => new Claim(ClaimTypes.Role, role.Role.RoleName.ToString())));
             var identity = new ClaimsIdentity(
                 claims,
                 CookieAuthenticationDefaults.AuthenticationScheme);

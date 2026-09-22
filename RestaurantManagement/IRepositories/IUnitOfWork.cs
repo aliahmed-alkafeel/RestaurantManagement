@@ -12,7 +12,7 @@ namespace RestaurantManagement.IRepositories
         IRepository<Order> Orders { get; }
         IRepository<Discount> Discounts { get; }
         IRepository<ItemOrder> ItemOrders { get; }
-        IRepository<Category> GroupsRoles { get; }
+        IRepository<GroupRole> GroupsRoles { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

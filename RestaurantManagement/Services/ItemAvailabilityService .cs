@@ -13,7 +13,7 @@ namespace RestaurantManagement.Services
             CancellationToken cancellationToken = default)
         {
             var items = await unitOfWork.Items
-                .NoTrackingSelect()
+                .NoTrackingSelect().Where(i => i.IsActive)
                 .Include(x => x.Category)
                 .OrderBy(x => x.Category.Type)
                 .ThenBy(x => x.Category.CategoryName)

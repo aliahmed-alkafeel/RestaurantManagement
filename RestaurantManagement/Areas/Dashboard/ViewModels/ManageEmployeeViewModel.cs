@@ -5,7 +5,7 @@ using RestaurantManagement.ViewModels;
 
 namespace RestaurantManagement.Areas.Dashboard.ViewModels
 {
-    public class ManageEmployeeViewModel : BaseCommand
+    public class ManageEmployeeViewModel : BaseCommand, IValidatableObject
     {
         [Required]
         public Guid Id { get; set; }
@@ -45,5 +45,13 @@ namespace RestaurantManagement.Areas.Dashboard.ViewModels
         [Compare(nameof(Password), ErrorMessage = "Confirm password is not identical to the password")]
         [Length(2, 50, ErrorMessage = "The Length must be between {1} and {2}")]
         public string ConfirmPassword { get; set; } = null!;
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (EmployeeEndingDate <= EmployeeStartingDate)
+            {
+                yield return new ValidationResult("Employee ending date must be after the starting date.",
+                    [nameof(EmployeeEndingDate)]);
+            }
+        }
     }
 }

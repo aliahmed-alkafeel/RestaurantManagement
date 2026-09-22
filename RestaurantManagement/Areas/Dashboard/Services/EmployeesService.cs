@@ -8,6 +8,7 @@ using RestaurantManagement.IRepositories;
 using RestaurantManagement.Models;
 using RestaurantManagement.Repositories;
 using System.Security.Claims;
+using RestaurantManagement.Extensions;
 
 namespace RestaurantManagement.Areas.Dashboard.Services
 {
@@ -16,7 +17,9 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPasswordHasher<Employee> _passwordHasher;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public EmployeesService(IUnitOfWork unitOfWork, IPasswordHasher<Employee> passwordHasher, IHttpContextAccessor httpContextAccessor)
+
+        public EmployeesService(IUnitOfWork unitOfWork, IPasswordHasher<Employee> passwordHasher,
+            IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = unitOfWork;
             _passwordHasher = passwordHasher;
@@ -25,11 +28,9 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         public async Task<List<EmployeeViewModel>> GetAllEmployeesAsync(CancellationToken cancellationToken = default)
         {
-            var emps = await _unitOfWork.Employees.GetAllEmployeesWithGroupsAsync(cancellationToken);
-            List<EmployeeViewModel> empvm = [];
-            foreach (Employee emp in emps)
-            {
-                empvm.Add(new EmployeeViewModel
+            return await _unitOfWork.Employees.NoTrackingSelect(DeletedStatus.All)
+                .Include(e => e.Group)
+                .Select(emp => new EmployeeViewModel
                 {
                     Id = emp.Id,
                     FirstName = emp.FirstName,
@@ -40,21 +41,23 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                     Username = emp.Username,
                     Email = emp.Email,
                     Group = emp.Group!.GroupName
-                });
-            }
-            return empvm;
+                }).ToListAsync(cancellationToken);
         }
 
-        public async Task<ManageEmployeeViewModel> GetEmployeeByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<ManageEmployeeViewModel> GetEmployeeByIdAsync(Guid id,
+            CancellationToken cancellationToken = default)
         {
-            var emp = await _unitOfWork.Employees.GetEmployeeWithGroupAsync(id, cancellationToken);
-            Console.WriteLine(emp.Group);
-            if (emp is null) throw new EntryPointNotFoundException("There is no such employee");
+            var emp = await _unitOfWork.Employees.NoTrackingSelect(DeletedStatus.All)
+                .Include(e => e.Group)
+                .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
+            if (emp is null) throw new ArgumentNullException(nameof(emp));
             var groups = await _unitOfWork.Groups.NoTrackingSelect().Select(g =>
-            new SelectListItem{
-                Value = g.GroupName,
-                Text = g.GroupName }).ToListAsync(cancellationToken);
-            ManageEmployeeViewModel empvm = new ManageEmployeeViewModel
+                new SelectListItem
+                {
+                    Value = g.GroupName,
+                    Text = g.GroupName
+                }).ToListAsync(cancellationToken);
+            return new ManageEmployeeViewModel
             {
                 Id = emp.Id,
                 FirstName = emp.FirstName,
@@ -64,38 +67,45 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 EmployeeEndingDate = emp.EmployeeEndingDate,
                 Username = emp.Username,
                 Email = emp.Email,
-                Group = emp.GroupId,            
+                Group = emp.GroupId,
                 GroupName = emp.Group!.GroupName,
                 Groups = groups
             };
-            return empvm;
         }
-
 
         public async Task<List<SelectListItem>> ShowCreateEmployeeAsync(CancellationToken cancellationToken = default)
         {
             return await _unitOfWork.Groups.NoTrackingSelect().Select(g =>
-        new SelectListItem
-        {
-        Value = g.Id.ToString(),
-         Text = g.GroupName
-        }).ToListAsync(cancellationToken);
+                new SelectListItem
+                {
+                    Value = g.Id.ToString(),
+                    Text = g.GroupName
+                }).ToListAsync(cancellationToken);
         }
+    
         public async Task<bool> CreateEmployeeAsync(ManageEmployeeViewModel model)
         {
-            if (model is null) throw new ArgumentNullException();
-            var isEmailExists = await _unitOfWork.Employees.GetEmployeeByEmailAsync(model.Email,model.CancellationToken);
-            var isUsernameExists = await _unitOfWork.Employees.GetEmployeeByUsernameAsync(model.Username,model.CancellationToken);
-            if ((isEmailExists is not null && isEmailExists.Id != model.Id) || (isUsernameExists is not null && isUsernameExists.Id != model.Id))
-            {
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
+            var isDuplicate = await _unitOfWork.Employees
+                .NoTrackingSelect(DeletedStatus.All)
+                .AnyAsync(
+                    e => e.Id != model.Id &&
+                         (e.Email == model.Email || e.Username == model.Username),
+                    model.CancellationToken);
+
+            if (isDuplicate)
                 return false;
-            }
-            var modifierId = Guid.Parse(_httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var modifier = await _unitOfWork.Employees.
-                GetEmployeeWithGroupAsync(modifierId, model.CancellationToken);
+            var modifierId = _httpContextAccessor.HttpContext!.User.GetUserId();
+            var modifier = await _unitOfWork.Employees.NoTrackingSelect(DeletedStatus.All)
+                .Include(e => e.Group)
+                .FirstOrDefaultAsync(e => e.Id == modifierId, model.CancellationToken);
+            if(modifier is null) throw new InvalidOperationException(nameof(modifier));
+            if (modifier.Group is null) throw new InvalidOperationException("The Group Of the User is Deleted!");
 
-
-            if (model.GroupName == InitUserGroup.Administrator.ToString() && modifier!.Group!.GroupName != InitUserGroup.Administrator.ToString())
+            if (model.GroupName == InitUserGroup.Administrator.ToString() &&
+                modifier!.Group!.GroupName != InitUserGroup.Administrator.ToString())
                 return false;
 
             var employee = new Employee
@@ -116,23 +126,26 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         public async Task<bool> UpdateEmployeeAsync(ManageEmployeeViewModel model)
         {
-        if (model is null) throw new ArgumentNullException();
-        var isEmailExists = await _unitOfWork.Employees.GetEmployeeByEmailAsync(model.Email, model.CancellationToken);
-        var isUsernameExists = await _unitOfWork.Employees.GetEmployeeByUsernameAsync(model.Username, model.CancellationToken);
-        if((isEmailExists is not null && isEmailExists.Id != model.Id) || (isUsernameExists is not null && isUsernameExists.Id != model.Id)){
-                return false;
-            }
-            //var modifier = await _unitOfWork.Employees.GetEmployeeWithGroupAsync(modifierId);
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+            var employee = await _unitOfWork.Employees
+                .Select(DeletedStatus.All)
+                .FirstOrDefaultAsync(
+                    e => e.Id == model.Id,
+                    model.CancellationToken);
 
-
-            //if (model.Group == InitUserGroup.Administrator.ToString() && modifier!.Group!.GroupName != InitUserGroup.Administrator.ToString())
-            //    return false;
-
-        var employee = await _unitOfWork.Employees.GetByIdAsync(model.Id, model.CancellationToken);
-            if (employee is null || (model.EmployeeEndingDate.HasValue && model.EmployeeEndingDate <= model.EmployeeStartingDate))
+            if (employee is null)
                 return false;
 
-            //var groupId = await _unitOfWork.Groups.GetIdByNameAsync(Guid.Parse(model.Group));
+            var isDuplicate = await _unitOfWork.Employees
+                .NoTrackingSelect(DeletedStatus.All)
+                .AnyAsync(
+                    e => e.Id != model.Id &&
+                         (e.Email == model.Email || e.Username == model.Username),
+                    model.CancellationToken);
+
+            if (isDuplicate)
+                return false;
 
             employee.Username = model.Username;
             employee.Email = model.Email;
@@ -143,23 +156,27 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             employee.GroupId = model.Group;
             employee.EmployeeEndingDate = model.EmployeeEndingDate;
 
-        if(model.Password is not null && model.Password == model.ConfirmPassword)
-        employee.PasswordHash = _passwordHasher.HashPassword(employee, model.Password);
-        _unitOfWork.Employees.Update(employee);
-        await _unitOfWork.SaveChangesAsync(model.CancellationToken);
-        return true;
-        }
-
-        public async Task<bool> TerminateEmployeeAsync(Guid modelId, CancellationToken cancellationToken = default)
-        {
-            var emp = await _unitOfWork.Employees.Select().Include(e => e.Group).Where(e => e.Id == modelId).FirstOrDefaultAsync();
-            if (emp is null) throw new InvalidOperationException("There is no such employee");
-            if(emp.Group!.GroupName == InitUserGroup.Administrator.ToString()) return false;
-            _unitOfWork.Employees.Terminate(emp);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            if (model.Password is not null)
+            {
+                employee.PasswordHash = _passwordHasher.HashPassword(employee, model.Password);
+            }
+            _unitOfWork.Employees.Update(employee);
+            await _unitOfWork.SaveChangesAsync(model.CancellationToken);
             return true;
         }
 
-
+        public async Task<bool> TerminateEmployeeAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            var emp = await _unitOfWork.Employees.Select(DeletedStatus.All)
+                .Include(e => e.Group).Where(e => e.Id == id)
+                .FirstOrDefaultAsync(cancellationToken);
+            if (emp is null) return false;
+            if (emp.Group!.GroupName == InitUserGroup.Administrator.ToString()) return false;
+            if(emp.EmployeeEndingDate.HasValue) return false;
+            emp.EmployeeEndingDate = DateTime.UtcNow;
+            _unitOfWork.Employees.Delete(emp);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return true;
+        }
     }
 }
