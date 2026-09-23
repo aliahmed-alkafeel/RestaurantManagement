@@ -116,7 +116,77 @@
 
     }
 
+    function removeOrderRow(row) {
 
+        row.style.opacity = "0";
+
+        setTimeout(
+            function () {
+
+                row.remove();
+
+                updateTotalCount();
+
+
+                const tbody =
+                    document.querySelector(
+                        "#ordersTable tbody"
+                    );
+
+
+                if (
+                    tbody &&
+                    tbody.children.length === 0
+                ) {
+
+                    const table =
+                        document.getElementById(
+                            "ordersTable"
+                        );
+
+
+                    if (table) {
+                        table.remove();
+                    }
+
+
+                    tableWrapper.innerHTML = `
+                    <div class="empty-orders">
+
+                        <div class="empty-icon">
+
+                            <svg viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="2">
+
+                                <circle cx="12"
+                                        cy="12"
+                                        r="9" />
+
+                                <path d="M8 12h8" />
+
+                            </svg>
+
+                        </div>
+
+                        <h3>
+                            No orders found
+                        </h3>
+
+                        <p>
+                            Try changing your search or filters.
+                        </p>
+
+                    </div>
+                `;
+
+                }
+
+            },
+            250
+        );
+    }
     // =====================================================
     // Set Active Status Button
     // =====================================================
@@ -522,88 +592,64 @@
 
                 }
 
+                // =================================================
+                // Should Remove Row?
+                // =================================================
+
+                const isAllFilter =
+                    currentStatus === "all";
+
+                const isDefaultFilter =
+                    currentStatus === "default";
+
+                const isSpecificStatusFilter =
+                    !isAllFilter &&
+                    !isDefaultFilter;
+
 
                 // =================================================
-                // Completed / Cancelled
+                // All
                 // =================================================
 
-                if (
-                    newStatus === 4 ||
-                    newStatus === 5
-                ) {
+                if (isAllFilter) {
 
-                    row.style.opacity = "0";
+                    // Keep the row.
+                }
 
 
-                    setTimeout(
-                        function () {
+                // =================================================
+                // Specific Status
+                // =================================================
 
-                            row.remove();
+                else if (isSpecificStatusFilter) {
 
-                            updateTotalCount();
+                    const selectedStatus =
+                        parseInt(currentStatus);
 
+                    if (selectedStatus !== newStatus) {
 
-                            const tbody =
-                                document.querySelector(
-                                    "#ordersTable tbody"
-                                );
+                        removeOrderRow(row);
 
-
-                            if (
-                                tbody &&
-                                tbody.children.length === 0
-                            ) {
-
-                                const table =
-                                    document.getElementById(
-                                        "ordersTable"
-                                    );
+                        return;
+                    }
+                }
 
 
-                                if (table) {
-                                    table.remove();
-                                }
+                // =================================================
+                // Default
+                // =================================================
 
+                else if (isDefaultFilter) {
 
-                                tableWrapper.innerHTML = `
-                                    <div class="empty-orders">
+                    if (
+                        newStatus === 4 ||
+                        newStatus === 5
+                    ) {
 
-                                        <div class="empty-icon">
+                        removeOrderRow(row);
 
-                                            <svg viewBox="0 0 24 24"
-                                                 fill="none"
-                                                 stroke="currentColor"
-                                                 stroke-width="2">
-
-                                                <circle cx="12"
-                                                        cy="12"
-                                                        r="9" />
-
-                                                <path d="M8 12h8" />
-
-                                            </svg>
-
-                                        </div>
-
-                                        <h3>
-                                            No orders found
-                                        </h3>
-
-                                        <p>
-                                            Try changing your search or filters.
-                                        </p>
-
-                                    </div>
-                                `;
-
-                            }
-
-                        },
-                        250
-                    );
-
-
-                    return;
+                        return;
+                    }
                 }
 
 
@@ -612,9 +658,9 @@
                 // =================================================
 
                 row.classList.remove(
+                    "status-pending",
                     "status-confirmed",
                     "status-preparing",
-                    "status-pending",
                     "status-ready",
                     "status-completed",
                     "status-cancelled"
@@ -623,11 +669,11 @@
 
                 const statusClasses = {
 
-                    0: "status-confirmed",
+                    0: "status-pending",
 
-                    1: "status-preparing",
+                    1: "status-confirmed",
 
-                    2: "status-pending",
+                    2: "status-preparing",
 
                     3: "status-ready",
 

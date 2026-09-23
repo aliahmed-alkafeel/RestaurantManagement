@@ -663,29 +663,6 @@
     <!-- ================================================= -->
     @Html.AntiForgeryToken()
     <script>
-            const orderNotification =
-                document.getElementById("orderNotification");
-
-            const notificationTitle =
-                document.getElementById("notificationTitle");
-
-            const notificationMessage =
-                document.getElementById("notificationMessage");
-
-
-            function showNotification(type, title, message) {
-
-                orderNotification.className =
-                    `alert alert-${type} mb-3`;
-
-                notificationTitle.textContent = title;
-                notificationMessage.textContent = message;
-
-                orderNotification.classList.remove("d-none");
-            }
-            function hideNotification() {
-                orderNotification.classList.add("d-none");
-            }
             document.addEventListener("DOMContentLoaded", function() {
 
 
@@ -742,6 +719,57 @@
                 const tableId =
                     document.getElementById("tableId");
 
+                const orderNotification =
+                    document.getElementById("orderNotification");
+
+                const notificationTitle =
+                    document.getElementById("notificationTitle");
+
+                const notificationMessage =
+                    document.getElementById("notificationMessage");
+
+                let notificationTimer = null;
+
+
+                function showNotification(type, title, message) {
+
+                    // Cancel previous timer
+                    if (notificationTimer) {
+                        clearTimeout(notificationTimer);
+                        notificationTimer = null;
+                    }
+
+                    orderNotification.className =
+                        `alert alert-${type} mb-3`;
+
+                    notificationTitle.textContent =
+                        title;
+
+                    notificationMessage.textContent =
+                        message;
+
+                    orderNotification.classList.remove("d-none");
+
+
+                    notificationTimer = setTimeout(() => {
+
+                        hideNotification();
+
+                    }, 3000);
+                }
+
+
+                function hideNotification() {
+
+                    if (notificationTimer) {
+
+                        clearTimeout(notificationTimer);
+
+                        notificationTimer = null;
+                    }
+
+                    orderNotification.classList.add("d-none");
+                }
 
                 /* =================================================
                    ORDER STATE
@@ -1031,7 +1059,7 @@ function addToOrder(
         );
 
     }
-
+    tableId.focus();
     renderOrder();
 }
 
@@ -1328,238 +1356,231 @@ function updateSummary() {
 
                     }
                 );
+/* =================================================
+   CREATE ORDER
+   ================================================= */
 
+createOrder.addEventListener(
+    "click",
+    createOrderFunction
+);
 
-                /* =================================================
-                   CREATE ORDER
-                   ================================================= */
+document.addEventListener(
+    "keydown",
+    function (event) {
 
-                createOrder.addEventListener(
-                    "click",
-                    async function() {
+        if (event.key !== "Enter") {
+            return;
+        }
 
-                        if (order.size === 0) {
+        event.preventDefault();
 
-                            showNotification(
-                                "warning",
-                                "Order is empty",
-                                "Please add at least one item."
-                            );
+        if (createOrder.disabled) {
+            return;
+        }
 
-                            return;
-                        }
+        createOrder.click();
+    }
+);
 
+async function createOrderFunction() {
 
-                        if (!tableId.value.trim()) {
+    if (order.size === 0) {
 
-                            showNotification(
-                                "warning",
-                                "Table required",
-                                "Please enter a table number."
-                            );
+        showNotification(
+            "warning",
+            "Order is empty",
+            "Please add at least one item."
+        );
 
-                            tableId.focus();
+        return;
+    }
 
-                            return;
-                        }
 
+    if (!tableId.value.trim()) {
 
-                        const formData =
-                            new FormData();
+        showNotification(
+            "warning",
+            "Table required",
+            "Please enter a table number."
+        );
 
+        tableId.focus();
 
-                        /* =========================================
-                           Anti Forgery Token
-                           ========================================= */
+        return;
+    }
 
-                        const token =
-                            document.querySelector(
-                                'input[name="__RequestVerificationToken"]'
-                            )?.value;
 
+    const formData =
+        new FormData();
 
-                        if (!token) {
 
-                            showNotification(
-                                "danger",
-                                "Request failed",
-                                "Anti-forgery token was not found."
-                            );
+    /* =========================================
+       Anti Forgery Token
+       ========================================= */
 
-                            return;
-                        }
+    const token =
+        document.querySelector(
+            'input[name="__RequestVerificationToken"]'
+        )?.value;
 
 
-                        formData.append(
-                            "__RequestVerificationToken",
-                            token
-                        );
+    if (!token) {
 
+        showNotification(
+            "danger",
+            "Request failed",
+            "Anti-forgery token was not found."
+        );
 
-                        /* =========================================
-                           Table
-                           ========================================= */
+        return;
+    }
 
-                        formData.append(
-                            "TableId",
-                            tableId.value.trim()
-                        );
 
+    formData.append(
+        "__RequestVerificationToken",
+        token
+    );
 
-                        /* =========================================
-                           Items
-                           ========================================= */
 
-                        Array.from(order.values())
-                            .forEach((item, index) => {
+    /* =========================================
+       Table
+       ========================================= */
 
-                                formData.append(
-                                    `ItemOrders[${index}].ItemId`,
-                                    item.id
-                                );
+    formData.append(
+        "TableId",
+        tableId.value.trim()
+    );
 
-                                formData.append(
-                                    `ItemOrders[${index}].Quantity`,
-                                    item.quantity
-                                );
 
-                            });
+    /* =========================================
+       Items
+       ========================================= */
 
+    Array.from(order.values())
+        .forEach((item, index) => {
 
-                        try {
+            formData.append(
+                `ItemOrders[${index}].ItemId`,
+                item.id
+            );
 
-                            createOrder.disabled = true;
+            formData.append(
+                `ItemOrders[${index}].Quantity`,
+                item.quantity
+            );
 
+        });
 
-                            console.log(
-                                [...formData.entries()]
-                            );
 
+    try {
 
-                            const response =
-                                await fetch(
-                                    "/POS/CreateOrder",
-                                    {
-                                        method: "POST",
-                                        body: formData
-                                    }
-                                );
+        createOrder.disabled = true;
 
 
-                            console.log(
-                                "HTTP Status:",
-                                response.status
-                            );
+        const response =
+            await fetch(
+                "/POS/CreateOrder",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
 
 
-                            console.log(
-                                "Content-Type:",
-                                response.headers.get("content-type")
-                            );
+        const responseText =
+            await response.text();
 
 
-                            const responseText =
-                                await response.text();
+        if (!response.ok) {
 
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+        }
 
-                            console.log(
-                                "Response:",
-                                responseText
-                            );
 
+        if (!responseText.trim()) {
 
-                            if (!response.ok) {
+            throw new Error(
+                "Server returned an empty response."
+            );
+        }
 
-                                throw new Error(
-                                    `HTTP ${response.status}`
-                                );
-                            }
 
+        let result;
 
-                            if (!responseText.trim()) {
 
-                                throw new Error(
-                                    "Server returned an empty response."
-                                );
-                            }
+        try {
 
+            result =
+                JSON.parse(responseText);
 
-                            let result;
+        }
+        catch {
 
+            throw new Error(
+                "Server did not return valid JSON."
+            );
+        }
 
-                            try {
 
-                                result =
-                                    JSON.parse(responseText);
+        /* =========================================
+           RESULT
+           ========================================= */
 
-                            }
-                            catch {
+        if (result.success) {
 
-                                throw new Error(
-                                    "Server did not return valid JSON."
-                                );
-                            }
+            showNotification(
+                "success",
+                "Order created",
+                result.message ??
+                "The order was created successfully."
+            );
 
 
-                            /* =========================================
-                               RESULT
-                               ========================================= */
+            order.clear();
 
-                            if (result.success) {
+            renderOrder();
 
-                                showNotification(
-                                    "success",
-                                    "Order created",
-                                    result.message ??
-                                    "The order was created successfully."
-                                );
+            tableId.value = "";
 
+        }
+        else {
 
-                                order.clear();
+            showNotification(
+                "danger",
+                "Order failed",
+                result.message ??
+                "Could not create order."
+            );
 
-                                renderOrder();
+        }
 
-                                tableId.value = "";
+    }
+    catch (error) {
 
-                            }
-                            else {
+        console.error(
+            "Create Order Error:",
+            error
+        );
 
-                                showNotification(
-                                    "danger",
-                                    "Order failed",
-                                    result.message ??
-                                    "Could not create order."
-                                );
 
-                            }
+        showNotification(
+            "danger",
+            "Something went wrong",
+            error.message ??
+            "Could not create order."
+        );
 
-                        }
-                        catch (error) {
+    }
+    finally {
 
-                            console.error(
-                                "Create Order Error:",
-                                error
-                            );
+        createOrder.disabled = false;
 
+    }
 
-                            showNotification(
-                                "danger",
-                                "Something went wrong",
-                                error.message ??
-                                "Could not create order."
-                            );
-
-                        }
-                        finally {
-
-                            createOrder.disabled = false;
-
-                        }
-
-                    }
-                );
-                
-                /* ================================================
+}                /* ================================================
                     HTML ESCAPE
                  ================================================= */
 

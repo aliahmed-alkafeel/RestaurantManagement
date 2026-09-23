@@ -12,9 +12,9 @@ namespace RestaurantManagement.Models
     }
     public enum OrderStatus
     {
+        Pending,
         Confirmed,
         Preparing,
-        Pending,
         Ready,
         Completed,
         Cancelled

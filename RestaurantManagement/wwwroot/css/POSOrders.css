@@ -1,11 +1,12 @@
-﻿/* =========================================================
+﻿
+/* =========================================================
    POS ORDERS
 ========================================================= */
-
 .pos-orders {
-    padding: 100px 24px 24px 24px;
+    padding: 95px 24px 24px 24px;
     width: 100%;
 }
+
 
 /* =========================================================
    HEADER
@@ -40,31 +41,54 @@
     font-weight: 600;
 }
 
+
 /* =========================================================
    CARD
 ========================================================= */
 
 .orders-card {
-    background: #fff;
-    border: 1px solid #ececec;
-    border-radius: 16px;
-    overflow: hidden;
+    width: 100%;
 }
+
 
 /* =========================================================
    TOOLBAR
-   Added for search / filters / sorting
 ========================================================= */
 
 .orders-toolbar {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 15px 18px;
-    border-bottom: 1px solid #ededed;
-    flex-wrap: wrap;
+    padding: 12px;
     background: #fff;
+    border: 1px solid #ececec;
+    border-radius: 10px;
+    flex-wrap: wrap;
 }
+
+
+/* =========================================================
+   TABLE CARD
+========================================================= */
+
+.orders-table-card {
+    margin-top: 8px;
+    background: #fff;
+    border: 1px solid #ececec;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   TABLE WRAPPER
+========================================================= */
+
+.orders-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
 
 /* =========================================================
    SEARCH
@@ -113,6 +137,7 @@
             box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.10);
         }
 
+
 /* =========================================================
    FILTER SELECTS
 ========================================================= */
@@ -120,7 +145,7 @@
 .filter-select {
     height: 40px;
     min-width: 145px;
-    padding: 0 12px;
+    padding: 10px 12px;
     border: 1px solid #dedede;
     border-radius: 9px;
     background: #fff;
@@ -139,6 +164,7 @@
         border-color: #635bff;
         box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.10);
     }
+
 
 /* =========================================================
    FILTER BUTTON
@@ -165,14 +191,6 @@
         transform: translateY(1px);
     }
 
-/* =========================================================
-   TABLE WRAPPER
-========================================================= */
-
-.orders-table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-}
 
 /* =========================================================
    TABLE
@@ -183,10 +201,13 @@
     border-collapse: collapse;
     table-layout: auto;
 }
+
     .orders-table th:nth-child(3),
     .orders-table td:nth-child(3) {
         width: 550px;
     }
+
+
     /* =========================================================
    TABLE HEADER
 ========================================================= */
@@ -205,24 +226,24 @@
         letter-spacing: 0.04em;
         text-transform: uppercase;
         white-space: nowrap;
-
     }
+
 
     /* =========================================================
    TABLE CELLS
 ========================================================= */
 
     .orders-table td {
-        padding: 8px 8px;
+        padding: 8px;
         border-bottom: 1px solid #f0f0f0;
         vertical-align: middle;
         font-size: 13px;
-        
     }
-    
+
     .orders-table tbody tr:last-child td {
         border-bottom: none;
     }
+
 
 /* =========================================================
    ORDER ROW
@@ -235,6 +256,7 @@
     .order-row:hover {
         background: #fafaff;
     }
+
 
 /* =========================================================
    TABLE INFO
@@ -280,6 +302,7 @@
     line-height: 1.2;
 }
 
+
 /* =========================================================
    TOTAL PRICE
 ========================================================= */
@@ -290,6 +313,7 @@
     font-weight: 700;
     white-space: nowrap;
 }
+
 
 /* =========================================================
    STATUS SELECT
@@ -328,6 +352,7 @@
     border-color: #2ec4b6 !important;
 }
 
+
 /* =========================================================
    ORDER ITEMS
 ========================================================= */
@@ -337,34 +362,33 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 5px;
-/*    max-width: 420px;*/
 }
 .order-item {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     min-height: 32px;
-    padding: 0 9px;
-    border: 1px solid #e4e4f0;
+    padding: 0 10px;
+    border: 1px solid rgba(99, 91, 255, 0.18);
     border-radius: 8px;
-    background: #f7f7fb;
-    color: #4b4b5a;
+    background: rgba(99, 91, 255, 0.08);
+    color: #4f46d8;
     white-space: nowrap;
     font-size: 11px;
     line-height: 1;
     font-weight: 500;
 }
+
     .order-item .item-name {
-        color: #3d3d4d;
+        color: #4338ca;
         font-weight: 600;
-        font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     }
 
     .order-item .item-quantity {
         color: #635bff;
         font-weight: 700;
     }
-
 /* =========================================================
    ORDER DATE
 ========================================================= */
@@ -374,51 +398,88 @@
     font-size: 12px;
     white-space: nowrap;
 }
-
 /* =========================================================
    STATUS ROW COLORS
-/* Confirmed — Pink */
+   Stronger visual distinction between order statuses
+========================================================= */
+
+/* =========================================================
+   CONFIRMED — Pink
+========================================================= */
 
 .order-row.status-confirmed {
-    background: rgba(236, 72, 153, 0.055);
+    background: #fce7f3;
 }
 
     .order-row.status-confirmed:hover {
-        background: rgba(236, 72, 153, 0.09);
+        background: #fbcfe8;
     }
 
 
-/* Preparing — Amber */
+/* =========================================================
+   PREPARING — Orange
+========================================================= */
 
 .order-row.status-preparing {
-    background: rgba(245, 158, 11, 0.065);
+    background: #ffedd5;
 }
 
     .order-row.status-preparing:hover {
-        background: rgba(245, 158, 11, 0.105);
+        background: #fed7aa;
     }
 
 
-/* Pending — Purple */
+/* =========================================================
+   PENDING — Blue
+========================================================= */
 
 .order-row.status-pending {
-    background: rgba(99, 91, 255, 0.055);
+    background: #dbeafe;
 }
 
     .order-row.status-pending:hover {
-        background: rgba(99, 91, 255, 0.09);
+        background: #bfdbfe;
     }
 
 
-/* Ready — Teal */
+/* =========================================================
+   READY — Teal
+========================================================= */
 
 .order-row.status-ready {
-    background: rgba(42, 175, 163, 0.065);
+    background: #ccfbf1;
 }
 
     .order-row.status-ready:hover {
-        background: rgba(42, 175, 163, 0.105);
-    }/* =========================================================
+        background: #99f6e4;
+    }
+
+
+/* =========================================================
+   COMPLETED — Purple
+========================================================= */
+
+.order-row.status-completed {
+    background: #e4daff;
+}
+
+    .order-row.status-completed:hover {
+        background: #ddd6fe;
+    }
+
+
+/* =========================================================
+   CANCELLED — Red
+========================================================= */
+
+.order-row.status-cancelled {
+    background: #fee2e2;
+}
+
+    .order-row.status-cancelled:hover {
+        background: #fecaca;
+    }
+/* =========================================================
    FOOTER
 ========================================================= */
 
@@ -432,19 +493,36 @@
     background: #fff;
 }
 
+
 /* =========================================================
    RESULTS INFO
 ========================================================= */
 
 .results-info {
-    color: #888;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 12px;
+    border: 1px solid rgba(99, 91, 255, 0.16);
+    border-radius: 9px;
+    background: #635bff;
+    color: #635bff;
     font-size: 12px;
+    white-space: nowrap;
 }
 
     .results-info strong {
-        color: #333;
-        font-weight: 600;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 700;
     }
+
+    .results-info span {
+        color: #fff;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
 
 /* =========================================================
    PAGINATION
@@ -493,6 +571,7 @@
         cursor: default;
     }
 
+
 /* =========================================================
    EMPTY ORDERS
 ========================================================= */
@@ -537,114 +616,13 @@
     font-size: 13px;
 }
 
+
 /* =========================================================
-   RESPONSIVE
+   STATUS OPTIONS
 ========================================================= */
-
-@media (max-width: 1100px) {
-
-    .orders-toolbar {
-        align-items: stretch;
-    }
-
-    .search-box {
-        flex: 1 1 100%;
-        min-width: 100%;
-    }
-
-    .filter-select {
-        flex: 1;
-    }
-
-    .filter-btn {
-        flex-shrink: 0;
-    }
-}
-
-@media (max-width: 800px) {
-
-/*    .pos-orders {
-        padding: 16px;
-    }
-*/
-    .orders-header {
-        gap: 12px;
-    }
-
-        .orders-header h1 {
-            font-size: 24px;
-        }
-
-    .orders-toolbar {
-        padding: 13px;
-    }
-
-/*    .filter-select {
-        min-width: 130px;
-    }*/
-
-    .orders-table th,
-    .orders-table td {
-        padding-left: 6px;
-        padding-right: 6px;
-    }
-
-    .orders-footer {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-}
-
-@media (max-width: 600px) {
-
-/*    .pos-orders {
-        padding: 10px;
-    }
-*/
-    .orders-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .orders-count {
-        align-self: flex-start;
-    }
-
-    .orders-toolbar {
-        flex-direction: column;
-    }
-
-    .search-box {
-        width: 100%;
-    }
-/*
-    .filter-select {
-        width: 100%;
-    }*/
-
-/*    .filter-btn {
-        width: 100%;
-    }
-*/
-    .orders-table {
-        min-width: 850px;
-    }
-
-    .orders-footer {
-        padding: 13px;
-    }
-/*
-    .pagination {
-        width: 100%;
-        overflow-x: auto;
-        flex-wrap: nowrap;
-        padding-bottom: 2px;
-    }*/
-}
 
 .status-options {
     display: flex;
-/*    align-items: center;*/
     gap: 8px;
     flex-wrap: wrap;
 }
@@ -661,45 +639,45 @@
 }
 
 
-    /* Confirmed — Pink */
+
+    /* Confirmed — Rose */
 
     .status-option.status-confirmed {
-        color: rgb(219, 39, 119);
-        background: rgba(236, 72, 153, 0.10);
+        color: rgb(192, 38, 211);
+        background: rgba(217, 70, 239, 0.10);
     }
 
         .status-option.status-confirmed:hover,
         .status-option.status-confirmed.active {
-            background: rgba(236, 72, 153, 0.18);
-            border-color: rgba(236, 72, 153, 0.35);
+            background: rgba(217, 70, 239, 0.32);
+            border-color: rgba(217, 70, 239, 0.35);
         }
 
-
-    /* Preparing — Amber */
+    /* Preparing — Orange */
 
     .status-option.status-preparing {
-        color: rgb(217, 119, 6);
-        background: rgba(245, 158, 11, 0.11);
+        color: rgb(234, 88, 12);
+        background: rgba(249, 115, 22, 0.11);
     }
 
         .status-option.status-preparing:hover,
         .status-option.status-preparing.active {
-            background: rgba(245, 158, 11, 0.18);
-            border-color: rgba(245, 158, 11, 0.35);
+            background: rgba(249, 115, 22, 0.32);
+            border-color: rgba(249, 115, 22, 0.35);
         }
 
 
-    /* Pending — Purple */
+    /* Pending — Blue */
 
     .status-option.status-pending {
-        color: rgb(79, 70, 229);
-        background: rgba(99, 91, 255, 0.10);
+        color: rgb(37, 99, 235);
+        background: rgba(59, 130, 246, 0.10);
     }
 
         .status-option.status-pending:hover,
         .status-option.status-pending.active {
-            background: rgba(99, 91, 255, 0.18);
-            border-color: rgba(99, 91, 255, 0.35);
+            background: rgba(59, 130, 246, 0.32);
+            border-color: rgba(59, 130, 246, 0.35);
         }
 
 
@@ -707,13 +685,27 @@
 
     .status-option.status-ready {
         color: rgb(13, 148, 136);
-        background: rgba(42, 175, 163, 0.11);
+        background: rgba(20, 184, 166, 0.11);
     }
 
         .status-option.status-ready:hover,
         .status-option.status-ready.active {
-            background: rgba(42, 175, 163, 0.18);
-            border-color: rgba(42, 175, 163, 0.35);
+            background: rgba(20, 184, 166, 0.32);
+            border-color: rgba(20, 184, 166, 0.35);
+        }
+
+
+    /* Completed — Purple */
+
+    .status-option.status-completed {
+        color: rgb(124, 58, 237);
+        background: rgba(139, 92, 246, 0.10);
+    }
+
+        .status-option.status-completed:hover,
+        .status-option.status-completed.active {
+            background: rgba(139, 92, 246, 0.32);
+            border-color: rgba(139, 92, 246, 0.35);
         }
 
 
@@ -726,21 +718,11 @@
 
         .status-option.status-cancelled:hover,
         .status-option.status-cancelled.active {
-            background: rgba(239, 68, 68, 0.18);
+            background: rgba(239, 68, 68, 0.32);
+            border-color: rgba(239, 68, 68, 0.35);
         }
 
 
-    /* Completed — Green */
-
-    .status-option.status-completed {
-        color: rgb(22, 163, 74);
-        background: rgba(34, 197, 94, 0.10);
-    }
-
-        .status-option.status-completed:hover,
-        .status-option.status-completed.active {
-            background: rgba(34, 197, 94, 0.18);
-        }
 /* =========================================================
    STATUS FILTER
 ========================================================= */
@@ -807,51 +789,48 @@
         }
 
 
-    /* =========================================================
-   CONFIRMED — PINK
-========================================================= */
+    /* Confirmed — Rose */
 
     .status-filter-btn.status-confirmed {
-        color: rgb(219, 39, 119);
-        background: rgba(236, 72, 153, 0.10);
+        color: rgb(192, 38, 211);
+        background: rgba(217, 70, 239, 0.10);
     }
 
         .status-filter-btn.status-confirmed:hover,
         .status-filter-btn.status-confirmed.active {
-            background: rgba(236, 72, 153, 0.18);
-            border-color: rgba(236, 72, 153, 0.35);
+            background: rgba(217, 70, 239, 0.18);
+            border-color: rgba(217, 70, 239, 0.35);
         }
 
-
     /* =========================================================
-   PREPARING — AMBER
+   PREPARING — ORANGE
 ========================================================= */
 
     .status-filter-btn.status-preparing {
-        color: rgb(217, 119, 6);
-        background: rgba(245, 158, 11, 0.11);
+        color: rgb(234, 88, 12);
+        background: rgba(249, 115, 22, 0.11);
     }
 
         .status-filter-btn.status-preparing:hover,
         .status-filter-btn.status-preparing.active {
-            background: rgba(245, 158, 11, 0.18);
-            border-color: rgba(245, 158, 11, 0.35);
+            background: rgba(249, 115, 22, 0.18);
+            border-color: rgba(249, 115, 22, 0.35);
         }
 
 
     /* =========================================================
-   PENDING — PURPLE
+   PENDING — BLUE
 ========================================================= */
 
     .status-filter-btn.status-pending {
-        color: rgb(79, 70, 229);
-        background: rgba(99, 91, 255, 0.10);
+        color: rgb(37, 99, 235);
+        background: rgba(59, 130, 246, 0.10);
     }
 
         .status-filter-btn.status-pending:hover,
         .status-filter-btn.status-pending.active {
-            background: rgba(99, 91, 255, 0.18);
-            border-color: rgba(99, 91, 255, 0.35);
+            background: rgba(59, 130, 246, 0.18);
+            border-color: rgba(59, 130, 246, 0.35);
         }
 
 
@@ -861,29 +840,29 @@
 
     .status-filter-btn.status-ready {
         color: rgb(13, 148, 136);
-        background: rgba(42, 175, 163, 0.11);
+        background: rgba(20, 184, 166, 0.11);
     }
 
         .status-filter-btn.status-ready:hover,
         .status-filter-btn.status-ready.active {
-            background: rgba(42, 175, 163, 0.18);
-            border-color: rgba(42, 175, 163, 0.35);
+            background: rgba(20, 184, 166, 0.18);
+            border-color: rgba(20, 184, 166, 0.35);
         }
 
 
     /* =========================================================
-   COMPLETED — GREEN
+   COMPLETED — PURPLE
 ========================================================= */
 
     .status-filter-btn.status-completed {
-        color: rgb(22, 163, 74);
-        background: rgba(34, 197, 94, 0.10);
+        color: rgb(124, 58, 237);
+        background: rgba(139, 92, 246, 0.10);
     }
 
         .status-filter-btn.status-completed:hover,
         .status-filter-btn.status-completed.active {
-            background: rgba(34, 197, 94, 0.18);
-            border-color: rgba(34, 197, 94, 0.35);
+            background: rgba(139, 92, 246, 0.18);
+            border-color: rgba(139, 92, 246, 0.35);
         }
 
 
@@ -901,7 +880,61 @@
             background: rgba(239, 68, 68, 0.18);
             border-color: rgba(239, 68, 68, 0.35);
         }
+
+
+/* =========================================================
+   RESPONSIVE — 1100px
+========================================================= */
+
+@media (max-width: 1200px) {
+
+    .orders-toolbar {
+        align-items: stretch;
+    }
+
+    .search-box {
+        flex: 1 1 100%;
+        min-width: 100%;
+    }
+
+    .filter-select {
+        flex: 1;
+    }
+
+    .filter-btn {
+        flex-shrink: 0;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE — 800px
+========================================================= */
+
 @media (max-width: 800px) {
+
+    .orders-header {
+        gap: 12px;
+    }
+
+        .orders-header h1 {
+            font-size: 24px;
+        }
+
+    .orders-toolbar {
+        padding: 13px;
+    }
+
+    .orders-table th,
+    .orders-table td {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+
+    .orders-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 
     .status-filter {
         width: 100%;
@@ -914,3 +947,37 @@
         flex-shrink: 0;
     }
 }
+
+
+/* =========================================================
+   RESPONSIVE — 600px
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .orders-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .orders-count {
+        align-self: flex-start;
+    }
+
+    .orders-toolbar {
+        flex-direction: column;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .orders-table {
+        min-width: 850px;
+    }
+
+    .orders-footer {
+        padding: 13px;
+    }
+}
+

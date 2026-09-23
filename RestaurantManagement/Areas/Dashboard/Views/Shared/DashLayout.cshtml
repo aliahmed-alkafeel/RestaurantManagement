@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using RestaurantManagement.Extensions
+<!DOCTYPE html>
 <html lang="en" dir="ltr" data-theme="light">
 <head>
     <meta charset="UTF-8">
@@ -45,7 +46,7 @@
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-brand">
                 <div>
-                    <a asp-controller="Redirect" asp-action="DashToHome" class="brand-name">Restaument</a>
+                    <a href="@Url.DashToHome(User)" class="brand-name">Restaument</a>
                 </div>
                 <button class="sidebar-close" id="sidebarClose" aria-label="Close menu">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
@@ -55,28 +56,28 @@
             <nav class="side-nav">
                 @if (User.IsInRole(nameof(UserRole.AccessDetails)))
                 {
-                    <a class="side-link" asp-controller="Dashboard" asp-action="Details">
+                    <a class="side-link" asp-controller="Details" asp-action="Details">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V10M12 19V4M20 19v-6"/></svg>
                         Details
                     </a>
                 }
                 @if (User.IsInRole(nameof(UserRole.AccessEmployees)))
                 {
-                    <a class="side-link" asp-controller="Dashboard" asp-action="Employees">
+                    <a class="side-link" asp-controller="Employees" asp-action="Employees">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c1-3.6 3.6-5.5 6.5-5.5s5.5 1.9 6.5 5.5"/><path d="M16 8.3a3 3 0 1 1 3.7 2.9"/><path d="M16.5 14.7c2.4.3 4.2 2 5 5.3"/></svg>
                         Employees
                     </a>
                 }
                 @if (User.IsInRole(nameof(UserRole.AccessOrders)))
                 {
-                    <a class="side-link" asp-controller="Dashboard" asp-action="Orders">
+                    <a class="side-link" asp-controller="Orders" asp-action="Orders">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16l-1.5 12.5a1 1 0 0 1-1 .9H6.5a1 1 0 0 1-1-.9L4 7Z"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg>
                         Orders
                     </a>
                 }
                 @if (User.IsInRole(nameof(UserRole.AccessDiscounts)))
                 {
-                    <a class="side-link" asp-controller="Dashboard" asp-action="Discounts">
+                    <a class="side-link" asp-controller="Discounts" asp-action="Discounts">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-percent" viewBox="0 0 16 16">
                             <path d="M13.442 2.558a.625.625 0 0 1 0 .884l-10 10a.625.625 0 1 1-.884-.884l10-10a.625.625 0 0 1 .884 0M4.5 6a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m0 1a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5m7 6a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m0 1a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
                         </svg>
@@ -85,7 +86,7 @@
                 }
                 @if (User.IsInRole(nameof(UserRole.AccessCategories)))
                 {
-                    <a class="side-link" asp-controller="Dashboard" asp-action="Categories">
+                    <a class="side-link" asp-controller="Categories" asp-action="Categories">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
                         </svg>
@@ -94,7 +95,7 @@
                 }
                 @if (User.IsInRole(nameof(UserRole.AccessItems)))
                 {
-                    <a class="side-link" asp-controller="Dashboard" asp-action="Items">
+                    <a class="side-link" asp-controller="Items" asp-action="Items">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-egg-fried" viewBox="0 0 16 16">
                             <path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
                             <path d="M13.997 5.17a5 5 0 0 0-8.101-4.09A5 5 0 0 0 1.28 9.342a5 5 0 0 0 8.336 5.109 3.5 3.5 0 0 0 5.201-4.065 3.001 3.001 0 0 0-.822-5.216zm-1-.034a1 1 0 0 0 .668.977 2.001 2.001 0 0 1 .547 3.478 1 1 0 0 0-.341 1.113 2.5 2.5 0 0 1-3.715 2.905 1 1 0 0 0-1.262.152 4 4 0 0 1-6.67-4.087 1 1 0 0 0-.2-1 4 4 0 0 1 3.693-6.61 1 1 0 0 0 .8-.2 4 4 0 0 1 6.48 3.273z"/>
@@ -103,7 +104,7 @@
                 }
                 @if (User.IsInRole(nameof(UserRole.AccessGroups)))
                 {
-                    <a class="side-link" asp-controller="Dashboard" asp-action="Groups">
+                    <a class="side-link" asp-controller="Groups" asp-action="Groups">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-lines-fill" viewBox="0 0 16 16">
                             <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5m.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1z"/>
                         </svg> Groups
@@ -180,7 +181,7 @@
                 @RenderBody()
 
             <div class="position-fixed bottom-0 start-0 m-4" style="z-index: 1050;">
-                <a href="@Url.Action("DashToHome", "Redirect")" class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center shadow-lg"
+                <a href="@Url.DashToHome(User)" class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center shadow-lg"
                    style="width: 50px; height: 50px;">
                     <i class="fas fa-home fa-lg"></i>
                 </a>

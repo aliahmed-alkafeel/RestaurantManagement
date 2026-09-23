@@ -30,6 +30,7 @@ namespace RestaurantManagement.Services
                 .Include(e => e.Group)
                 .FirstOrDefaultAsync(e => e.Username == loginViewModel.Username, loginViewModel.CancellationToken);
             if (employee is null) return false;
+            if (employee.EmployeeEndingDate.HasValue) return false;
             var result = _passwordHasher.VerifyHashedPassword(employee, employee.PasswordHash, loginViewModel.Password);
             if (result == PasswordVerificationResult.Failed)
             {

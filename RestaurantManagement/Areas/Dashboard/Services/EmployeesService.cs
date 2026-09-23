@@ -28,7 +28,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         public async Task<List<EmployeeViewModel>> GetAllEmployeesAsync(CancellationToken cancellationToken = default)
         {
-            return await _unitOfWork.Employees.NoTrackingSelect(DeletedStatus.All)
+            return await _unitOfWork.Employees.NoTrackingSelect()
                 .Include(e => e.Group)
                 .Select(emp => new EmployeeViewModel
                 {
@@ -47,7 +47,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         public async Task<ManageEmployeeViewModel> GetEmployeeByIdAsync(Guid id,
             CancellationToken cancellationToken = default)
         {
-            var emp = await _unitOfWork.Employees.NoTrackingSelect(DeletedStatus.All)
+            var emp = await _unitOfWork.Employees.NoTrackingSelect()
                 .Include(e => e.Group)
                 .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
             if (emp is null) throw new ArgumentNullException(nameof(emp));
@@ -87,14 +87,13 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         {
             if (model is null)
                 throw new ArgumentNullException(nameof(model));
-
             var isDuplicate = await _unitOfWork.Employees
-                .NoTrackingSelect(DeletedStatus.All)
+                .NoTrackingSelect()
                 .AnyAsync(
                     e => e.Id != model.Id &&
-                         (e.Email == model.Email || e.Username == model.Username),
+                         (!e.EmployeeEndingDate.HasValue && 
+                          (e.Email == model.Email || e.Username == model.Username)),
                     model.CancellationToken);
-
             if (isDuplicate)
                 return false;
             var modifierId = _httpContextAccessor.HttpContext!.User.GetUserId();
@@ -103,11 +102,9 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 .FirstOrDefaultAsync(e => e.Id == modifierId, model.CancellationToken);
             if(modifier is null) throw new InvalidOperationException(nameof(modifier));
             if (modifier.Group is null) throw new InvalidOperationException("The Group Of the User is Deleted!");
-
             if (model.GroupName == InitUserGroup.Administrator.ToString() &&
                 modifier!.Group!.GroupName != InitUserGroup.Administrator.ToString())
                 return false;
-
             var employee = new Employee
             {
                 Username = model.Username,
@@ -174,6 +171,20 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             if (emp.Group!.GroupName == InitUserGroup.Administrator.ToString()) return false;
             if(emp.EmployeeEndingDate.HasValue) return false;
             emp.EmployeeEndingDate = DateTime.UtcNow;
+            //_unitOfWork.Employees.Delete(emp);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return true;
+        }
+
+        public async Task<bool> DeleteEmployeeAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            var emp = await _unitOfWork.Employees.Select(DeletedStatus.All)
+                .Include(e => e.Group).Where(e => e.Id == id)
+                .FirstOrDefaultAsync(cancellationToken);
+            if (emp is null) return false;
+            if (emp.Group!.GroupName == InitUserGroup.Administrator.ToString()) return false;
+            //if(emp.EmployeeEndingDate.HasValue) return false;
+            emp.EmployeeEndingDate ??= DateTime.UtcNow;
             _unitOfWork.Employees.Delete(emp);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return true;

@@ -157,8 +157,18 @@
                 }
 
             </select>
+            <div class="results-info">
 
-        </div>
+                <strong id="ordersTotalCount">
+                    @Model.TotalCount
+                </strong>
+
+                <span>
+                    orders
+                </span>
+
+            </div>
+            </div>
 
 
         <!-- =================================================
@@ -167,11 +177,11 @@
 
         @Html.AntiForgeryToken()
 
-
+    </div>
         <!-- =================================================
              TABLE
         ================================================== -->
-
+        <div class="orders-table-card">
         <div id="ordersTableWrapper"
              class="orders-table-wrapper">
 
@@ -182,27 +192,9 @@
         </div>
 
 
-        <!-- =================================================
-             FOOTER
-        ================================================== -->
-
-        <div class="orders-footer">
-
-            <div class="results-info">
-
-                Showing
-
-                <strong id="ordersTotalCount">
-                    @Model.TotalCount
-                </strong>
-
-                orders
-
-            </div>
-
         </div>
 
-    </div>
+
 
 </div>
 
