@@ -25,7 +25,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
 
         [Authorize(Roles = nameof(UserRole.ManageCategories))]
         [HttpGet("CreateCategory")]
-        public async Task<IActionResult> CreateCategory()
+        public  IActionResult CreateCategory()
         {
             return View();
         }

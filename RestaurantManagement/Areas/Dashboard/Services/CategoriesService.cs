@@ -55,7 +55,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         public async Task<bool> DeleteCategoryAsync(Guid id, CancellationToken cancellationToken)
         {
             var category = await unitOfWork.Categories.GetByIdAsync(id,cancellationToken);
-            if (category is null) throw new ArgumentNullException(nameof(category));
+            if (category is null) throw new InvalidOperationException(nameof(category));
 
 
             var hasItems = await unitOfWork.Items

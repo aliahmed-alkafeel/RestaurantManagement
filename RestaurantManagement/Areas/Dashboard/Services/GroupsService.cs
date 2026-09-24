@@ -41,6 +41,12 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             var group = await unitOfWork.Groups.GetByIdAsync(id, cancellationToken);
             if (group is null) throw new InvalidOperationException("There is no such group");
             if (group.GroupName == InitUserGroup.Administrator.ToString()) return false;
+            var hasEmployees = await unitOfWork.Employees
+                .NoTrackingSelect()
+                .AnyAsync(i => i.GroupId == id, cancellationToken);
+
+            if (hasEmployees)
+                return false;
             unitOfWork.Groups.Delete(group);
             await unitOfWork.SaveChangesAsync(cancellationToken);
             return true;

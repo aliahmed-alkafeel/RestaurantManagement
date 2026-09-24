@@ -5,6 +5,7 @@ using RestaurantManagement.Areas.Dashboard.Services;
 using RestaurantManagement.Areas.Dashboard.ViewModels;
 using RestaurantManagement.Models;
 using System.Security.Claims;
+using RestaurantManagement.Extensions;
 
 namespace RestaurantManagement.Areas.Dashboard.Controllers
 {
@@ -57,6 +58,9 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
                 ModelState.AddModelError("", "This update is not allowed");
                 return View("EditOrder",model);
             }
+            TempData.SuccessMessage(
+                NotificationExtensions.ActionType.Update,
+                NotificationExtensions.EntityType.Order);
             return RedirectToAction(nameof(Orders));
         }
 
@@ -74,6 +78,9 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         public async Task<IActionResult> ConfirmedDeleteOrder(Guid id, CancellationToken cancellationToken)
         {
             await ordersService.DeleteOrderAsync(id, cancellationToken);
+            TempData.SuccessMessage(
+                NotificationExtensions.ActionType.Delete,
+                NotificationExtensions.EntityType.Order);
             return RedirectToAction(nameof(Orders));
         }
     }

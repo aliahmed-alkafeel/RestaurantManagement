@@ -36,7 +36,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
                 var result = await discountsService.CreateDiscountAsync(model);
                 if (result is false)
                 {
-                    ModelState.AddModelError("", "The Discount is Regestered");
+                    ModelState.AddModelError("", "The Discount is Registered");
                     return View("ManageDiscount",model);
                 }
                 TempData.SuccessMessage(
@@ -85,7 +85,13 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             public async Task<IActionResult> ConfirmedDeleteDiscount(Guid id,CancellationToken cancellationToken)
             {
                 await discountsService.DeleteDiscountAsync(id, cancellationToken);
-                TempData.SuccessMessage(
+                //if (!result)
+                //{
+                //    var category = await discountsService.GetDiscountByIdAsync(id, cancellationToken);
+                //    ModelState.AddModelError(string.Empty, "The category could not be deleted.");
+                //    return View("DeleteDiscount", category);
+                //}
+            TempData.SuccessMessage(
                     NotificationExtensions.ActionType.Delete,
                     NotificationExtensions.EntityType.Discount);
             return RedirectToAction(nameof(Discounts));

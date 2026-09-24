@@ -135,7 +135,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 return false;
 
             var isDuplicate = await _unitOfWork.Employees
-                .NoTrackingSelect(DeletedStatus.All)
+                .NoTrackingSelect()
                 .AnyAsync(
                     e => e.Id != model.Id &&
                          (e.Email == model.Email || e.Username == model.Username),

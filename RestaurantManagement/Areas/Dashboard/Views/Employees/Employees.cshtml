@@ -105,15 +105,18 @@
                 {
                     <td>
                         <a class="action edit-action" asp-area="Dashboard" asp-controller="Employees" asp-action="EditEmployee" asp-route-id="@emp.Id">Edit</a>
-                        <a class="action terminate-action"
-                           asp-area="Dashboard"
-                           asp-controller="Employees"
-                           asp-action="TerminateEmployee"
-                           asp-route-id="@emp.Id">
-                            Terminate
-                        </a>
-                        <a class="action delete-action" asp-area="Dashboard" asp-controller="Employees"
-                           asp-action="DeleteEmployee" asp-route-id="@emp.Id">Delete</a>
+                        @if (@emp.Group != InitUserGroup.Administrator.ToString())
+                        {
+                            <a class="action terminate-action"
+                               asp-area="Dashboard"
+                               asp-controller="Employees"
+                               asp-action="TerminateEmployee"
+                               asp-route-id="@emp.Id">
+                                Terminate
+                            </a>
+                            <a class="action delete-action" asp-area="Dashboard" asp-controller="Employees"
+                               asp-action="DeleteEmployee" asp-route-id="@emp.Id">Delete</a>
+                        }
                     </td>
                 }
             </tr>

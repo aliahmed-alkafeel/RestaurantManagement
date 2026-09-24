@@ -47,8 +47,8 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [HttpGet("DeleteGroup/{id:guid}")]
         public async Task<IActionResult> DeleteGroup(Guid id, CancellationToken cancellationToken)
         {
-            var emps = await groupsService.GetGroupByIdAsync(id, cancellationToken);
-            return View(emps);
+            var group = await groupsService.GetGroupByIdAsync(id, cancellationToken);
+            return View(group);
         }
         [ValidateAntiForgeryToken]
         [Authorize(Roles = nameof(UserRole.ManageGroups))]
@@ -56,7 +56,12 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         public async Task<IActionResult> ConfirmedDeleteGroup(Guid id, CancellationToken cancellationToken)
         {
             var result = await groupsService.DeleteGroupAsync(id, cancellationToken);
-            if (!result) return RedirectToAction("AccessDenied", "Auth", new { area = "", returnUrl = "/Dashboard" });
+            if (!result)
+            {
+                var group = await groupsService.GetGroupByIdAsync(id,cancellationToken);
+                ModelState.AddModelError("", "This group could not be deleted");
+                return View("DeleteGroup",group);
+            }
             TempData.SuccessMessage(
                 NotificationExtensions.ActionType.Delete,
                 NotificationExtensions.EntityType.Group);

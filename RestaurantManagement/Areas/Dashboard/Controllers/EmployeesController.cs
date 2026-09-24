@@ -65,8 +65,8 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [HttpGet("TerminateEmployee/{id:guid}")]
         public async Task<IActionResult> TerminateEmployee(Guid id)
         {
-            var emps = await employeesService.GetEmployeeByIdAsync(id);
-            return View(emps);
+            var emp = await employeesService.GetEmployeeByIdAsync(id);
+            return View(emp);
         }
         [ValidateAntiForgeryToken]
         [Authorize(Roles = nameof(UserRole.ManageEmployees))]
@@ -84,8 +84,8 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [HttpGet("DeleteEmployee/{id:guid}")]
         public async Task<IActionResult> DeleteEmployee(Guid id)
         {
-            var emps = await employeesService.GetEmployeeByIdAsync(id);
-            return View(emps);
+            var emp = await employeesService.GetEmployeeByIdAsync(id);
+            return View(emp);
         }
         [ValidateAntiForgeryToken]
         [Authorize(Roles = nameof(UserRole.ManageEmployees))]
