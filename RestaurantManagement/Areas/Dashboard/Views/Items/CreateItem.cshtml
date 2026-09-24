@@ -160,7 +160,7 @@
                             <!-- Actions -->
                             <div class="d-flex justify-content-end gap-2">
 
-                                <a asp-controller="Dashboard"
+                                <a asp-controller="Items"
                                    asp-action="Items"
                                    class="btn btn-light border px-4">
                                     Cancel
@@ -190,3 +190,7 @@
 </div>
 
 <script src="~/js/dashboard.js"></script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -6,6 +6,7 @@ using RestaurantManagement.Areas.Dashboard.Services;
 using RestaurantManagement.Areas.Dashboard.ViewModels;
 using RestaurantManagement.Models;
 using System.Security.Claims;
+using RestaurantManagement.Extensions;
 
 namespace RestaurantManagement.Areas.Dashboard.Controllers
 {
@@ -41,6 +42,9 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
                 ModelState.AddModelError("", "The Category is Regestered");
                 return View(model);
             }
+            TempData.SuccessMessage(
+                NotificationExtensions.ActionType.Create,
+                NotificationExtensions.EntityType.Category);
             return RedirectToAction(nameof(Categories));
         }
         [Authorize(Roles = nameof(UserRole.ManageCategories))]
@@ -65,6 +69,9 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
                 ModelState.AddModelError("", "This update is not allowed");
                 return View(model);
             }
+            TempData.SuccessMessage(
+                NotificationExtensions.ActionType.Update,
+                NotificationExtensions.EntityType.Category);
             return RedirectToAction(nameof(Categories));
         }
 
@@ -72,15 +79,24 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [HttpGet("DeleteCategory/{id:guid}")]
         public async Task<IActionResult> DeleteCategory(Guid id, CancellationToken cancellationToken)
         {
-            var emps = await categoriesService.GetCategoryByIdAsync(id, cancellationToken);
-            return View(emps);
+            var category = await categoriesService.GetCategoryByIdAsync(id, cancellationToken);
+            return View(category);
         }
         [ValidateAntiForgeryToken]
         [Authorize(Roles = nameof(UserRole.ManageCategories))]
         [HttpPost("ConfirmedDeleteCategory/{id:guid}")]
         public async Task<IActionResult> ConfirmedDeleteCategory(Guid id, CancellationToken cancellationToken)
         {
-            await categoriesService.DeleteCategoryAsync(id, cancellationToken);
+            var result = await categoriesService.DeleteCategoryAsync(id, cancellationToken);
+            if (!result)
+            {
+                var category = await categoriesService.GetCategoryByIdAsync(id,cancellationToken);
+                ModelState.AddModelError(string.Empty,"The category could not be deleted.");
+                return View("DeleteCategory",category);
+            }
+            TempData.SuccessMessage(
+                NotificationExtensions.ActionType.Delete,
+                NotificationExtensions.EntityType.Category);
             return RedirectToAction(nameof(Categories));
         }
 

@@ -12,14 +12,14 @@ namespace RestaurantManagement.Controllers
             {
                 return RedirectToAction("NewOrder", "POS", new
                 {
-                    area = "Dashboard"
+                    area = ""
                 });
             }          
             if (User.IsInRole(nameof(UserRole.ManageItems)))
             {
                 return RedirectToAction("ItemsAvailability", "POS", new
                 {
-                    area = "Dashboard"
+                    area = ""
                 });
             }
             if (User.IsInRole(nameof(UserRole.AccessDetails)))

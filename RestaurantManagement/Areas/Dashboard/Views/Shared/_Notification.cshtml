@@ -1,0 +1,7 @@
+﻿@if (TempData["SuccessMessage"] is string message)
+{
+    <div id="success-notification" class="success-notification">
+        <i class="bi bi-check-circle-fill"></i>
+        <span>@message</span>
+    </div>
+}

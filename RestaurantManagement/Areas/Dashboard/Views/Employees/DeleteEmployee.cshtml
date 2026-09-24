@@ -27,7 +27,7 @@
                                 </h5>
 
                                 <p class="text-muted mb-0">
-                                    Edit the employee's personal and account details.
+                                    Enter the employee's personal and account details.
                                 </p>
                             </div>
 
@@ -38,11 +38,12 @@
                     <!-- Card Body -->
                     <div class="card-body px-4 pb-4">
 
-                        <form asp-area="Dashboard" asp-controller="Employees"
-                              asp-action="EditEmployee"
-                              asp-route-id=""
+                        <form asp-area="Dashboard"
+                              asp-controller="Employees"
+                              asp-action="ConfirmedDeleteEmployee"
+                              asp-route-id="@Model.Id"
                               method="post">
-                              @Html.AntiForgeryToken()
+                            @Html.AntiForgeryToken()
                             <!-- Validation -->
                             <div asp-validation-summary="ModelOnly"
                                  class="text-danger mb-3">
@@ -58,7 +59,7 @@
 
                             <div class="row">
                                 <input asp-for="Id"
-                                        type="hidden"/>
+                                       type="hidden" />
                                 <!-- First Name -->
                                 <div class="col-md-6 mb-3">
 
@@ -67,7 +68,7 @@
                                         First Name
                                     </label>
 
-                                    <input asp-for="FirstName"
+                                    <input disabled asp-for="FirstName"
                                            class="form-control"
                                            placeholder="Enter first name" />
 
@@ -86,7 +87,7 @@
                                         Last Name
                                     </label>
 
-                                    <input asp-for="LastName"
+                                    <input disabled asp-for="LastName"
                                            class="form-control"
                                            placeholder="Enter last name" />
 
@@ -105,7 +106,7 @@
                                         Phone Number
                                     </label>
 
-                                    <input asp-for="PhoneNumber"
+                                    <input disabled asp-for="PhoneNumber"
                                            class="form-control"
                                            placeholder="Enter phone number" />
 
@@ -124,7 +125,7 @@
                                         Email Address
                                     </label>
 
-                                    <input asp-for="Email"
+                                    <input disabled asp-for="Email"
                                            type="email"
                                            class="form-control"
                                            placeholder="example@email.com" />
@@ -140,11 +141,9 @@
                                         Group
                                     </label>
 
-   
-                                    <select asp-for="Group"
-                                            asp-items="@ViewBag.groups"
+                                    <select disabled asp-for="Group"
                                             class="form-select">
-                                        <option value="">Select Group</option>
+                                        <option value="">@Model.GroupName</option>
                                     </select>
 
                                     <span asp-validation-for="Group"
@@ -159,7 +158,7 @@
                                         Starting Date
                                     </label>
 
-                                    <input asp-for="EmployeeStartingDate"
+                                    <input disabled asp-for="EmployeeStartingDate"
                                            type="datetime-local"
                                            class="form-control" />
 
@@ -176,7 +175,7 @@
                                         Ending Date
                                     </label>
 
-                                    <input asp-for="EmployeeEndingDate"
+                                    <input disabled asp-for="EmployeeEndingDate"
                                            type="datetime-local"
                                            class="form-control" />
 
@@ -208,54 +207,12 @@
                                         Username
                                     </label>
 
-                                    <input asp-for="Username"
+                                    <input disabled asp-for="Username"
                                            class="form-control"
                                            placeholder="Enter username"
                                            autocomplete="username" />
 
                                     <span asp-validation-for="Username"
-                                          class="text-danger small">
-                                    </span>
-
-                                </div>
-
-
-                                <!-- Password -->
-                                <div class="col-md-6 mb-3">
-
-                                    <label asp-for="Password"
-                                           class="form-label fw-semibold">
-                                        New Password
-                                    </label>
-
-                                    <input asp-for="Password"
-                                           type="password"
-                                           class="form-control"
-                                           placeholder="Enter password"
-                                           autocomplete="new-password" />
-
-                                    <span asp-validation-for="Password"
-                                          class="text-danger small">
-                                    </span>
-
-                                </div>
-
-
-                                <!-- Confirm Password -->
-                                <div class="col-md-6 mb-3">
-
-                                    <label asp-for="ConfirmPassword"
-                                           class="form-label fw-semibold">
-                                        Confirm Password
-                                    </label>
-
-                                    <input asp-for="ConfirmPassword"
-                                           type="password"
-                                           class="form-control"
-                                           placeholder="Confirm password"
-                                           autocomplete="new-password" />
-
-                                    <span asp-validation-for="ConfirmPassword"
                                           class="text-danger small">
                                     </span>
 
@@ -271,19 +228,22 @@
                             <!-- Actions -->
                             <div class="d-flex justify-content-end gap-2">
 
-                                <a asp-controller="Employees"
+                                <a asp-area="Dashboard"
+                                   asp-controller="Employees"
                                    asp-action="Employees"
                                    class="btn btn-light border px-4">
                                     Cancel
                                 </a>
 
-                                <button type="submit" class="btn btn-primary px-4">
+                                <button type="submit"
+                                        class="btn btn-primary px-4">
 
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill-gear" viewBox="0 0 16 16">
-                                        <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4m9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-dash" viewBox="0 0 16 16">
+                                        <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M11 12h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1 0-1m0-7a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4" />
+                                        <path d="M8.256 14a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z" />
                                     </svg>
 
-                                    Edit Employee
+                                    Delete Employee
 
                                 </button>
 

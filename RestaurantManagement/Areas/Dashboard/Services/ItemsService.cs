@@ -15,11 +15,14 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         public async Task<bool> CreateItemAsync(ItemViewModel model)
         {
             if (model is null) throw new ArgumentNullException();
-            var isExists = await unitOfWork.Items.NoTrackingSelect()
-                .FirstOrDefaultAsync(i => (i.ItemName == model.ItemName && i.Id != model.Id) &&
-                    (i.CategoryId == model.CategoryId && i.Id != model.Id),
+            var isExists = await unitOfWork.Items
+                .NoTrackingSelect()
+                .AnyAsync(
+                    i => i.ItemName == model.ItemName &&
+                         i.CategoryId == model.CategoryId,
                     model.CancellationToken);
-            if (isExists is null)
+
+            if (isExists)
             {
                 return false;
             }
@@ -86,6 +89,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                     var newPath = Path.Combine(Path.GetDirectoryName(oldPath)!,
                         $"deleted_{DateTime.UtcNow:yyyyMMddHHmmss}{Path.GetExtension(oldPath)}");
                     File.Move(oldPath, newPath);
+                    item.ImageUrl = newPath;
                 }
             }
         }

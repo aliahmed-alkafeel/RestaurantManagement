@@ -37,7 +37,7 @@ namespace RestaurantManagement.Controllers
             {
                 return Redirect(returnUrl);
             }
-            return RedirectToAction("DashToHome", "Redirect");
+            return RedirectToAction("Opening", "Redirect");
         }
 
         [HttpPost]

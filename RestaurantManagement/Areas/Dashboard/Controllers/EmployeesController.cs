@@ -8,6 +8,7 @@ using RestaurantManagement.Areas.Dashboard.IServices;
 using RestaurantManagement.Areas.Dashboard.ViewModels;
 using RestaurantManagement.Models;
 using System.Security.Claims;
+using RestaurantManagement.Extensions;
 
 namespace RestaurantManagement.Areas.Dashboard.Controllers
 {
@@ -54,6 +55,9 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
                 ModelState.AddModelError("","This update is not allowed");
                 return View(model);
             }
+            TempData.SuccessMessage(
+                NotificationExtensions.ActionType.Update,
+                NotificationExtensions.EntityType.Employee);
             return RedirectToAction(nameof(Employees));
         }
 
@@ -70,6 +74,25 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         public async Task<IActionResult> ConfirmedTerminateEmployee(Guid id)
         {
             var result = await employeesService.TerminateEmployeeAsync(id);
+            if (!result) return RedirectToAction("AccessDenied", "Auth", new {area="",returnUrl="/Dashboard"});
+            TempData.SuccessMessage(
+                NotificationExtensions.ActionType.Delete,
+                NotificationExtensions.EntityType.Employee);
+            return RedirectToAction(nameof(Employees));
+        } 
+        [Authorize(Roles = nameof(UserRole.ManageEmployees))]
+        [HttpGet("DeleteEmployee/{id:guid}")]
+        public async Task<IActionResult> DeleteEmployee(Guid id)
+        {
+            var emps = await employeesService.GetEmployeeByIdAsync(id);
+            return View(emps);
+        }
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = nameof(UserRole.ManageEmployees))]
+        [HttpPost("ConfirmedDeleteEmployee/{id:guid}")]
+        public async Task<IActionResult> ConfirmedDeleteEmployee(Guid id)
+        {
+            var result = await employeesService.DeleteEmployeeAsync(id);
             if (!result) return RedirectToAction("AccessDenied", "Auth", new {area="",returnUrl="/Dashboard"});
             return RedirectToAction(nameof(Employees));
         }
@@ -97,7 +120,10 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             {
                 ModelState.AddModelError("","The User is Regestered");
                 return View(model);
-            } 
+            }
+            TempData.SuccessMessage(
+                NotificationExtensions.ActionType.Create,
+                NotificationExtensions.EntityType.Employee);
             return RedirectToAction(nameof(Employees));
         }
 

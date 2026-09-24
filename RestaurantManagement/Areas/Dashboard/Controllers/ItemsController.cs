@@ -6,6 +6,7 @@ using RestaurantManagement.Areas.Dashboard.ViewModels;
 using RestaurantManagement.Migrations;
 using RestaurantManagement.Models;
 using System.Security.Claims;
+using RestaurantManagement.Extensions;
 
 namespace RestaurantManagement.Areas.Dashboard.Controllers
 {
@@ -31,8 +32,8 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
                 return View(pageModel);
             }
 
-            var Items = await itemsService.GetPagedItemsAsync(model);
-            return View(Items);
+            var items = await itemsService.GetPagedItemsAsync(model);
+            return View(items);
         }
 
 
@@ -56,7 +57,9 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
                 ModelState.AddModelError("", "The Item is Regestered");
                 return View(model);
             }
-
+            TempData.SuccessMessage(
+                NotificationExtensions.ActionType.Create,
+                NotificationExtensions.EntityType.Item);
             return RedirectToAction(nameof(Items));
         }
 
@@ -85,7 +88,9 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
                 ModelState.AddModelError("", "This update is not allowed");
                 return View(model);
             }
-
+            TempData.SuccessMessage(
+                NotificationExtensions.ActionType.Update,
+                NotificationExtensions.EntityType.Item);
             return RedirectToAction(nameof(Items));
         }
 
@@ -103,6 +108,9 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         public async Task<IActionResult> ConfirmedDeleteItem([FromRoute]Guid id)
         {
             await itemsService.DeleteItemAsync(id);
+            TempData.SuccessMessage(
+                NotificationExtensions.ActionType.Delete,
+                NotificationExtensions.EntityType.Item);
             return RedirectToAction(nameof(Items));
         }
 

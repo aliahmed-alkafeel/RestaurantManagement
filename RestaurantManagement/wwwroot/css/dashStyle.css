@@ -930,15 +930,14 @@ tbody tr {
 
 /* Delete */
 .delete-action {
-    background-color: #fa896b;
+    background-color: #F05252;
     color: white;
 }
 
     .delete-action:hover {
-        background-color: #e87558;
+        background-color: #D93636;
         color: white;
     }
-
 /* Add */
 .add-btn {
     display: inline-flex !important;
@@ -1868,4 +1867,38 @@ th.sort {
     .stat-card {
         min-height: 160px;
     }
+}
+.success-notification {
+    position: fixed;
+    bottom: 32px;
+    right: 28px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    background-color: var(--success);
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+    .success-notification.hide {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+@media (max-width: 768px) {
+    .success-notification {
+        bottom: 25px;
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+    }
+
+        .success-notification.hide {
+            transform: translateX(-50%) translateY(10px);
+        }
 }

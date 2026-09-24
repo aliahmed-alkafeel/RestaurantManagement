@@ -4,6 +4,7 @@ using RestaurantManagement.Areas.Dashboard.IServices;
 using RestaurantManagement.Areas.Dashboard.ViewModels;
 using RestaurantManagement.Models;
 using System.Security.Claims;
+using RestaurantManagement.Extensions;
 
 namespace RestaurantManagement.Areas.Dashboard.Controllers
 {
@@ -21,7 +22,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
 
             [Authorize(Roles = nameof(UserRole.ManageDiscounts))]
             [HttpGet("CreateDiscount")]
-            public async Task<IActionResult> CreateDiscount()
+            public IActionResult CreateDiscount()
             {
                 return View("ManageDiscount",new DiscountViewModel());
             }
@@ -38,7 +39,10 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
                     ModelState.AddModelError("", "The Discount is Regestered");
                     return View("ManageDiscount",model);
                 }
-                return RedirectToAction(nameof(Discounts));
+                TempData.SuccessMessage(
+                    NotificationExtensions.ActionType.Create,
+                    NotificationExtensions.EntityType.Discount);
+            return RedirectToAction(nameof(Discounts));
             }
             [Authorize(Roles = nameof(UserRole.ManageDiscounts))]
             [HttpGet("EditDiscount/{id:guid}")]
@@ -62,15 +66,18 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
                     ModelState.AddModelError("", "This update is not allowed");
                     return View("ManageDiscount",model);
                 }
-                return RedirectToAction(nameof(Discounts));
+                TempData.SuccessMessage(
+                    NotificationExtensions.ActionType.Update,
+                    NotificationExtensions.EntityType.Discount);
+            return RedirectToAction(nameof(Discounts));
             }
 
             [Authorize(Roles = nameof(UserRole.ManageDiscounts))]
             [HttpGet("DeleteDiscount/{id:guid}")]
             public async Task<IActionResult> DeleteDiscount(Guid id,CancellationToken cancellationToken)
             {
-                var emps = await discountsService.GetDiscountByIdAsync(id, cancellationToken);
-                return View(emps);
+                var discount = await discountsService.GetDiscountByIdAsync(id, cancellationToken);
+                return View(discount);
             }
             [ValidateAntiForgeryToken]
             [Authorize(Roles = nameof(UserRole.ManageDiscounts))]
@@ -78,7 +85,10 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             public async Task<IActionResult> ConfirmedDeleteDiscount(Guid id,CancellationToken cancellationToken)
             {
                 await discountsService.DeleteDiscountAsync(id, cancellationToken);
-                return RedirectToAction(nameof(Discounts));
+                TempData.SuccessMessage(
+                    NotificationExtensions.ActionType.Delete,
+                    NotificationExtensions.EntityType.Discount);
+            return RedirectToAction(nameof(Discounts));
             }
 
         }

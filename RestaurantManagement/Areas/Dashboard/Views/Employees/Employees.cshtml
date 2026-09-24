@@ -4,6 +4,17 @@
 *@
 @{
 }
+<style>
+    .terminate-action {
+        background-color: #fa896b;
+        color: #ffffff;
+    }
+
+        .terminate-action:hover {
+            background-color: #e87558;
+            color: #ffffff;
+        }
+</style>
 <header class="navbar">
     <div class="search-box">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
@@ -94,8 +105,15 @@
                 {
                     <td>
                         <a class="action edit-action" asp-area="Dashboard" asp-controller="Employees" asp-action="EditEmployee" asp-route-id="@emp.Id">Edit</a>
+                        <a class="action terminate-action"
+                           asp-area="Dashboard"
+                           asp-controller="Employees"
+                           asp-action="TerminateEmployee"
+                           asp-route-id="@emp.Id">
+                            Terminate
+                        </a>
                         <a class="action delete-action" asp-area="Dashboard" asp-controller="Employees"
-                           asp-action="TerminateEmployee" asp-route-id="@emp.Id">Terminate</a>
+                           asp-action="DeleteEmployee" asp-route-id="@emp.Id">Delete</a>
                     </td>
                 }
             </tr>

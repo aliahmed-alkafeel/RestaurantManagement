@@ -5,6 +5,7 @@ using RestaurantManagement.Areas.Dashboard.Services;
 using RestaurantManagement.Areas.Dashboard.ViewModels;
 using RestaurantManagement.Models;
 using System.Security.Claims;
+using RestaurantManagement.Extensions;
 
 namespace RestaurantManagement.Areas.Dashboard.Controllers
 {
@@ -37,6 +38,9 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
                 ModelState.AddModelError("", "The Group is Registered");
                 return View("ManageGroup",model);
             }
+            TempData.SuccessMessage(
+                NotificationExtensions.ActionType.Create,
+                NotificationExtensions.EntityType.Group);
             return RedirectToAction(nameof(Groups));
         }
         [Authorize(Roles = nameof(UserRole.ManageGroups))]
@@ -53,6 +57,9 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         {
             var result = await groupsService.DeleteGroupAsync(id, cancellationToken);
             if (!result) return RedirectToAction("AccessDenied", "Auth", new { area = "", returnUrl = "/Dashboard" });
+            TempData.SuccessMessage(
+                NotificationExtensions.ActionType.Delete,
+                NotificationExtensions.EntityType.Group);
             return RedirectToAction(nameof(Groups));
         }
         [Authorize(Roles = nameof(UserRole.ManageGroups))]
@@ -74,6 +81,9 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
                 ModelState.AddModelError("", "This update is not allowed");
                 return View("ManageGroup",model);
             }
+            TempData.SuccessMessage(
+                NotificationExtensions.ActionType.Update,
+                NotificationExtensions.EntityType.Group);
             return RedirectToAction(nameof(Groups));
         }
     }

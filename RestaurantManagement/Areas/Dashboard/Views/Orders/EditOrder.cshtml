@@ -49,7 +49,6 @@
 
                     <!-- Card Body -->
                     <div class="card-body px-4 pb-4">
-
                         <form asp-area="Dashboard" asp-controller="Orders"
                               asp-action="EditPostOrder"
                               asp-route-id="@Model.Id"
@@ -161,7 +160,7 @@
                                 <br />
                                 <!-- Actions -->
                                 <div class="d-flex justify-content-end gap-2">
-                                    <a asp-controller="Dashboard"
+                                    <a asp-controller="Orders"
                                        asp-action="Orders"
                                        class="btn btn-light border px-4">
                                         Cancel
@@ -311,6 +310,9 @@ const initialOrderItems = @Html.Raw(
 
 <script src="~/js/addingItemsModal.js"></script>
 
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
 @* 
 
 <form asp-controller="Home"

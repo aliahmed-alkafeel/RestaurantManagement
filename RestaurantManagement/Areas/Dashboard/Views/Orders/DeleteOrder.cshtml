@@ -115,22 +115,22 @@
 
                                         <table id="table" class="table text-nowrap mb-0 align-middle">
                                             <thead class="text-dark fs-4">
-                                                <tr>
-                                                    <th>
-                                                        <h6 class="fs-3 fw-semibold mb-0">Item Name</h6>
-                                                    </th>
-                                                    <th>
-                                                        <h6 class="fs-3 fw-semibold mb-0">Price</h6>
-                                                    </th>
-                                                    <th>
-                                                        <h6 class="fs-3 fw-semibold mb-0">Quantity</h6>
-                                                    </th>
+                                            <tr>
+                                                <th>
+                                                    <h6 class="fs-3 fw-semibold mb-0">Item Name</h6>
+                                                </th>
+                                                <th>
+                                                    <h6 class="fs-3 fw-semibold mb-0">Price</h6>
+                                                </th>
+                                                <th>
+                                                    <h6 class="fs-3 fw-semibold mb-0">Quantity</h6>
+                                                </th>
 
 
-                                                </tr>
+                                            </tr>
                                             </thead>
                                             <tbody id="itemsTableBody" class="list">
-                                             @foreach (var order in Model.ItemOrders)
+                                            @foreach (var order in Model.ItemOrders)
                                             {
                                                 <tr>
                                                     <td class="table-number">
@@ -142,17 +142,18 @@
                                                     <td>
                                                         @order.Quantity
                                                     </td>
-                                                    </tr>
+                                                </tr>
                                             }
                                             </tbody>
                                         </table>
                                     </div>
 
+                                </div>
                             </div>
                             <br />
                             <!-- Actions -->
                             <div class="d-flex justify-content-end gap-2">
-                                <a asp-controller="Dashboard"
+                                    <a asp-controller="Orders"
                                    asp-action="Orders"
                                    class="btn btn-light border px-4">
                                     Cancel
@@ -176,3 +177,7 @@
     </div>
 
 </div>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }

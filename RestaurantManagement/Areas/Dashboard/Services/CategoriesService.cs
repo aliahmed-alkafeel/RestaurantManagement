@@ -56,6 +56,14 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         {
             var category = await unitOfWork.Categories.GetByIdAsync(id,cancellationToken);
             if (category is null) throw new ArgumentNullException(nameof(category));
+
+
+            var hasItems = await unitOfWork.Items
+                .NoTrackingSelect()
+                .AnyAsync(i => i.CategoryId == id, cancellationToken);
+
+            if (hasItems)
+                return false;
             unitOfWork.Categories.Delete(category);
             await unitOfWork.SaveChangesAsync(cancellationToken);
             return true;
