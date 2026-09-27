@@ -28,6 +28,7 @@ namespace RestaurantManagement.Services
         {
             var employee = await _unitOfWork.Employees.NoTrackingSelect()
                 .Include(e => e.Group)
+                .Where(e => e.Group != null && !e.Group.IsDeleted)
                 .FirstOrDefaultAsync(e => e.Username == loginViewModel.Username, loginViewModel.CancellationToken);
             if (employee is null) return false;
             if (employee.EmployeeEndingDate.HasValue) return false;
@@ -41,7 +42,10 @@ namespace RestaurantManagement.Services
                 new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString()),
                 new Claim(ClaimTypes.Name, employee.Username),
             };
-            var group = await _unitOfWork.Groups.NoTrackingSelect().Include(g => g.GroupRoles).ThenInclude(gr => gr.Role)
+            var group = await _unitOfWork.Groups.
+                NoTrackingSelect().
+                Include(g => g.GroupRoles.Where(gr => !gr.IsDeleted))
+                .ThenInclude(gr => gr.Role)
                 .FirstOrDefaultAsync(g => g.Id == employee.GroupId, loginViewModel.CancellationToken);
             if (group is null) throw new InvalidOperationException("The Group Of the User is Deleted!");
             claims.AddRange(group.GroupRoles.Select(role => new Claim(ClaimTypes.Role, role.Role.RoleName.ToString())));

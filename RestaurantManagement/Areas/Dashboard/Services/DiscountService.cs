@@ -37,7 +37,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                     DiscountPercentage = discount.DiscountPercentage,
                     DiscountStartingDate = discount.DiscountStartingDate,
                     DiscountEndingDate = discount.DiscountEndingDate,
-                    Items = discount.Items
+                    Items = discount.Items.Where(i => !i.IsDeleted).ToList()
                 }).ToListAsync(cancellationToken);
         }
 
@@ -45,7 +45,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         public async Task<DiscountViewModel> GetDiscountByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             var discount = await unitOfWork.Discounts.Select().Where(d => d.Id == id)
-                .Include(i => i.Items)
+                .Include(i => i.Items.Where(item => !item.IsDeleted))
                 .FirstOrDefaultAsync(cancellationToken);
             if (discount is null) throw new ArgumentNullException(nameof(discount));
             return new DiscountViewModel
@@ -72,7 +72,8 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         {
             if (model is null) throw new ArgumentNullException();
             var discount = await unitOfWork.Discounts.Select().
-                Where(d => d.Id == model.Id).Include(i => i.Items)
+                Where(d => d.Id == model.Id)
+                .Include(i => i.Items.Where(i => !i.IsDeleted))
                 .FirstOrDefaultAsync(model.CancellationToken);
             if (discount is null) return false;
             discount.DiscountPercentage = model.DiscountPercentage;

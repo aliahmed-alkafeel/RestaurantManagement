@@ -30,6 +30,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         {
             return await _unitOfWork.Employees.NoTrackingSelect()
                 .Include(e => e.Group)
+                .Where(e => e.Group != null && !e.Group.IsDeleted)
                 .Select(emp => new EmployeeViewModel
                 {
                     Id = emp.Id,
@@ -48,7 +49,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             CancellationToken cancellationToken = default)
         {
             var emp = await _unitOfWork.Employees.NoTrackingSelect()
-                .Include(e => e.Group)
+                .Include(e => e.Group).Where(e=>e.Group != null && !e.Group.IsDeleted)
                 .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
             if (emp is null) throw new ArgumentNullException(nameof(emp));
             var groups = await _unitOfWork.Groups.NoTrackingSelect().Select(g =>
@@ -96,14 +97,22 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                     model.CancellationToken);
             if (isDuplicate)
                 return false;
+            var groupExists = await _unitOfWork.Groups
+                .NoTrackingSelect()
+                .AnyAsync(g => g.Id == model.Group, model.CancellationToken);
+
+            if (!groupExists)
+                return false;
             var modifierId = _httpContextAccessor.HttpContext!.User.GetUserId();
-            var modifier = await _unitOfWork.Employees.NoTrackingSelect(DeletedStatus.All)
+            var modifier = await _unitOfWork.Employees.NoTrackingSelect()
                 .Include(e => e.Group)
+                .Where(e => e.Group != null && !e.Group.IsDeleted)
                 .FirstOrDefaultAsync(e => e.Id == modifierId, model.CancellationToken);
             if(modifier is null) throw new InvalidOperationException(nameof(modifier));
             if (modifier.Group is null) throw new InvalidOperationException("The Group Of the User is Deleted!");
-            if (model.GroupName == InitUserGroup.Administrator.ToString() &&
-                modifier!.Group!.GroupName != InitUserGroup.Administrator.ToString())
+            var administratorGroupName = InitUserGroup.Administrator.ToString();
+            if (model.GroupName == administratorGroupName &&
+                modifier!.Group!.GroupName != administratorGroupName)
                 return false;
             var employee = new Employee
             {
@@ -126,7 +135,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             if (model is null)
                 throw new ArgumentNullException(nameof(model));
             var employee = await _unitOfWork.Employees
-                .Select(DeletedStatus.All)
+                .Select()
                 .FirstOrDefaultAsync(
                     e => e.Id == model.Id,
                     model.CancellationToken);
@@ -143,15 +152,51 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
             if (isDuplicate)
                 return false;
+            var group = await _unitOfWork.Groups
+                .NoTrackingSelect()
+                .FirstOrDefaultAsync(
+                    g => g.Id == model.Group,
+                    model.CancellationToken);
 
+            if (group is null)
+                return false;
+
+            var modifierId = _httpContextAccessor.HttpContext!
+                .User
+                .GetUserId();
+
+            var modifier = await _unitOfWork.Employees
+                .NoTrackingSelect()
+                .Include(e => e.Group)
+                .FirstOrDefaultAsync(
+                    e => e.Id == modifierId &&
+                         e.Group != null &&
+                         !e.Group.IsDeleted,
+                    model.CancellationToken);
+
+            if (modifier is null)
+                throw new InvalidOperationException(
+                    "The current user does not have a valid group.");
+            var administratorGroupName = InitUserGroup.Administrator.ToString();
+            if (group.GroupName == administratorGroupName &&
+                modifier.Group!.GroupName != administratorGroupName)
+            {
+                return false;
+            }
+
+            if (group.GroupName == administratorGroupName &&
+                model.EmployeeEndingDate.HasValue)
+            {
+                return false;
+            }
             employee.Username = model.Username;
             employee.Email = model.Email;
             employee.FirstName = model.FirstName;
             employee.LastName = model.LastName;
-            employee.EmployeeStartingDate = model.EmployeeStartingDate;
+            employee.EmployeeStartingDate = model.EmployeeStartingDate.AddHours(-3);
+            employee.EmployeeEndingDate = model.EmployeeEndingDate?.AddHours(-3);
             employee.PhoneNumber = model.PhoneNumber;
             employee.GroupId = model.Group;
-            employee.EmployeeEndingDate = model.EmployeeEndingDate;
 
             if (model.Password is not null)
             {
@@ -164,9 +209,9 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         public async Task<bool> TerminateEmployeeAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var emp = await _unitOfWork.Employees.Select(DeletedStatus.All)
-                .Include(e => e.Group).Where(e => e.Id == id)
-                .FirstOrDefaultAsync(cancellationToken);
+            var emp = await _unitOfWork.Employees.Select()
+                .Include(e => e.Group).Where(e => e.Group != null && !e.Group.IsDeleted)
+                .FirstOrDefaultAsync(e => e.Id == id,cancellationToken);
             if (emp is null) return false;
             if (emp.Group!.GroupName == InitUserGroup.Administrator.ToString()) return false;
             if(emp.EmployeeEndingDate.HasValue) return false;
@@ -178,9 +223,9 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         public async Task<bool> DeleteEmployeeAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var emp = await _unitOfWork.Employees.Select(DeletedStatus.All)
-                .Include(e => e.Group).Where(e => e.Id == id)
-                .FirstOrDefaultAsync(cancellationToken);
+            var emp = await _unitOfWork.Employees.Select()
+                .Include(e => e.Group).Where(e => e.Group != null && !e.Group.IsDeleted)
+                .FirstOrDefaultAsync(e => e.Id == id,cancellationToken);
             if (emp is null) return false;
             if (emp.Group!.GroupName == InitUserGroup.Administrator.ToString()) return false;
             //if(emp.EmployeeEndingDate.HasValue) return false;

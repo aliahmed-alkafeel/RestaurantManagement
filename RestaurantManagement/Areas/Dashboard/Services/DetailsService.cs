@@ -61,7 +61,7 @@ namespace RestaurantManagement.Areas.Details.Services
     })
     .ToList();
             var topSellingItems = await unitOfWork.ItemOrders
-                .NoTrackingSelect().Where(io => io.Order.OrderStatus == Models.OrderStatus.Completed)
+                .NoTrackingSelect(DeletedStatus.All).Where(io => io.Order.OrderStatus == Models.OrderStatus.Completed)
                 .GroupBy(io => new
                 {
                     io.ItemId,
@@ -100,7 +100,7 @@ namespace RestaurantManagement.Areas.Details.Services
                 .ToListAsync(cancellationToken);
 
                  var mostPopularToday = await unitOfWork.ItemOrders
-                .NoTrackingSelect()
+                .NoTrackingSelect(DeletedStatus.All)
                 .Where(io =>
                  io.Order.OrderDate >= today &&
                  io.Order.OrderDate < tomorrow && io.Order.OrderStatus == Models.OrderStatus.Completed)

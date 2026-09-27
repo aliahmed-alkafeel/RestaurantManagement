@@ -96,10 +96,18 @@
                     @emp.Username
                 </td>
                 <td>
-                    @emp.EmployeeStartingDate
+                        <span class="order-date"
+                              data-utc="@DateTime.SpecifyKind(emp.EmployeeStartingDate, DateTimeKind.Utc).ToString("O")">
+                        </span>
                 </td>
                 <td>
-                    @emp.EmployeeEndingDate
+                    @if (emp.EmployeeEndingDate.HasValue)
+                    {
+
+            <span class="order-date"
+            data-utc="@DateTime.SpecifyKind(emp.EmployeeEndingDate.Value, DateTimeKind.Utc).ToString("O")">
+                </span>
+                    }
                 </td>
                 @if (User.IsInRole(nameof(UserRole.ManageEmployees)))
                 {
@@ -134,7 +142,11 @@
     searchInput.addEventListener("input", function() {
         list.search(this.value)
     });
+    document.querySelectorAll('.order-date').forEach(element => {
+        const utcDate = new Date(element.dataset.utc);
 
+        element.textContent = utcDate.toLocaleString();
+    });
 </script>
 
 

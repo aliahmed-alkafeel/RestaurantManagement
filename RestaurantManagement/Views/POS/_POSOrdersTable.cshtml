@@ -151,10 +151,10 @@
                     ================================================== -->
 
                     <td>
-
-                        <time class="order-date"
-                              data-utc="@order.OrderDate.ToString("O")">
-                        </time>
+                      
+                        <time class="order-date" 
+                          data-utc="@DateTime.SpecifyKind(order.OrderDate, DateTimeKind.Utc).ToString("O")">
+                    </time>
 
                     </td>
 
@@ -196,3 +196,11 @@ else
 
     </div>
 }
+
+<script>
+        document.querySelectorAll('.order-date').forEach(element => {
+        const utcDate = new Date(element.dataset.utc);
+
+        element.textContent = utcDate.toLocaleString();
+    });
+</script>

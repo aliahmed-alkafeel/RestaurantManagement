@@ -14,7 +14,12 @@ namespace RestaurantManagement.ViewComponents
             {
                 return View(null);
             }
-            var employee = await unitOfWork.Employees.Select().Include(e => e.Group).ThenInclude(g => g.GroupRoles).ThenInclude(gr => gr.Role).AsNoTracking().FirstOrDefaultAsync(e => e.Id == empId);
+            var employee = await unitOfWork.Employees.NoTrackingSelect()
+                .Include(e => e.Group)
+                .ThenInclude(g => g!.GroupRoles.Where(gr => !gr.IsDeleted))
+                .ThenInclude(gr => gr.Role)
+                .Where(e => e.Group != null && !e.Group.IsDeleted)
+                .FirstOrDefaultAsync(e => e.Id == empId);
             return View(employee);
         }
     }

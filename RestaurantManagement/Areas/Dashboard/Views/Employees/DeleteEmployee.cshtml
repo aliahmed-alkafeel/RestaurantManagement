@@ -158,7 +158,8 @@
                                         Starting Date
                                     </label>
 
-                                    <input disabled asp-for="EmployeeStartingDate"
+                                    <input disabled name="EmployeeStartingDate"
+                                           value="@DateTime.SpecifyKind(Model.EmployeeStartingDate, DateTimeKind.Utc).ToLocalTime().ToString("yyyy-MM-ddTHH:mm")"
                                            type="datetime-local"
                                            class="form-control" />
 
@@ -175,9 +176,17 @@
                                         Ending Date
                                     </label>
 
-                                    <input disabled asp-for="EmployeeEndingDate"
-                                           type="datetime-local"
-                                           class="form-control" />
+                            
+                                        <input disabled name="EmployeeEndingDate"
+                                               value="@(Model.EmployeeEndingDate.HasValue
+                                                          ? DateTime.SpecifyKind(Model.EmployeeEndingDate.Value, DateTimeKind.Utc)
+                                                              .ToLocalTime()
+                                                              .ToString("yyyy-MM-ddTHH:mm")
+                                                          : "")"
+                                               type="datetime-local"
+                                               class="form-control"/>
+                                    
+      
 
                                     <span asp-validation-for="EmployeeEndingDate"
                                           class="text-danger small">

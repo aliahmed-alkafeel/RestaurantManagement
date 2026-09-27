@@ -118,7 +118,8 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             var result = await employeesService.CreateEmployeeAsync(model);
             if(result is false)
             {
-                ModelState.AddModelError("","The User is Regestered");
+                ModelState.AddModelError("","The User is Registered");
+                ViewBag.groups = await employeesService.ShowCreateEmployeeAsync();
                 return View(model);
             }
             TempData.SuccessMessage(

@@ -27,14 +27,14 @@ namespace RestaurantManagement.Data
             modelBuilder.Entity<Item>()
                 .ToTable(obj => obj.HasCheckConstraint("CK_Item_Price_Positive", "Price >0"));
 
-            modelBuilder.Entity<Item>().HasQueryFilter(i => !i.IsDeleted);
-            modelBuilder.Entity<ItemOrder>().HasQueryFilter(i => !i.IsDeleted);
-            modelBuilder.Entity<Order>().HasQueryFilter(i => !i.IsDeleted);
-            modelBuilder.Entity<Category>().HasQueryFilter(i => !i.IsDeleted);
-            modelBuilder.Entity<Discount>().HasQueryFilter(i => !i.IsDeleted);
-            modelBuilder.Entity<Group>().HasQueryFilter(i => !i.IsDeleted);
-            modelBuilder.Entity<GroupRole>().HasQueryFilter(i => !i.IsDeleted);
-            modelBuilder.Entity<Role>().HasQueryFilter(i => !i.IsDeleted);
+            //modelBuilder.Entity<Item>().HasQueryFilter(i => !i.IsDeleted);
+            //modelBuilder.Entity<ItemOrder>().HasQueryFilter(i => !i.IsDeleted);
+            //modelBuilder.Entity<Order>().HasQueryFilter(i => !i.IsDeleted);
+            //modelBuilder.Entity<Category>().HasQueryFilter(i => !i.IsDeleted);
+            //modelBuilder.Entity<Discount>().HasQueryFilter(i => !i.IsDeleted);
+            //modelBuilder.Entity<Group>().HasQueryFilter(i => !i.IsDeleted);
+            //modelBuilder.Entity<GroupRole>().HasQueryFilter(i => !i.IsDeleted);
+            //modelBuilder.Entity<Role>().HasQueryFilter(i => !i.IsDeleted);
 
             modelBuilder.Entity<GroupRole>().HasIndex(gr => new { gr.GroupId, gr.RoleId, gr.DeletedAt, gr.IsDeleted }).IsUnique();
             modelBuilder.Entity<Employee>().HasIndex(e => new { e.Email, e.IsDeleted, e.DeletedAt }).IsUnique();

@@ -5,266 +5,273 @@
 
 <div class="container-fluid employee-page">
 
-    <div class="employee-form-wrapper">
+<div class="employee-form-wrapper">
 
-        <div class="row justify-content-center w-100">
-            <div class="col-12 col-xl-9 col-xxl-8">
+<div class="row justify-content-center w-100">
+<div class="col-12 col-xl-9 col-xxl-8">
 
-                <!-- Employee Form Card -->
-                <div class="card employee-card border-0 shadow-sm">
+<!-- Employee Form Card -->
+<div class="card employee-card border-0 shadow-sm">
 
-                    <!-- Card Header -->
-                    <div class="card-header bg-transparent border-0 px-4 pt-4">
-                        <div class="d-flex align-items-center gap-3">
+<!-- Card Header -->
+<div class="card-header bg-transparent border-0 px-4 pt-4">
+    <div class="d-flex align-items-center gap-3">
 
-                            <div class="employee-icon">
-                                <i class="ti ti-user-plus"></i>
-                            </div>
-
-                            <div>
-                                <h5 class="mb-1 fw-bold">
-                                    Employee Information
-                                </h5>
-
-                                <p class="text-muted mb-0">
-                                    the employee's personal and account details.
-                                </p>
-                            </div>
-
-                        </div>
-                    </div>
-
-
-                    <!-- Card Body -->
-                    <div class="card-body px-4 pb-4">
-
-                        <form asp-area="Dashboard"
-                              asp-controller="Employees"
-                              asp-action="ConfirmedTerminateEmployee"
-                              asp-route-id="@Model.Id"
-                              method="post">
-                            @Html.AntiForgeryToken()
-                            <!-- Validation -->
-                            <div asp-validation-summary="ModelOnly"
-                                 class="text-danger mb-3">
-                            </div>
-
-
-                            <!-- Personal Information -->
-
-                            <div class="section-title">
-                                <i class="ti ti-user"></i>
-                                <span>Personal Information</span>
-                            </div>
-
-                            <div class="row">
-                                <input asp-for="Id"
-                                       type="hidden" />
-                                <!-- First Name -->
-                                <div class="col-md-6 mb-3">
-
-                                    <label asp-for="FirstName"
-                                           class="form-label fw-semibold">
-                                        First Name
-                                    </label>
-
-                                    <input disabled asp-for="FirstName"
-                                           class="form-control"
-                                           placeholder="Enter first name" />
-
-                                    <span asp-validation-for="FirstName"
-                                          class="text-danger small">
-                                    </span>
-
-                                </div>
-
-
-                                <!-- Last Name -->
-                                <div class="col-md-6 mb-3">
-
-                                    <label asp-for="LastName"
-                                           class="form-label fw-semibold">
-                                        Last Name
-                                    </label>
-
-                                    <input disabled asp-for="LastName"
-                                           class="form-control"
-                                           placeholder="Enter last name" />
-
-                                    <span asp-validation-for="LastName"
-                                          class="text-danger small">
-                                    </span>
-
-                                </div>
-
-
-                                <!-- Phone -->
-                                <div class="col-md-6 mb-3">
-
-                                    <label asp-for="PhoneNumber"
-                                           class="form-label fw-semibold">
-                                        Phone Number
-                                    </label>
-
-                                    <input disabled asp-for="PhoneNumber"
-                                           class="form-control"
-                                           placeholder="Enter phone number" />
-
-                                    <span asp-validation-for="PhoneNumber"
-                                          class="text-danger small">
-                                    </span>
-
-                                </div>
-
-
-                                <!-- Email -->
-                                <div class="col-md-6 mb-3">
-
-                                    <label asp-for="Email"
-                                           class="form-label fw-semibold">
-                                        Email Address
-                                    </label>
-
-                                    <input disabled asp-for="Email"
-                                           type="email"
-                                           class="form-control"
-                                           placeholder="example@email.com" />
-
-                                    <span asp-validation-for="Email"
-                                          class="text-danger small">
-                                    </span>
-
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label asp-for="Group" class="form-label fw-semibold">
-                                        Group
-                                    </label>
-
-                                    <select disabled asp-for="Group"
-                                            
-                                            class="form-select">
-                                        <option value="">@Model.GroupName</option>
-                                    </select>
-
-                                    <span asp-validation-for="Group"
-                                          class="text-danger small">
-                                    </span>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-
-                                    <label asp-for="EmployeeStartingDate"
-                                           class="form-label fw-semibold">
-                                        Starting Date
-                                    </label>
-
-                                    <input disabled asp-for="EmployeeStartingDate"
-                                           type="datetime-local"
-                                           class="form-control" />
-
-                                    <span asp-validation-for="EmployeeStartingDate"
-                                          class="text-danger small">
-                                    </span>
-
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-
-                                    <label asp-for="EmployeeEndingDate"
-                                           class="form-label fw-semibold">
-                                        Ending Date
-                                    </label>
-
-                                    <input disabled asp-for="EmployeeEndingDate"
-                                           type="datetime-local"
-                                           class="form-control" />
-
-                                    <span asp-validation-for="EmployeeEndingDate"
-                                          class="text-danger small">
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-
-                            <hr class="my-4">
-
-
-                            <!-- Account Information -->
-                            <div class="section-title">
-                                <i class="ti ti-lock"></i>
-                                <span>Account Information</span>
-                            </div>
-
-                            <div class="row">
-
-                                <!-- Username -->
-                                <div class="col-md-6 mb-3">
-
-                                    <label asp-for="Username"
-                                           class="form-label fw-semibold">
-                                        Username
-                                    </label>
-
-                                    <input disabled asp-for="Username"
-                                           class="form-control"
-                                           placeholder="Enter username"
-                                           autocomplete="username" />
-
-                                    <span asp-validation-for="Username"
-                                          class="text-danger small">
-                                    </span>
-
-                                </div>
-
-                              
-                            </div>
-
-
-                            <hr class="my-4">
-
-
-                            <!-- Actions -->
-                            <div class="d-flex justify-content-end gap-2">
-
-                                <a asp-area="Dashboard"
-asp-controller="Employees"
-                                   asp-action="Employees"
-                                   class="btn btn-light border px-4">
-                                    Cancel
-                                </a>
-
-                                <button type="submit"
-
-                                        class="btn btn-primary px-4">
-
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-dash" viewBox="0 0 16 16">
-                                        <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M11 12h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1 0-1m0-7a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4" />
-                                        <path d="M8.256 14a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z" />
-                                    </svg>
-
-                                    Terminate Employee
-
-                                </button>
-
-                            </div>
-
-                        </form>
-
-                    </div>
-                </div>
-
-            </div>
+        <div class="employee-icon">
+            <i class="ti ti-user-plus"></i>
         </div>
+
+        <div>
+            <h5 class="mb-1 fw-bold">
+                Employee Information
+            </h5>
+
+            <p class="text-muted mb-0">
+                the employee's personal and account details.
+            </p>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Card Body -->
+<div class="card-body px-4 pb-4">
+
+<form asp-area="Dashboard"
+      asp-controller="Employees"
+      asp-action="ConfirmedTerminateEmployee"
+      asp-route-id="@Model.Id"
+      method="post">
+@Html.AntiForgeryToken()
+<!-- Validation -->
+<div asp-validation-summary="ModelOnly"
+     class="text-danger mb-3">
+</div>
+
+
+<!-- Personal Information -->
+
+<div class="section-title">
+    <i class="ti ti-user"></i>
+    <span>Personal Information</span>
+</div>
+
+<div class="row">
+    <input asp-for="Id"
+           type="hidden"/>
+    <!-- First Name -->
+    <div class="col-md-6 mb-3">
+
+        <label asp-for="FirstName"
+               class="form-label fw-semibold">
+            First Name
+        </label>
+
+        <input disabled asp-for="FirstName"
+               class="form-control"
+               placeholder="Enter first name"/>
+
+        <span asp-validation-for="FirstName"
+              class="text-danger small">
+        </span>
+
+    </div>
+
+
+    <!-- Last Name -->
+    <div class="col-md-6 mb-3">
+
+        <label asp-for="LastName"
+               class="form-label fw-semibold">
+            Last Name
+        </label>
+
+        <input disabled asp-for="LastName"
+               class="form-control"
+               placeholder="Enter last name"/>
+
+        <span asp-validation-for="LastName"
+              class="text-danger small">
+        </span>
+
+    </div>
+
+
+    <!-- Phone -->
+    <div class="col-md-6 mb-3">
+
+        <label asp-for="PhoneNumber"
+               class="form-label fw-semibold">
+            Phone Number
+        </label>
+
+        <input disabled asp-for="PhoneNumber"
+               class="form-control"
+               placeholder="Enter phone number"/>
+
+        <span asp-validation-for="PhoneNumber"
+              class="text-danger small">
+        </span>
+
+    </div>
+
+
+    <!-- Email -->
+    <div class="col-md-6 mb-3">
+
+        <label asp-for="Email"
+               class="form-label fw-semibold">
+            Email Address
+        </label>
+
+        <input disabled asp-for="Email"
+               type="email"
+               class="form-control"
+               placeholder="example@email.com"/>
+
+        <span asp-validation-for="Email"
+              class="text-danger small">
+        </span>
+
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label asp-for="Group" class="form-label fw-semibold">
+            Group
+        </label>
+
+        <select disabled asp-for="Group"
+
+                class="form-select">
+            <option value="">@Model.GroupName</option>
+        </select>
+
+        <span asp-validation-for="Group"
+              class="text-danger small">
+        </span>
+    </div>
+
+    <div class="col-md-6 mb-3">
+
+        <label asp-for="EmployeeStartingDate"
+               class="form-label fw-semibold">
+            Starting Date
+        </label>
+        <input disabled
+               name="EmployeeStartingDate"
+               value="@(DateTime.SpecifyKind(Model.EmployeeStartingDate, DateTimeKind.Utc)
+                          .ToLocalTime()
+                          .ToString("yyyy-MM-ddTHH:mm"))"
+               type="datetime-local"
+               class="form-control" />
+
+        <span asp-validation-for="EmployeeStartingDate"
+              class="text-danger small">
+        </span>
+
+    </div>
+
+    <div class="col-md-6 mb-3">
+
+        <label asp-for="EmployeeEndingDate"
+               class="form-label fw-semibold">
+            Ending Date
+        </label>
+
+        <input disabled name="EmployeeEndingDate"
+               value="@(Model.EmployeeEndingDate.HasValue
+                          ? DateTime.SpecifyKind(Model.EmployeeEndingDate.Value, DateTimeKind.Utc)
+                              .ToLocalTime()
+                              .ToString("yyyy-MM-ddTHH:mm")
+                          : "")"
+               type="datetime-local"
+               class="form-control"/>
+
+        <span asp-validation-for="EmployeeEndingDate"
+              class="text-danger small">
+        </span>
 
     </div>
 
 </div>
 
 
+<hr class="my-4">
+
+
+<!-- Account Information -->
+<div class="section-title">
+    <i class="ti ti-lock"></i>
+    <span>Account Information</span>
+</div>
+
+<div class="row">
+
+    <!-- Username -->
+    <div class="col-md-6 mb-3">
+
+        <label asp-for="Username"
+               class="form-label fw-semibold">
+            Username
+        </label>
+
+        <input disabled asp-for="Username"
+               class="form-control"
+               placeholder="Enter username"
+               autocomplete="username"/>
+
+        <span asp-validation-for="Username"
+              class="text-danger small">
+        </span>
+
+    </div>
+
+
+</div>
+
+
+<hr class="my-4">
+
+
+<!-- Actions -->
+<div class="d-flex justify-content-end gap-2">
+
+    <a asp-area="Dashboard"
+       asp-controller="Employees"
+       asp-action="Employees"
+       class="btn btn-light border px-4">
+        Cancel
+    </a>
+
+    <button type="submit"
+
+            class="btn btn-primary px-4">
+
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-dash" viewBox="0 0 16 16">
+            <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M11 12h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1 0-1m0-7a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
+            <path d="M8.256 14a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z"/>
+        </svg>
+
+        Terminate Employee
+
+    </button>
+
+</div>
+
+</form>
+
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+
+</div>
+
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial"/>
 }

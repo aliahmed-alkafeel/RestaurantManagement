@@ -15,6 +15,7 @@ namespace RestaurantManagement.Services
             var items = await unitOfWork.Items
                 .NoTrackingSelect().Where(i => i.IsActive)
                 .Include(x => x.Category)
+                .Where(i => !i.Category.IsDeleted)
                 .OrderBy(x => x.Category.Type)
                 .ThenBy(x => x.Category.CategoryName)
                 .ThenBy(x => x.ItemName)
@@ -42,10 +43,10 @@ namespace RestaurantManagement.Services
             var item = await unitOfWork.Items
                 .Select()
                 .Include(x => x.Category)
+                .Where(i => !i.Category.IsDeleted)
                 .FirstOrDefaultAsync(
                     x =>
-                        x.Id == id &&
-                        !x.IsDeleted,
+                        x.Id == id,
                     cancellationToken);
 
 

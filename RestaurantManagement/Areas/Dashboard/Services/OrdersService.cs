@@ -15,8 +15,8 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         public async Task<bool> DeleteOrderAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var order = await unitOfWork.Orders.Select()
-                .Include(o => o.ItemOrders).ThenInclude(io => io.Item)
-                .ThenInclude(i => i.Discount).FirstOrDefaultAsync(o => o.Id == id,cancellationToken);
+                .Include(o => o.ItemOrders)
+                .FirstOrDefaultAsync(o => o.Id == id,cancellationToken);
             if (order is null) throw new InvalidOperationException("There is no such order");
             unitOfWork.Orders.Delete(order); 
             unitOfWork.ItemOrders.DeleteRange(order.ItemOrders);
@@ -27,8 +27,6 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         public async Task<List<OrderViewModel>> GetAllOrdersAsync(CancellationToken cancellationToken = default)
         {
             return await unitOfWork.Orders.NoTrackingSelect().OrderByDescending(o => o.OrderDate)
-                .Include(o => o.ItemOrders)
-                .ThenInclude(io => io.Item).ThenInclude(i => i.Discount)
                .Select(order => new OrderViewModel
                 {
                     Id = order.Id,
@@ -52,13 +50,14 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 OrderStatus = order.OrderStatus,
                 TotalPrice = order.TotalPrice,
                 OrderDate = order.OrderDate,
-                ItemOrders = order.ItemOrders.Select(x => new ItemOrderViewModel
+                ItemOrders = order.ItemOrders.Where(x => !x.IsDeleted).Select(x => new ItemOrderViewModel
                 {
                     ItemId = x.ItemId,
                     ItemName = x.Item.ItemName,
                     Price = x.Price,
                     Quantity = x.Quantity,
                     DiscountPercentage = x.Item.Discount != null &&
+                                         !x.Item.Discount.IsDeleted &&
                                          x.Item.Discount.DiscountStartingDate <= DateTime.UtcNow &&
                                          x.Item.Discount.DiscountEndingDate >= DateTime.UtcNow
                         ? x.Item.Price * (1 - (x.Item.Discount.DiscountPercentage / 100))
@@ -123,8 +122,9 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                         $"Item '{item.ItemName}' is not available.");
                 }
 
-                var discount = item.Discount;
-
+                var discount = item.Discount != null && !item.Discount.IsDeleted
+                    ? item.Discount
+                    : null;
                 var finalPrice = discount is not null &&
                                  discount.DiscountStartingDate <= now &&
                                  discount.DiscountEndingDate >= now
@@ -166,9 +166,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
             var order = await unitOfWork.Orders
                 .Select()
-                .Include(o => o.ItemOrders)
-                .ThenInclude(io => io.Item)
-                .ThenInclude(i => i.Discount)
+                .Include(o => o.ItemOrders.Where(io => !io.IsDeleted))
                 .FirstOrDefaultAsync(
                     o => o.Id == model.Id,
                     model.CancellationToken);
@@ -206,7 +204,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             }
 
             var items = await unitOfWork.Items
-                .NoTrackingSelect()
+                .NoTrackingSelect(DeletedStatus.All)
                 .Include(i => i.Discount)
                 .Where(i => newItemIds.Contains(i.Id))
                 .ToListAsync(model.CancellationToken);
@@ -232,8 +230,9 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 //        $"Item '{item.ItemName}' is not available.");
                 //}
 
-                var discount = item.Discount;
-
+                var discount = item.Discount != null && !item.Discount.IsDeleted
+                    ? item.Discount
+                    : null;
                 var finalPrice =
                     discount is not null &&
                     discount.DiscountStartingDate <= now &&
@@ -327,6 +326,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                         $"%{search}%")
                     ||
                     o.ItemOrders.Any(io =>
+                        !io.IsDeleted &&
                         EF.Functions.Like(
                             io.Item.ItemName,
                             $"%{search}%"))
@@ -374,7 +374,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                     TotalPrice = o.TotalPrice,
                     OrderStatus = o.OrderStatus,
 
-                    ItemOrders = o.ItemOrders
+                    ItemOrders = o.ItemOrders.Where(io => !io.IsDeleted)
                         .Select(io => new ItemOrderViewModel
                         {
                             ItemId = io.ItemId,
@@ -384,7 +384,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                             Price = io.Price,
 
                             DiscountPercentage =
-                                io.Item.Discount != null
+                                io.Item.Discount != null && !io.Item.Discount.IsDeleted
                                     ? io.Item.Discount.DiscountPercentage
                                     : null
                         })

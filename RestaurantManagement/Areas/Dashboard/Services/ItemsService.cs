@@ -19,7 +19,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 .NoTrackingSelect()
                 .AnyAsync(
                     i => i.ItemName == model.ItemName &&
-                         i.CategoryId == model.CategoryId,
+                         i.CategoryId == model.CategoryId && !i.Category.IsDeleted,
                     model.CancellationToken);
 
             if (isExists)
@@ -61,7 +61,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         {
             return await unitOfWork.Items
                 .NoTrackingSelect()
-                .Where(i => i.Category.Type == type)
+                .Where(i => i.Category.Type == type).Where( i => !i.Category.IsDeleted)
                 .Select(i => new ItemByCategoryViewModel
                 {
                     Id = i.Id,
@@ -69,7 +69,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                     Price = i.Price,
                     Image = i.ImageUrl,
                     DiscountPercentage =
-                        i.Discount != null &&
+                        i.Discount != null && !i.Discount.IsDeleted &&
                         i.Discount.DiscountStartingDate <= DateTime.UtcNow &&
                         i.Discount.DiscountEndingDate >= DateTime.UtcNow
                             ? i.Discount.DiscountPercentage
@@ -98,7 +98,8 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         {
             return await unitOfWork.Items.NoTrackingSelect()
                 .Include(i => i.Category)
-                .Include(i => i.Discount)
+                .Include(i => i.Discount).Where(i => !i.Category.IsDeleted &&
+                                                     (i.Discount == null || !i.Discount.IsDeleted))
                 .Select(item => new ItemViewModel
                 {
                     Id = item.Id,
@@ -169,7 +170,8 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         public async Task<bool> UpdateItemAsync(ItemViewModel model)
         {
             if (model is null) throw new ArgumentNullException();
-            var item = await unitOfWork.Items.Select()
+            var item = await unitOfWork.Items.Select().Include(i => i.Category)
+                .Where(i => !i.Category.IsDeleted)
                 .FirstOrDefaultAsync(i => i.Id == model.Id,
                     model.CancellationToken);
             if (item is null) return false;
@@ -210,14 +212,15 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         public async Task<List<ItemByCategoryViewModel>> GetItemsByCategoryId(Guid categoryId,
             CancellationToken cancellationToken = default)
         {
-            return await unitOfWork.Items.Select().Where(i => i.CategoryId == categoryId)
+            return await unitOfWork.Items.NoTrackingSelect()
+                .Where(i => i.CategoryId == categoryId && !i.Category.IsDeleted)
                 .Select(i => new ItemByCategoryViewModel
                 {
                     Id = i.Id,
                     ItemName = i.ItemName,
                     Price = i.Price,
                     Image = i.ImageUrl,
-                    DiscountPercentage = i.Discount != null &&
+                    DiscountPercentage = i.Discount != null && !i.Discount.IsDeleted &&
                                          i.Discount.DiscountStartingDate <= DateTime.UtcNow &&
                                          i.Discount.DiscountEndingDate >= DateTime.UtcNow
                         ? i.Discount.DiscountPercentage
@@ -230,8 +233,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             if (model.Page < 1) model.Page = 1;
             if (model.PageSize < 1) model.PageSize = 10;
 
-            var items = unitOfWork.Items.NoTrackingSelect().Include(x => x.Category).Where(x => !x.Category.IsDeleted)
-                .AsNoTracking();
+            var items = unitOfWork.Items.NoTrackingSelect().Include(x => x.Category).Where(x => !x.Category.IsDeleted);
             var categories = await unitOfWork.Categories.NoTrackingSelect().ToListAsync(model.CancellationToken);
 
             if (!string.IsNullOrEmpty(model.Search))
