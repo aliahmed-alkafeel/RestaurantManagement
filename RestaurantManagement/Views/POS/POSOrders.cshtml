@@ -48,115 +48,127 @@
 
             </div>
 
+            <div class="status-select" id="statusFilter">
 
-            <!-- =================================================
-                 STATUS FILTER
-            ================================================== -->
+    @{
+        string selectedText;
+        string selectedClass;
 
-            <div class="status-filter"
-                 id="statusFilter">
+        if (Model.Filter.ShowAllStatuses)
+        {
+            selectedText = "All";
+            selectedClass = "status-all";
+        }
+        else if (Model.Filter.Status is null)
+        {
+            selectedText = "Default";
+            selectedClass = "status-default";
+        }
+        else
+        {
+            selectedText = Model.Filter.Status.ToString();
+            selectedClass =
+                $"status-{Model.Filter.Status.ToString().ToLower()}";
+        }
+    }
 
-                <!-- Default -->
+    <button type="button"
+            class="status-select-button">
 
-                <button type="button"
-                        class="status-filter-btn status-default @(Model.Filter.Status is null && !Model.Filter.ShowAllStatuses ? "active" : "")"
-                        data-status="default">
+        <span class="status-dot @selectedClass"></span>
 
-                    Default
+        <span id="selectedStatusText">
+            @selectedText
+        </span>
 
-                </button>
+        <span class="status-arrow">⌄</span>
 
-
-                <!-- All -->
-
-                <button type="button"
-                        class="status-filter-btn status-all @(Model.Filter.ShowAllStatuses ? "active" : "")"
-                        data-status="all">
-
-                    All
-
-                </button>
-
-
-                <!-- Statuses -->
-
-                @foreach (var status in Enum.GetValues<OrderStatus>())
-                {
-                    var isActive =
-                        Model.Filter.Status == status;
-
-                    <button type="button"
-                            class="status-filter-btn status-@status.ToString().ToLower() @(isActive ? "active" : "")"
-                            data-status="@((int)status)">
-
-                        @status
-
-                    </button>
-                }
-
-            </div>
+    </button>
 
 
+    <div class="status-select-menu">
+
+        <button type="button"
+                class="status-option status-default
+                       @(Model.Filter.Status is null && !Model.Filter.ShowAllStatuses ? "selected" : "")"
+                data-status="default">
+
+            <span class="status-dot"></span>
+            Default
+
+        </button>
+
+
+        <button type="button"
+                class="status-option status-all
+                       @(Model.Filter.ShowAllStatuses ? "selected" : "")"
+                data-status="all">
+
+            <span class="status-dot"></span>
+            All
+
+        </button>
+
+
+        @foreach (var status in Enum.GetValues<OrderStatus>())
+        {
+            var statusClass =
+                $"status-{status.ToString().ToLower()}";
+
+            var isActive =
+                Model.Filter.Status == status;
+
+            <button type="button"
+                    class="status-option @statusClass @(isActive ? "selected" : "")"
+                    data-status="@((int)status)">
+
+                <span class="status-dot"></span>
+
+                @status
+
+            </button>
+        }
+
+    </div>
+
+</div>
             <!-- =================================================
                  SORT
             ================================================== -->
+            @{
+                var sortOptions = new[]
+                {
+                    (Value: "oldest", Text: "Oldest"),
+                    (Value: "newest", Text: "Newest"),
+                    (Value: "price-high", Text: "Highest Price"),
+                    (Value: "price-low", Text: "Lowest Price")
+                };
 
-            <select id="ordersSort"
-                    class="filter-select">
+                var currentSort = string.IsNullOrEmpty(Model.Filter.Sort) ? "oldest" : Model.Filter.Sort;
+                var currentSortText = sortOptions.FirstOrDefault(o => o.Value == currentSort).Text ?? "Oldest";
+            }
 
-                @if (Model.Filter.Sort == "oldest")
-                {
-                    <option value="oldest" selected>
-                        Oldest
-                    </option>
-                }
-                else
-                {
-                    <option value="oldest">
-                        Oldest
-                    </option>
-                }
+            <div class="sort-select" id="sortFilter">
 
-                @if (Model.Filter.Sort == "newest")
-                {
-                    <option value="newest" selected>
-                        Newest
-                    </option>
-                }
-                else
-                {
-                    <option value="newest">
-                        Newest
-                    </option>
-                }
+                <input type="hidden" id="ordersSort" value="@currentSort" />
 
-                @if (Model.Filter.Sort == "price-high")
-                {
-                    <option value="price-high" selected>
-                        Highest Price
-                    </option>
-                }
-                else
-                {
-                    <option value="price-high">
-                        Highest Price
-                    </option>
-                }
+                <button type="button" class="sort-select-button">
+                    <span id="selectedSortText">@currentSortText</span>
+                    <span class="sort-arrow"></span>
+                </button>
 
-                @if (Model.Filter.Sort == "price-low")
-                {
-                    <option value="price-low" selected>
-                        Lowest Price
-                    </option>
-                }
-                else
-                {
-                    <option value="price-low">
-                        Lowest Price
-                    </option>
-                }
+                <div class="sort-select-menu">
+                    @foreach (var option in sortOptions)
+                    {
+                        <button type="button"
+                                class="sort-option @(option.Value == currentSort ? "selected" : "")"
+                                data-sort="@option.Value">
+                            @option.Text
+                        </button>
+                    }
+                </div>
 
-            </select>
+            </div>
             <div class="results-info">
 
                 <strong id="ordersTotalCount">

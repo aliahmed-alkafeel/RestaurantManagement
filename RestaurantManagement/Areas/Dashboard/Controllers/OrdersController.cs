@@ -17,8 +17,8 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Orders(CancellationToken cancellationToken)
         {
-            var Orders = await ordersService.GetAllOrdersAsync(cancellationToken);
-            return View(Orders);
+            var orders = await ordersService.GetAllOrdersAsync(cancellationToken);
+            return View(orders);
         }
         //[Authorize(Roles = nameof(UserRole.AccessOrders))]
         //[HttpGet("OrderDetails/{id:guid}")]

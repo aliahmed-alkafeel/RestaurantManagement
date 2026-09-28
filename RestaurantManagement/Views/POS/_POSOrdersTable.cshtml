@@ -32,7 +32,7 @@
             {
                 <tr data-table="@order.TableId"
                     data-order-id="@order.Id"
-                    class="order-row status-@order.OrderStatus.ToString().ToLower()">
+                    class="order-row status-@order.OrderStatus.ToString().ToLowerInvariant()">
 
                     <!-- =================================================
                          TABLE
@@ -99,21 +99,21 @@
 
                     <td>
 
-                        <div class="status-options"
-                             data-order-id="@order.Id">
+                        <button type="button"
+                                class="current-status-button status-@order.OrderStatus.ToString().ToLowerInvariant()"
+                                data-order-id="@order.Id"
+                                data-status="@((int)order.OrderStatus)"
+                                aria-expanded="false">
 
-                            @foreach (var status in Enum.GetValues<OrderStatus>())
-                            {
-                                <button type="button"
-                                        class="status-option status-@status.ToString().ToLower() @(order.OrderStatus == status ? "active" : "")"
-                                        data-status="@((int)status)">
+                            <span>
+                                @order.OrderStatus
+                            </span>
 
-                                    @status
+                            <span class="status-chevron">
+                                ▾
+                            </span>
 
-                                </button>
-                            }
-
-                        </div>
+                        </button>
 
                     </td>
 
@@ -151,10 +151,13 @@
                     ================================================== -->
 
                     <td>
-                      
-                        <time class="order-date" 
-                          data-utc="@DateTime.SpecifyKind(order.OrderDate, DateTimeKind.Utc).ToString("O")">
-                    </time>
+
+                        <time class="order-date"
+                              data-utc="@DateTime.SpecifyKind(
+                                                              order.OrderDate,
+                                                              DateTimeKind.Utc
+                                                          ).ToString("O")">
+                        </time>
 
                     </td>
 
@@ -198,9 +201,17 @@ else
 }
 
 <script>
-        document.querySelectorAll('.order-date').forEach(element => {
-        const utcDate = new Date(element.dataset.utc);
 
-        element.textContent = utcDate.toLocaleString();
-    });
+    document
+        .querySelectorAll(".order-date")
+        .forEach(element => {
+
+            const utcDate =
+                new Date(element.dataset.utc);
+
+            element.textContent =
+                utcDate.toLocaleString();
+
+        });
+
 </script>

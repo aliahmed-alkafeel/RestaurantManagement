@@ -37,8 +37,8 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 });
             }
             await unitOfWork.Groups.AddAsync(group, model.CancellationToken);
-            await unitOfWork.SaveChangesAsync(model.CancellationToken);
-            return true;
+            return await unitOfWork.SaveChangesAsync(model.CancellationToken) > 0;
+
         }
 
         public async Task<bool> DeleteGroupAsync(Guid id, CancellationToken cancellationToken = default)
@@ -53,8 +53,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             if (hasEmployees)
                 return false;
             unitOfWork.Groups.Delete(group);
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-            return true;
+            return await unitOfWork.SaveChangesAsync(cancellationToken) > 0;
         }
 
 
@@ -142,10 +141,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             }
 
             unitOfWork.Groups.Update(group);
-
-            await unitOfWork.SaveChangesAsync(model.CancellationToken);
-
-            return true;
+            return await unitOfWork.SaveChangesAsync(model.CancellationToken) > 0;
         }
     }
 }

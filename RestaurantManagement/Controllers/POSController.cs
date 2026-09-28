@@ -29,6 +29,7 @@ namespace RestaurantManagement.Controllers
         {
             return View();
         }
+
         [Authorize(Roles = nameof(UserRole.ManageOrders))]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -43,21 +44,22 @@ namespace RestaurantManagement.Controllers
                     message = "Invalid order data"
                 });
             }
+
             var result = await ordersService.CreateOrderAsync(model);
-            if (!result)
+            return result switch
             {
-                return BadRequest(new
-                {
-                    success = false,
-                    message = "This Order is not allowed"
-                });
-            }
-            return Ok(new
-            {
-                success = true,
-                message = "Order created successfully."
-            });
+                OrderCreateResults.Success => Ok(new { success = true, message = "Order created successfully." }),
+                OrderCreateResults.ZeroItems => BadRequest(new
+                    { success = false, message = "Please add at least one item to the order." }),
+                OrderCreateResults.UnavailableItem => BadRequest(new
+                    { success = false, message = "One of the selected items is currently unavailable." }),
+                OrderCreateResults.InactiveItem => BadRequest(new
+                    { success = false, message = "One of the selected items is inactive." }),
+                OrderCreateResults.Failure => BadRequest(new { success = false, message = "Failed to create the order." }),
+                _ => BadRequest(new { success = false, message = "An unexpected error occurred." })
+            };
         }
+
         [Authorize(Roles = nameof(UserRole.ManageOrders))]
         [HttpGet]
         public async Task<IActionResult> POSOrders(POSOrdersFilterViewModel model)

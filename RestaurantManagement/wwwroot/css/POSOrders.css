@@ -1,7 +1,7 @@
-﻿
-/* =========================================================
+﻿/* =========================================================
    POS ORDERS
 ========================================================= */
+
 .pos-orders {
     padding: 95px 24px 24px 24px;
     width: 100%;
@@ -204,7 +204,8 @@
 
     .orders-table th:nth-child(3),
     .orders-table td:nth-child(3) {
-        width: 550px;
+        width: 1%;
+        white-space: nowrap;
     }
 
 
@@ -316,37 +317,8 @@
 
 
 /* =========================================================
-   STATUS SELECT
+   STATUS UPDATED FLASH
 ========================================================= */
-
-.status-select {
-    min-width: 115px;
-    height: 32px;
-    padding: 0 9px;
-    border: 1px solid #ddd;
-    border-radius: 7px;
-    background: #fff;
-    color: #333;
-    font-size: 12px;
-    font-weight: 500;
-    outline: none;
-    cursor: pointer;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
-}
-
-    .status-select:hover {
-        border-color: #cfcfcf;
-    }
-
-    .status-select:focus {
-        border-color: #635bff;
-        box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.08);
-    }
-
-    .status-select:disabled {
-        opacity: 0.6;
-        cursor: wait;
-    }
 
 .status-updated {
     border-color: #2ec4b6 !important;
@@ -363,6 +335,7 @@
     flex-wrap: wrap;
     gap: 5px;
 }
+
 .order-item {
     display: inline-flex;
     align-items: center;
@@ -389,6 +362,8 @@
         color: #635bff;
         font-weight: 700;
     }
+
+
 /* =========================================================
    ORDER DATE
 ========================================================= */
@@ -398,13 +373,10 @@
     font-size: 12px;
     white-space: nowrap;
 }
-/* =========================================================
-   STATUS ROW COLORS
-   Stronger visual distinction between order statuses
-========================================================= */
+
 
 /* =========================================================
-   CONFIRMED — Pink
+   STATUS ROW COLORS
 ========================================================= */
 
 .order-row.status-confirmed {
@@ -415,11 +387,6 @@
         background: #fbcfe8;
     }
 
-
-/* =========================================================
-   PREPARING — Orange
-========================================================= */
-
 .order-row.status-preparing {
     background: #ffedd5;
 }
@@ -427,11 +394,6 @@
     .order-row.status-preparing:hover {
         background: #fed7aa;
     }
-
-
-/* =========================================================
-   PENDING — Blue
-========================================================= */
 
 .order-row.status-pending {
     background: #dbeafe;
@@ -441,11 +403,6 @@
         background: #bfdbfe;
     }
 
-
-/* =========================================================
-   READY — Teal
-========================================================= */
-
 .order-row.status-ready {
     background: #ccfbf1;
 }
@@ -453,11 +410,6 @@
     .order-row.status-ready:hover {
         background: #99f6e4;
     }
-
-
-/* =========================================================
-   COMPLETED — Purple
-========================================================= */
 
 .order-row.status-completed {
     background: #e4daff;
@@ -467,11 +419,6 @@
         background: #ddd6fe;
     }
 
-
-/* =========================================================
-   CANCELLED — Red
-========================================================= */
-
 .order-row.status-cancelled {
     background: #fee2e2;
 }
@@ -479,6 +426,8 @@
     .order-row.status-cancelled:hover {
         background: #fecaca;
     }
+
+
 /* =========================================================
    FOOTER
 ========================================================= */
@@ -506,7 +455,7 @@
     border: 1px solid rgba(99, 91, 255, 0.16);
     border-radius: 9px;
     background: #635bff;
-    color: #635bff;
+    color: #fff;
     font-size: 12px;
     white-space: nowrap;
 }
@@ -618,272 +567,527 @@
 
 
 /* =========================================================
-   STATUS OPTIONS
+   STATUS COLOR VARIABLES
+   (used by .status-dot via var(--status-color))
 ========================================================= */
 
-.status-options {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
+.status-default {
+    --status-color: #777;
 }
 
-.status-option {
-    border: 1px solid transparent;
-    border-radius: 7px;
-    padding: 5px 10px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s ease;
+.status-all {
+    --status-color: #555;
 }
 
+.status-confirmed {
+    --status-color: #e66a8b;
+}
 
+.status-preparing {
+    --status-color: #f59e0b;
+}
 
-    /* Confirmed — Rose */
+.status-pending {
+    --status-color: #3b82f6;
+}
 
-    .status-option.status-confirmed {
-        color: rgb(192, 38, 211);
-        background: rgba(217, 70, 239, 0.10);
-    }
+.status-ready {
+    --status-color: #14b8a6;
+}
 
-        .status-option.status-confirmed:hover,
-        .status-option.status-confirmed.active {
-            background: rgba(217, 70, 239, 0.32);
-            border-color: rgba(217, 70, 239, 0.35);
-        }
+.status-completed {
+    --status-color: #8b5cf6;
+}
 
-    /* Preparing — Orange */
-
-    .status-option.status-preparing {
-        color: rgb(234, 88, 12);
-        background: rgba(249, 115, 22, 0.11);
-    }
-
-        .status-option.status-preparing:hover,
-        .status-option.status-preparing.active {
-            background: rgba(249, 115, 22, 0.32);
-            border-color: rgba(249, 115, 22, 0.35);
-        }
-
-
-    /* Pending — Blue */
-
-    .status-option.status-pending {
-        color: rgb(37, 99, 235);
-        background: rgba(59, 130, 246, 0.10);
-    }
-
-        .status-option.status-pending:hover,
-        .status-option.status-pending.active {
-            background: rgba(59, 130, 246, 0.32);
-            border-color: rgba(59, 130, 246, 0.35);
-        }
-
-
-    /* Ready — Teal */
-
-    .status-option.status-ready {
-        color: rgb(13, 148, 136);
-        background: rgba(20, 184, 166, 0.11);
-    }
-
-        .status-option.status-ready:hover,
-        .status-option.status-ready.active {
-            background: rgba(20, 184, 166, 0.32);
-            border-color: rgba(20, 184, 166, 0.35);
-        }
-
-
-    /* Completed — Purple */
-
-    .status-option.status-completed {
-        color: rgb(124, 58, 237);
-        background: rgba(139, 92, 246, 0.10);
-    }
-
-        .status-option.status-completed:hover,
-        .status-option.status-completed.active {
-            background: rgba(139, 92, 246, 0.32);
-            border-color: rgba(139, 92, 246, 0.35);
-        }
-
-
-    /* Cancelled — Red */
-
-    .status-option.status-cancelled {
-        color: rgb(220, 38, 38);
-        background: rgba(239, 68, 68, 0.10);
-    }
-
-        .status-option.status-cancelled:hover,
-        .status-option.status-cancelled.active {
-            background: rgba(239, 68, 68, 0.32);
-            border-color: rgba(239, 68, 68, 0.35);
-        }
-
-
-/* =========================================================
-   STATUS FILTER
-========================================================= */
-
-.status-filter {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
+.status-cancelled {
+    --status-color: #ef4444;
 }
 
 
 /* =========================================================
-   STATUS FILTER BUTTON
+   STATUS DOT
+   Works whether the status class is on the dot itself
+   or on any parent element.
 ========================================================= */
 
-.status-filter-btn {
+.status-dot {
+    display: none;
+}
+
+
+/* =========================================================
+   CURRENT STATUS BUTTON (inside table rows)
+========================================================= */
+
+.current-status-button {
+    min-width: 105px;
     height: 34px;
-    padding: 0 11px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 0 10px;
     border: 1px solid transparent;
     border-radius: 8px;
     font-size: 12px;
     font-weight: 600;
-    white-space: nowrap;
     cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
 }
 
-    .status-filter-btn:hover {
+    .current-status-button:hover {
         transform: translateY(-1px);
     }
 
-
-    /* =========================================================
-   DEFAULT
-========================================================= */
-
-    .status-filter-btn.status-default {
-        color: #555;
-        background: #f2f2f4;
+    .current-status-button:disabled {
+        opacity: 0.6;
+        cursor: wait;
     }
 
-        .status-filter-btn.status-default:hover,
-        .status-filter-btn.status-default.active {
-            color: #333;
-            background: #e7e7ea;
-            border-color: #cfcfd4;
-        }
-
-
-    /* =========================================================
-   ALL
-========================================================= */
-
-    .status-filter-btn.status-all {
-        color: #635bff;
-        background: rgba(99, 91, 255, 0.09);
+    .current-status-button.status-popup-open {
+        transform: translateY(-1px);
+        border-color: currentColor;
+        box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.12);
     }
 
-        .status-filter-btn.status-all:hover,
-        .status-filter-btn.status-all.active {
-            background: rgba(99, 91, 255, 0.17);
-            border-color: rgba(99, 91, 255, 0.35);
-        }
+.status-chevron {
+    font-size: 11px;
+    line-height: 1;
+}
 
+.current-status-button.status-confirmed {
+    color: rgb(192, 38, 211);
+    background: rgba(217, 70, 239, 0.10);
+}
 
-    /* Confirmed — Rose */
-
-    .status-filter-btn.status-confirmed {
-        color: rgb(192, 38, 211);
-        background: rgba(217, 70, 239, 0.10);
+    .current-status-button.status-confirmed:hover {
+        background: rgba(217, 70, 239, 0.20);
+        border-color: rgba(217, 70, 239, 0.35);
     }
 
-        .status-filter-btn.status-confirmed:hover,
-        .status-filter-btn.status-confirmed.active {
-            background: rgba(217, 70, 239, 0.18);
-            border-color: rgba(217, 70, 239, 0.35);
-        }
+.current-status-button.status-preparing {
+    color: rgb(234, 88, 12);
+    background: rgba(249, 115, 22, 0.11);
+}
 
-    /* =========================================================
-   PREPARING — ORANGE
-========================================================= */
-
-    .status-filter-btn.status-preparing {
-        color: rgb(234, 88, 12);
-        background: rgba(249, 115, 22, 0.11);
+    .current-status-button.status-preparing:hover {
+        background: rgba(249, 115, 22, 0.20);
+        border-color: rgba(249, 115, 22, 0.35);
     }
 
-        .status-filter-btn.status-preparing:hover,
-        .status-filter-btn.status-preparing.active {
-            background: rgba(249, 115, 22, 0.18);
-            border-color: rgba(249, 115, 22, 0.35);
-        }
+.current-status-button.status-pending {
+    color: rgb(37, 99, 235);
+    background: rgba(59, 130, 246, 0.10);
+}
 
-
-    /* =========================================================
-   PENDING — BLUE
-========================================================= */
-
-    .status-filter-btn.status-pending {
-        color: rgb(37, 99, 235);
-        background: rgba(59, 130, 246, 0.10);
+    .current-status-button.status-pending:hover {
+        background: rgba(59, 130, 246, 0.20);
+        border-color: rgba(59, 130, 246, 0.35);
     }
 
-        .status-filter-btn.status-pending:hover,
-        .status-filter-btn.status-pending.active {
-            background: rgba(59, 130, 246, 0.18);
-            border-color: rgba(59, 130, 246, 0.35);
-        }
+.current-status-button.status-ready {
+    color: rgb(13, 148, 136);
+    background: rgba(20, 184, 166, 0.11);
+}
 
-
-    /* =========================================================
-   READY — TEAL
-========================================================= */
-
-    .status-filter-btn.status-ready {
-        color: rgb(13, 148, 136);
-        background: rgba(20, 184, 166, 0.11);
+    .current-status-button.status-ready:hover {
+        background: rgba(20, 184, 166, 0.20);
+        border-color: rgba(20, 184, 166, 0.35);
     }
 
-        .status-filter-btn.status-ready:hover,
-        .status-filter-btn.status-ready.active {
-            background: rgba(20, 184, 166, 0.18);
-            border-color: rgba(20, 184, 166, 0.35);
-        }
+.current-status-button.status-completed {
+    color: rgb(124, 58, 237);
+    background: rgba(139, 92, 246, 0.10);
+}
 
-
-    /* =========================================================
-   COMPLETED — PURPLE
-========================================================= */
-
-    .status-filter-btn.status-completed {
-        color: rgb(124, 58, 237);
-        background: rgba(139, 92, 246, 0.10);
+    .current-status-button.status-completed:hover {
+        background: rgba(139, 92, 246, 0.20);
+        border-color: rgba(139, 92, 246, 0.35);
     }
 
-        .status-filter-btn.status-completed:hover,
-        .status-filter-btn.status-completed.active {
-            background: rgba(139, 92, 246, 0.18);
-            border-color: rgba(139, 92, 246, 0.35);
-        }
+.current-status-button.status-cancelled {
+    color: rgb(220, 38, 38);
+    background: rgba(239, 68, 68, 0.10);
+}
 
-
-    /* =========================================================
-   CANCELLED — RED
-========================================================= */
-
-    .status-filter-btn.status-cancelled {
-        color: rgb(220, 38, 38);
-        background: rgba(239, 68, 68, 0.10);
+    .current-status-button.status-cancelled:hover {
+        background: rgba(239, 68, 68, 0.20);
+        border-color: rgba(239, 68, 68, 0.35);
     }
-
-        .status-filter-btn.status-cancelled:hover,
-        .status-filter-btn.status-cancelled.active {
-            background: rgba(239, 68, 68, 0.18);
-            border-color: rgba(239, 68, 68, 0.35);
-        }
 
 
 /* =========================================================
-   RESPONSIVE — 1100px
+   STATUS POPUP (change order status from table row)
+========================================================= */
+
+.status-popup {
+    position: fixed;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+    min-width: max-content;
+    padding: 6px;
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12), 0 3px 8px rgba(0, 0, 0, 0.06);
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(-4px);
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+    .status-popup.show {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+
+    .status-popup .status-option {
+        width: auto;
+        min-width: 105px;
+        display: inline-block;
+        border: 1px solid transparent;
+        border-radius: 7px;
+        padding: 7px 10px;
+        font-size: 12px;
+        font-weight: 600;
+        text-align: center;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+        .status-popup .status-option:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .status-popup .status-option.status-confirmed {
+            color: rgb(192, 38, 211);
+            background: rgba(217, 70, 239, 0.10);
+        }
+
+            .status-popup .status-option.status-confirmed:hover {
+                background: rgba(217, 70, 239, 0.25);
+                border-color: rgba(217, 70, 239, 0.35);
+            }
+
+        .status-popup .status-option.status-preparing {
+            color: rgb(234, 88, 12);
+            background: rgba(249, 115, 22, 0.11);
+        }
+
+            .status-popup .status-option.status-preparing:hover {
+                background: rgba(249, 115, 22, 0.25);
+                border-color: rgba(249, 115, 22, 0.35);
+            }
+
+        .status-popup .status-option.status-pending {
+            color: rgb(37, 99, 235);
+            background: rgba(59, 130, 246, 0.10);
+        }
+
+            .status-popup .status-option.status-pending:hover {
+                background: rgba(59, 130, 246, 0.25);
+                border-color: rgba(59, 130, 246, 0.35);
+            }
+
+        .status-popup .status-option.status-ready {
+            color: rgb(13, 148, 136);
+            background: rgba(20, 184, 166, 0.11);
+        }
+
+            .status-popup .status-option.status-ready:hover {
+                background: rgba(20, 184, 166, 0.25);
+                border-color: rgba(20, 184, 166, 0.35);
+            }
+
+        .status-popup .status-option.status-completed {
+            color: rgb(124, 58, 237);
+            background: rgba(139, 92, 246, 0.10);
+        }
+
+            .status-popup .status-option.status-completed:hover {
+                background: rgba(139, 92, 246, 0.25);
+                border-color: rgba(139, 92, 246, 0.35);
+            }
+
+        .status-popup .status-option.status-cancelled {
+            color: rgb(220, 38, 38);
+            background: rgba(239, 68, 68, 0.10);
+        }
+
+            .status-popup .status-option.status-cancelled:hover {
+                background: rgba(239, 68, 68, 0.25);
+                border-color: rgba(239, 68, 68, 0.35);
+            }
+
+
+/* =========================================================
+   STATUS FILTER DROPDOWN (toolbar) — modern
+========================================================= */
+
+.status-select {
+    position: relative;
+    width: 190px;
+}
+
+.status-select-button {
+    width: 100%;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    background: #fff;
+    color: #333;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+    .status-select-button:hover {
+        border-color: rgba(0, 0, 0, 0.14);
+        box-shadow: 0 2px 6px rgba(16, 24, 40, 0.08);
+    }
+
+    .status-select-button:active {
+        transform: scale(0.985);
+    }
+
+    .status-select-button:focus-visible,
+    .status-select.open .status-select-button {
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(99, 91, 255, 0.14);
+    }
+
+/* Arrow: the "⌄" text glyph is hidden and a CSS chevron is drawn instead,
+   so it is always vertically centered */
+
+.status-arrow {
+    margin-left: auto;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0;
+    line-height: 0;
+    color: inherit;
+    opacity: 0.7;
+}
+
+    .status-arrow::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        margin-top: -3px;
+        border-right: 2px solid currentColor;
+        border-bottom: 2px solid currentColor;
+        border-radius: 1px;
+        transform: rotate(45deg);
+        transition: transform 0.25s ease, margin 0.25s ease;
+    }
+
+.status-select.open .status-arrow::before {
+    margin-top: 3px;
+    transform: rotate(-135deg);
+}
+
+
+/* ---------- Menu ---------- */
+
+.status-select-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 100%;
+    display: none;
+    padding: 6px;
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 14px;
+    box-shadow: 0 16px 36px rgba(16, 24, 40, 0.14), 0 3px 8px rgba(16, 24, 40, 0.06);
+    z-index: 1000;
+    transform-origin: top center;
+}
+
+.status-select.open .status-select-menu {
+    display: block;
+    animation: statusMenuIn 0.18s ease-out;
+}
+
+@keyframes statusMenuIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* ---------- Options ---------- */
+
+.status-select-menu .status-option {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+    padding: 10px 12px;
+    border: none;
+    border-radius: 10px;
+    background: var(--opt-bg, #f2f2f4);
+    color: var(--opt-color, #333);
+    cursor: pointer;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+    .status-select-menu .status-option:last-child {
+        margin-bottom: 0;
+    }
+
+    .status-select-menu .status-option:hover {
+        background: var(--opt-bg-hover, #e7e7ea);
+        transform: translateX(3px);
+    }
+
+    /* check mark on the selected option */
+    .status-select-menu .status-option.selected {
+        box-shadow: inset 0 0 0 1.5px var(--opt-color, #333);
+    }
+
+        .status-select-menu .status-option.selected::after {
+            content: "";
+            margin-left: auto;
+            width: 16px;
+            height: 16px;
+            background: currentColor;
+            -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / contain no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / contain no-repeat;
+        }
+
+
+/* Option colors (same as order row colors) */
+
+.status-select-menu .status-default {
+    --opt-bg: #f2f2f4;
+    --opt-bg-hover: #e7e7ea;
+    --opt-color: #555;
+}
+
+.status-select-menu .status-all {
+    --opt-bg: #ebeaff;
+    --opt-bg-hover: #dddbff;
+    --opt-color: #635bff;
+}
+
+.status-select-menu .status-confirmed {
+    --opt-bg: #fce7f3;
+    --opt-bg-hover: #fbcfe8;
+    --opt-color: rgb(192, 38, 211);
+}
+
+.status-select-menu .status-preparing {
+    --opt-bg: #ffedd5;
+    --opt-bg-hover: #fed7aa;
+    --opt-color: rgb(234, 88, 12);
+}
+
+.status-select-menu .status-pending {
+    --opt-bg: #dbeafe;
+    --opt-bg-hover: #bfdbfe;
+    --opt-color: rgb(37, 99, 235);
+}
+
+.status-select-menu .status-ready {
+    --opt-bg: #ccfbf1;
+    --opt-bg-hover: #99f6e4;
+    --opt-color: rgb(13, 148, 136);
+}
+
+.status-select-menu .status-completed {
+    --opt-bg: #e4daff;
+    --opt-bg-hover: #ddd6fe;
+    --opt-color: rgb(124, 58, 237);
+}
+
+.status-select-menu .status-cancelled {
+    --opt-bg: #fee2e2;
+    --opt-bg-hover: #fecaca;
+    --opt-color: rgb(220, 38, 38);
+}
+
+
+/* Selected status: the main button takes the same color */
+
+.status-select-button:has(.status-default) {
+    background: #f2f2f4;
+    color: #555;
+    border-color: rgba(85, 85, 85, 0.18);
+}
+
+.status-select-button:has(.status-all) {
+    background: #ebeaff;
+    color: #635bff;
+    border-color: rgba(99, 91, 255, 0.28);
+}
+
+.status-select-button:has(.status-confirmed) {
+    background: #fce7f3;
+    color: rgb(192, 38, 211);
+    border-color: rgba(192, 38, 211, 0.28);
+}
+
+.status-select-button:has(.status-preparing) {
+    background: #ffedd5;
+    color: rgb(234, 88, 12);
+    border-color: rgba(234, 88, 12, 0.28);
+}
+
+.status-select-button:has(.status-pending) {
+    background: #dbeafe;
+    color: rgb(37, 99, 235);
+    border-color: rgba(37, 99, 235, 0.28);
+}
+
+.status-select-button:has(.status-ready) {
+    background: #ccfbf1;
+    color: rgb(13, 148, 136);
+    border-color: rgba(13, 148, 136, 0.28);
+}
+
+.status-select-button:has(.status-completed) {
+    background: #e4daff;
+    color: rgb(124, 58, 237);
+    border-color: rgba(124, 58, 237, 0.28);
+}
+
+.status-select-button:has(.status-cancelled) {
+    background: #fee2e2;
+    color: rgb(220, 38, 38);
+    border-color: rgba(220, 38, 38, 0.28);
+}
+
+
+/* =========================================================
+   RESPONSIVE — 1200px
 ========================================================= */
 
 @media (max-width: 1200px) {
@@ -935,17 +1139,6 @@
         flex-direction: column;
         align-items: flex-start;
     }
-
-    .status-filter {
-        width: 100%;
-        overflow-x: auto;
-        flex-wrap: nowrap;
-        padding-bottom: 2px;
-    }
-
-    .status-filter-btn {
-        flex-shrink: 0;
-    }
 }
 
 
@@ -972,6 +1165,10 @@
         width: 100%;
     }
 
+    .status-select {
+        width: 100%;
+    }
+
     .orders-table {
         min-width: 850px;
     }
@@ -980,4 +1177,231 @@
         padding: 13px;
     }
 }
+/* =========================================================
+   SORT DROPDOWN
+========================================================= */
 
+.sort-select {
+    position: relative;
+    width: 170px;
+}
+
+.sort-select-button {
+    width: 100%;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    background: #fff;
+    color: #333;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+    .sort-select-button:hover {
+        border-color: rgba(0, 0, 0, 0.14);
+        box-shadow: 0 2px 6px rgba(16, 24, 40, 0.08);
+    }
+
+    .sort-select-button:active {
+        transform: scale(0.985);
+    }
+
+    .sort-select-button:focus-visible,
+    .sort-select.open .sort-select-button {
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(99, 91, 255, 0.14);
+    }
+
+.sort-arrow {
+    margin-left: auto;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+}
+
+    .sort-arrow::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        margin-top: -3px;
+        border-right: 2px solid currentColor;
+        border-bottom: 2px solid currentColor;
+        border-radius: 1px;
+        transform: rotate(45deg);
+        transition: transform 0.25s ease, margin 0.25s ease;
+    }
+
+.sort-select.open .sort-arrow::before {
+    margin-top: 3px;
+    transform: rotate(-135deg);
+}
+
+.sort-select-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 100%;
+    display: none;
+    padding: 6px;
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 14px;
+    box-shadow: 0 16px 36px rgba(16, 24, 40, 0.14), 0 3px 8px rgba(16, 24, 40, 0.06);
+    z-index: 1000;
+    transform-origin: top center;
+}
+
+.sort-select.open .sort-select-menu {
+    display: block;
+    animation: statusMenuIn 0.18s ease-out;
+}
+
+.sort-option {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+    padding: 10px 12px;
+    border: none;
+    border-radius: 10px;
+    background: #f5f5f8;
+    color: #444;
+    cursor: pointer;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background 0.18s ease, transform 0.18s ease;
+}
+
+    .sort-option:last-child {
+        margin-bottom: 0;
+    }
+
+    .sort-option:hover {
+        background: #ebeaff;
+        color: #635bff;
+        transform: translateX(3px);
+    }
+
+    .sort-option.selected {
+        background: #ebeaff;
+        color: #635bff;
+        box-shadow: inset 0 0 0 1.5px #635bff;
+    }
+
+        .sort-option.selected::after {
+            content: "";
+            margin-left: auto;
+            width: 16px;
+            height: 16px;
+            background: currentColor;
+            -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / contain no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / contain no-repeat;
+        }
+
+@media (max-width: 600px) {
+    .sort-select {
+        width: 100%;
+    }
+}
+/* =========================================================
+   STATUS POPUP — FULL RESPONSIVE
+========================================================= */
+
+/* كل الأحجام: لا يخرج عن الشاشة أبداً */
+.status-popup {
+    max-width: calc(100vw - 260px);
+    max-height: calc(100vh - 260px);
+    flex-wrap: wrap;
+    overflow-y: auto;
+}
+
+    .status-popup .status-option {
+        flex: 1 1 105px;
+    }
+
+
+/* لابتوب صغير / تابلت: شبكة 3 أعمدة */
+@media (max-width: 1000px) {
+
+    .status-popup {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(110px, 1fr));
+        width: min(420px, calc(100vw - 16px));
+    }
+
+        .status-popup .status-option {
+            min-width: 0;
+            padding: 9px 10px;
+        }
+}
+
+
+/* موبايل: ورقة سفلية بخيارات عمودية */
+@media (max-width: 600px) {
+
+    .status-popup {
+        left: 12px !important;
+        right: 12px !important;
+        top: auto !important;
+        bottom: calc(12px + env(safe-area-inset-bottom)) !important;
+        width: auto !important;
+        max-width: none;
+        max-height: 70vh;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-items: stretch;
+        gap: 6px;
+        padding: 10px;
+        border-radius: 16px;
+        box-shadow: 0 0 0 100vmax rgba(15, 23, 42, 0.35), 0 -8px 30px rgba(0, 0, 0, 0.15);
+        transform: translateY(16px);
+    }
+
+        .status-popup .status-option {
+            flex: 0 0 auto;
+            display: block;
+            width: 100%;
+            min-height: 44px;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+}
+
+
+/* موبايل بالعرض (ارتفاع قصير): عمودين حتى لا تحتاج سكرول */
+@media (max-width: 900px) and (max-height: 500px) {
+
+    .status-popup {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr);
+        left: 12px !important;
+        right: 12px !important;
+        top: auto !important;
+        bottom: 8px !important;
+        width: auto !important;
+        max-width: none;
+        max-height: calc(100vh - 16px);
+    }
+
+        .status-popup .status-option {
+            min-height: 38px;
+            padding: 8px;
+        }
+}

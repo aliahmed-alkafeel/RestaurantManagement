@@ -42,8 +42,8 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 ImageUrl = model.ImageUrl
             };
             await unitOfWork.Items.AddAsync(item, model.CancellationToken);
-            await unitOfWork.SaveChangesAsync(model.CancellationToken);
-            return true;
+            return await unitOfWork.SaveChangesAsync(model.CancellationToken) > 0;
+
         }
 
         public async Task<bool> DeleteItemAsync(Guid id, CancellationToken cancellationToken = default)
@@ -51,8 +51,9 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             var item = await unitOfWork.Items.GetByIdAsync(id, cancellationToken);
             if (item is null) throw new InvalidOperationException("There is no such Item");
             unitOfWork.Items.Delete(item);
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-            DeleteImage(item);
+            var result = await unitOfWork.SaveChangesAsync(cancellationToken);
+            if (result < 0) return false;
+            DeleteImage(item.ImageUrl);
             return true;
         }
 
@@ -78,22 +79,28 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 .ToListAsync(cancellationToken);
         }
 
-        public void DeleteImage(Item item)
+        public void DeleteImage(string? imageUrl)
         {
-            if (!item.ImageUrl.EndsWith("default.jpg"))
+            if (string.IsNullOrEmpty(imageUrl) ||
+                imageUrl.EndsWith("default.jpg", StringComparison.OrdinalIgnoreCase))
             {
-                var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot",
-                    item.ImageUrl.TrimStart('~', '/'));
-                if (File.Exists(oldPath))
-                {
-                    var newPath = Path.Combine(Path.GetDirectoryName(oldPath)!,
-                        $"deleted_{DateTime.UtcNow:yyyyMMddHHmmss}{Path.GetExtension(oldPath)}");
-                    File.Move(oldPath, newPath);
-                    item.ImageUrl = newPath;
-                }
+                return;
             }
-        }
 
+            var oldPath = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot",
+                imageUrl.TrimStart('~', '/'));
+
+            if (!File.Exists(oldPath))
+                return;
+
+            var newPath = Path.Combine(
+                Path.GetDirectoryName(oldPath)!,
+                $"deleted_{DateTime.UtcNow:yyyyMMddHHmmssfff}{Path.GetExtension(oldPath)}");
+
+            File.Move(oldPath, newPath);
+        }
         public async Task<List<ItemViewModel>> GetAllItemsAsync(CancellationToken cancellationToken = default)
         {
             return await unitOfWork.Items.NoTrackingSelect()
@@ -169,36 +176,58 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         public async Task<bool> UpdateItemAsync(ItemViewModel model)
         {
-            if (model is null) throw new ArgumentNullException();
-            var item = await unitOfWork.Items.Select().Include(i => i.Category)
+            if (model is null)
+                throw new ArgumentNullException(nameof(model));
+
+            var item = await unitOfWork.Items
+                .Select()
+                .Include(i => i.Category)
                 .Where(i => !i.Category.IsDeleted)
-                .FirstOrDefaultAsync(i => i.Id == model.Id,
+                .FirstOrDefaultAsync(
+                    i => i.Id == model.Id,
                     model.CancellationToken);
-            if (item is null) return false;
-            var exists = await unitOfWork.Items.NoTrackingSelect()
-                .AnyAsync(i => i.Id != model.Id &&
-                               i.ItemName == model.ItemName &&
-                               i.CategoryId == model.CategoryId,
+
+            if (item is null)
+                return false;
+
+            var exists = await unitOfWork.Items
+                .NoTrackingSelect()
+                .AnyAsync(
+                    i => i.Id != model.Id &&
+                         i.ItemName == model.ItemName &&
+                         i.CategoryId == model.CategoryId,
                     model.CancellationToken);
 
             if (exists)
                 return false;
-            if (!await InsertImage(model)) return false;
+
             var oldImageUrl = item.ImageUrl;
-            //Category? category = await unitOfWork.Categories.GetByIdAsync(model.CategoryId, model.CancellationToken);
-            //if (category is null) throw new InvalidOperationException(nameof(category));
+
+       
+            var hasNewImage = model.ItemImage is not null &&
+                              model.ItemImage.Length > 0;
+
+            if (hasNewImage)
+            {
+                if (!await InsertImage(model))
+                    return false;
+
+                item.ImageUrl = model.ImageUrl;
+            }
+
             item.ItemName = model.ItemName;
-            //item.Category = category;
             item.CategoryId = model.CategoryId;
             item.Price = model.Price;
             item.IsActive = model.IsActive;
             item.IsAvailable = model.IsAvailable;
-            item.ImageUrl = model.ImageUrl;
+
             unitOfWork.Items.Update(item);
-            await unitOfWork.SaveChangesAsync(model.CancellationToken);
-            if (oldImageUrl != item.ImageUrl)
+
+            var result = await unitOfWork.SaveChangesAsync(model.CancellationToken);
+            if (result < 0) return false;
+            if (hasNewImage)
             {
-                DeleteImage(item);
+                DeleteImage(oldImageUrl);
             }
             return true;
         }

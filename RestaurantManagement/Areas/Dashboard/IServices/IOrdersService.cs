@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.Areas.Dashboard.ViewModels;
+﻿using RestaurantManagement.Areas.Dashboard.Services;
+using RestaurantManagement.Areas.Dashboard.ViewModels;
 using RestaurantManagement.Models;
 using RestaurantManagement.ViewModels;
 
@@ -10,7 +11,7 @@ namespace RestaurantManagement.Areas.Dashboard.IServices
         Task<OrderViewModel> GetOrderByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<bool> UpdateOrderAsync(OrderViewModel model);
         Task<bool> UpdateOrderAsync(OrderStatusViewModel model);
-        Task<bool> CreateOrderAsync(CreateOrderViewModel model);
+        Task<OrderCreateResults> CreateOrderAsync(CreateOrderViewModel model);
         Task<bool> DeleteOrderAsync(Guid id, CancellationToken cancellationToken = default);
         Task<POSOrdersViewModel> GetPOSOrdersAsync(POSOrdersFilterViewModel filter);
     }

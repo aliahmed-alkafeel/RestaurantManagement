@@ -126,8 +126,8 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             };
             employee.PasswordHash = _passwordHasher.HashPassword(employee, model.Password);
             await _unitOfWork.Employees.AddAsync(employee, model.CancellationToken);
-            await _unitOfWork.SaveChangesAsync(model.CancellationToken);
-            return true;
+            return await _unitOfWork.SaveChangesAsync(model.CancellationToken) > 0;
+
         }
 
         public async Task<bool> UpdateEmployeeAsync(ManageEmployeeViewModel model)
@@ -203,8 +203,8 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 employee.PasswordHash = _passwordHasher.HashPassword(employee, model.Password);
             }
             _unitOfWork.Employees.Update(employee);
-            await _unitOfWork.SaveChangesAsync(model.CancellationToken);
-            return true;
+            return await _unitOfWork.SaveChangesAsync(model.CancellationToken) > 0;
+
         }
 
         public async Task<bool> TerminateEmployeeAsync(Guid id, CancellationToken cancellationToken = default)
@@ -217,8 +217,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             if(emp.EmployeeEndingDate.HasValue) return false;
             emp.EmployeeEndingDate = DateTime.UtcNow;
             //_unitOfWork.Employees.Delete(emp);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return true;
+            return await _unitOfWork.SaveChangesAsync(cancellationToken) > 0;
         }
 
         public async Task<bool> DeleteEmployeeAsync(Guid id, CancellationToken cancellationToken = default)
@@ -231,8 +230,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             //if(emp.EmployeeEndingDate.HasValue) return false;
             emp.EmployeeEndingDate ??= DateTime.UtcNow;
             _unitOfWork.Employees.Delete(emp);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return true;
+            return await _unitOfWork.SaveChangesAsync(cancellationToken) > 0;
         }
     }
 }

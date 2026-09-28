@@ -57,8 +57,11 @@ namespace RestaurantManagement.Services
             item.IsAvailable = !item.IsAvailable;
 
 
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-
+            var result = await unitOfWork.SaveChangesAsync(cancellationToken);
+            if(result < 0)
+            {
+                return null;
+            }
 
             return MapItem(item);
         }

@@ -20,8 +20,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             if (order is null) throw new InvalidOperationException("There is no such order");
             unitOfWork.Orders.Delete(order); 
             unitOfWork.ItemOrders.DeleteRange(order.ItemOrders);
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-            return true;
+            return await unitOfWork.SaveChangesAsync(cancellationToken) > 0;
         }
 
         public async Task<List<OrderViewModel>> GetAllOrdersAsync(CancellationToken cancellationToken = default)
@@ -67,7 +66,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
         
         }
 
-        public async Task<bool> CreateOrderAsync(CreateOrderViewModel model)
+        public async Task<OrderCreateResults> CreateOrderAsync(CreateOrderViewModel model)
         {
             if (model is null)
                 throw new ArgumentNullException(nameof(model));
@@ -83,7 +82,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 .ToList();
 
             if (newItems.Count == 0)
-                return false;
+                return OrderCreateResults.ZeroItems;
 
             var now = DateTime.UtcNow;
 
@@ -116,12 +115,17 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                         $"Item with ID '{newItem.ItemId}' does not exist.");
                 }
 
-                if (!item.IsAvailable || !item.IsActive)
+                if (!item.IsAvailable)
                 {
-                    throw new InvalidOperationException(
-                        $"Item '{item.ItemName}' is not available.");
+                    return OrderCreateResults.UnavailableItem;
+                    //throw new InvalidOperationException(
+                    //    $"Item '{item.ItemName}' is not available.");
                 }
 
+                if (!item.IsActive)
+                {
+                    return OrderCreateResults.InactiveItem;
+                }
                 var discount = item.Discount != null && !item.Discount.IsDeleted
                     ? item.Discount
                     : null;
@@ -152,9 +156,9 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 order,
                 model.CancellationToken);
 
-            await unitOfWork.SaveChangesAsync(model.CancellationToken);
-
-            return true;
+            var result = await unitOfWork.SaveChangesAsync(model.CancellationToken);
+            if (result < 0) return OrderCreateResults.Failure;
+            return OrderCreateResults.Success;
         }
         public async Task<bool> UpdateOrderAsync(OrderViewModel model)
         {
@@ -286,9 +290,8 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             order.OrderDate = model.OrderDate.AddHours(-3);
             order.TotalPrice = newItemsTotal;
             unitOfWork.Orders.Update(order);
-            await unitOfWork.SaveChangesAsync(model.CancellationToken);
+            return await unitOfWork.SaveChangesAsync(model.CancellationToken) > 0;
 
-            return true;
         }
 
         public async Task<POSOrdersViewModel> GetPOSOrdersAsync(
@@ -408,8 +411,17 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             if (order is null) return false;
             order.OrderStatus = model.Status;
             unitOfWork.Orders.Update(order);
-            await unitOfWork.SaveChangesAsync(model.CancellationToken);
-            return true;
+            return await unitOfWork.SaveChangesAsync(model.CancellationToken) > 0;
+
         }
+    }
+
+    public enum OrderCreateResults
+    {
+        Success,
+        Failure,
+        ZeroItems,
+        InactiveItem,
+        UnavailableItem
     }
 }

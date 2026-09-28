@@ -24,8 +24,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 Type = model.Type
             };
             await unitOfWork.Categories.AddAsync(category, model.CancellationToken);
-            await unitOfWork.SaveChangesAsync(model.CancellationToken);
-            return true;
+            return await unitOfWork.SaveChangesAsync(model.CancellationToken) > 0;
         }
 
         public async Task<List<CategoryViewModel>> GetAllCategoriesAsync(CancellationToken cancellationToken)
@@ -65,8 +64,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             if (hasItems)
                 return false;
             unitOfWork.Categories.Delete(category);
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-            return true;
+            return await unitOfWork.SaveChangesAsync(cancellationToken) > 0;
         }
 
         public async Task<bool> UpdateCategoryAsync(CategoryViewModel model)
@@ -84,8 +82,8 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             category.CategoryName = model.CategoryName;
             category.Type = model.Type;
             unitOfWork.Categories.Update(category);
-            await unitOfWork.SaveChangesAsync(model.CancellationToken);
-            return true;
+            return await unitOfWork.SaveChangesAsync(model.CancellationToken) > 0;
+
         }
     }
 }

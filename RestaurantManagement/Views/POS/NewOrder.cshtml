@@ -561,12 +561,8 @@
                             </label>
 
 
-                            <input id="tableId"
-                            placeholder="Enter table number..."        class="table-select"/>
-                                
-
-
-
+                            <input id="tableId" 
+                            placeholder="Enter table number..." class="table-select"/>
                         </div>
 
 
@@ -1409,6 +1405,18 @@ async function createOrderFunction() {
 
         return;
     }
+    if (tableId.value.trim() < 0) {
+
+        showNotification(
+            "warning",
+            "Table value must be positive.",
+            "Please enter a positave table number."
+        );
+
+        tableId.focus();
+
+        return;
+    }
 
 
     const formData =
@@ -1472,115 +1480,90 @@ async function createOrderFunction() {
 
         });
 
+                    try {
 
-    try {
+                        createOrder.disabled = true;
 
-        createOrder.disabled = true;
+                        const response = await fetch(
+                            "/POS/CreateOrder",
+                            {
+                                method: "POST",
+                                body: formData
+                            }
+                        );
 
+                        const responseText = await response.text();
 
-        const response =
-            await fetch(
-                "/POS/CreateOrder",
-                {
-                    method: "POST",
-                    body: formData
-                }
-            );
+                        if (!responseText.trim()) {
+                            throw new Error(
+                                "Server returned an empty response."
+                            );
+                        }
 
+                        let result;
 
-        const responseText =
-            await response.text();
+                        try {
+                            result = JSON.parse(responseText);
+                        }
+                        catch {
+                            throw new Error(
+                                "Server did not return valid JSON."
+                            );
+                        }
 
+                        /* =========================================
+                           RESULT
+                           ========================================= */
 
-        if (!response.ok) {
+                        if (response.ok && result.success) {
 
-            throw new Error(
-                `HTTP ${response.status}`
-            );
-        }
+                            showNotification(
+                                "success",
+                                "Order created",
+                                result.message ??
+                                "The order was created successfully."
+                            );
 
+                            order.clear();
 
-        if (!responseText.trim()) {
+                            renderOrder();
 
-            throw new Error(
-                "Server returned an empty response."
-            );
-        }
+                            tableId.value = "";
+                        }
+                        else {
 
+                            showNotification(
+                                "danger",
+                                "Order failed",
+                                result.message ??
+                                "Could not create order."
+                            );
 
-        let result;
+                        }
 
+                    }
+                    catch (error) {
 
-        try {
+                        console.error(
+                            "Create Order Error:",
+                            error
+                        );
 
-            result =
-                JSON.parse(responseText);
+                        showNotification(
+                            "danger",
+                            "Something went wrong",
+                            error.message ??
+                            "Could not create order."
+                        );
 
-        }
-        catch {
+                    }
+                    finally {
 
-            throw new Error(
-                "Server did not return valid JSON."
-            );
-        }
+                        createOrder.disabled = false;
 
-
-        /* =========================================
-           RESULT
-           ========================================= */
-
-        if (result.success) {
-
-            showNotification(
-                "success",
-                "Order created",
-                result.message ??
-                "The order was created successfully."
-            );
-
-
-            order.clear();
-
-            renderOrder();
-
-            tableId.value = "";
-
-        }
-        else {
-
-            showNotification(
-                "danger",
-                "Order failed",
-                result.message ??
-                "Could not create order."
-            );
-
-        }
-
-    }
-    catch (error) {
-
-        console.error(
-            "Create Order Error:",
-            error
-        );
-
-
-        showNotification(
-            "danger",
-            "Something went wrong",
-            error.message ??
-            "Could not create order."
-        );
-
-    }
-    finally {
-
-        createOrder.disabled = false;
-
-    }
-
-}                /* ================================================
+                    }            
+                    }
+                    /* ================================================
                     HTML ESCAPE
                  ================================================= */
 

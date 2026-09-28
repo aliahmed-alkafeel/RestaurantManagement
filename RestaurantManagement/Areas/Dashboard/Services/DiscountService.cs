@@ -23,8 +23,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             var items = await unitOfWork.Items.Select().Where(i => model.ItemIds.Contains(i.Id)).ToListAsync(model.CancellationToken);
             discount.Items.AddRange(items);
             await unitOfWork.Discounts.AddAsync(discount, model.CancellationToken);
-            await unitOfWork.SaveChangesAsync(model.CancellationToken);
-            return true;
+            return await unitOfWork.SaveChangesAsync(model.CancellationToken) > 0;
         }
 
         public async Task<List<DiscountViewModel>> GetAllDiscountsAsync(CancellationToken cancellationToken)
@@ -64,8 +63,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             var discount = await unitOfWork.Discounts.GetByIdAsync(id, cancellationToken);
             if (discount is null) throw new InvalidOperationException("There is no such discount");
             unitOfWork.Discounts.Delete(discount);
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-            return true;
+            return await unitOfWork.SaveChangesAsync(cancellationToken) > 0;
         }
 
         public async Task<bool> UpdateDiscountAsync(DiscountViewModel model)
@@ -98,8 +96,8 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             }
 
             unitOfWork.Discounts.Update(discount);
-            await unitOfWork.SaveChangesAsync(model.CancellationToken);
-            return true;
+            return await unitOfWork.SaveChangesAsync(model.CancellationToken) > 0;
+
         }
     }
 }
