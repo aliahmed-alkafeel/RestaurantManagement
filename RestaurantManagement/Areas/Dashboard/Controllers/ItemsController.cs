@@ -39,7 +39,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
 
         [Authorize(Roles = nameof(UserRole.ManageItems))]
         [HttpGet("CreateItem")]
-        public async Task<IActionResult> CreateItem()
+        public IActionResult CreateItem()
         {
             return View();
         }
@@ -52,9 +52,9 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             ModelState.Remove("Category.CategoryName");
             if (!ModelState.IsValid) return View(model);
             var result = await itemsService.CreateItemAsync(model);
-            if (result is false)
+            if (!result)
             {
-                ModelState.AddModelError("", "The Item is Regestered");
+                ModelState.AddModelError("", "The Item is Registered");
                 return View(model);
             }
             TempData.SuccessMessage(
@@ -67,8 +67,8 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [HttpGet("EditItem/{id:guid}")]
         public async Task<IActionResult> EditItem(Guid id)
         {
-            var emps = await itemsService.GetItemByIdAsync(id);
-            return View(emps);
+            var item = await itemsService.GetItemByIdAsync(id);
+            return View(item);
         }
 
         [Authorize(Roles = nameof(UserRole.ManageItems))]
@@ -81,7 +81,6 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             {
                 return View(model);
             }
-
             var result = await itemsService.UpdateItemAsync(model);
             if (!result)
             {
@@ -98,8 +97,8 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [HttpGet("DeleteItem/{id:guid}")]
         public async Task<IActionResult> DeleteItem(Guid id)
         {
-            var emps = await itemsService.GetItemByIdAsync(id);
-            return View(emps);
+            var item = await itemsService.GetItemByIdAsync(id);
+            return View(item);
         }
 
         [ValidateAntiForgeryToken]
@@ -107,7 +106,11 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [HttpPost("ConfirmedDeleteItem/{id:guid}")]
         public async Task<IActionResult> ConfirmedDeleteItem([FromRoute]Guid id)
         {
-            await itemsService.DeleteItemAsync(id);
+            var result = await itemsService.DeleteItemAsync(id);
+            if (!result)
+            {
+                return BadRequest();
+            }
             TempData.SuccessMessage(
                 NotificationExtensions.ActionType.Delete,
                 NotificationExtensions.EntityType.Item);

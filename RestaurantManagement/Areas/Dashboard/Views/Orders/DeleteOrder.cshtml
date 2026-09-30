@@ -100,8 +100,9 @@
                                     </label>
 
                                     <input disabled name="OrderDate"
-                                           value="@DateTime.SpecifyKind(Model.OrderDate, DateTimeKind.Utc).ToLocalTime().ToString("yyyy-MM-ddTHH:mm")"
+                                           value="@DateTime.SpecifyKind(Model.OrderDate, DateTimeKind.Utc).ToLocalTime().ToString("yyyy-MM-ddTHH:mm:ss")"
                                            type="datetime-local"
+                                           step="1"
                                            class="form-control" />
 
                                     <span asp-validation-for="OrderDate"

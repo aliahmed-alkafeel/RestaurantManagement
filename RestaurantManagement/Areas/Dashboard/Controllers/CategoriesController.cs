@@ -39,7 +39,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             var result = await categoriesService.CreateCategoryAsync(model);
             if (result is false)
             {
-                ModelState.AddModelError("", "The Category is Regestered");
+                ModelState.AddModelError("", "The Category is Registered");
                 return View(model);
             }
             TempData.SuccessMessage(

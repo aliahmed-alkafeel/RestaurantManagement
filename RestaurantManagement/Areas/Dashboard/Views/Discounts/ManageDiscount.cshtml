@@ -1,4 +1,5 @@
-﻿@model DiscountViewModel
+﻿@using RestaurantManagement.Extensions
+@model DiscountViewModel
 @{
     bool isEdit = Model.Id != Guid.Empty;
 }
@@ -33,6 +34,7 @@
                         <form asp-area="Dashboard"
                               asp-controller="Discounts"
                               asp-action=@(isEdit?"EditDiscount":"CreateDiscount")
+                              data-utc-form
                               method="post">
 
                             @Html.AntiForgeryToken()
@@ -89,8 +91,13 @@
 
                                     </label>
 
-                                    <input asp-for="DiscountStartingDate"
+                                    <input name="DiscountStartingDate" id="startDate"
                                            type="datetime-local"
+                                           data-utc-field
+                                           step="1"
+                                           data-utc="@(isEdit ? Model.DiscountStartingDate.ToUtc().ToString("o") : "")"
+                                           value="@(isEdit? Model.DiscountStartingDate.ToLocalTime().ToString("yyyy-MM-ddTHH:mm:ss")
+                                                                                  :Model.DiscountStartingDate.ToString("yyyy-MM-ddTHH:mm:ss"))"
                                            class="form-control" />
 
                                     <span asp-validation-for="DiscountStartingDate"
@@ -111,8 +118,13 @@
 
                                     </label>
 
-                                    <input asp-for="DiscountEndingDate"
+                                    <input name="DiscountEndingDate" id="endDate"
                                            type="datetime-local"
+                                           data-utc-field
+                                           step="1"
+                                           data-utc="@(isEdit ? Model.DiscountEndingDate.ToUtc().ToString("o") : "")"
+                                           value="@(isEdit? Model.DiscountEndingDate.ToLocalTime().ToString("yyyy-MM-ddTHH:mm:ss"):
+                                                    Model.DiscountEndingDate.ToString("yyyy-MM-ddTHH:mm:ss"))"
                                            class="form-control" />
 
                                     <span asp-validation-for="DiscountEndingDate"
@@ -304,6 +316,9 @@
 
 </div>
 
+
+@section Scripts {
+
 <script>
                 const initialDiscountItems =
             @Html.Raw(
@@ -318,10 +333,8 @@
             );
  </script>
     
-
 <script src="~/js/createDiscount.js"></script>
 
-
-@section Scripts {
+    <script src="~/js/dateTime.js"></script>
     <partial name="_ValidationScriptsPartial" />
 }

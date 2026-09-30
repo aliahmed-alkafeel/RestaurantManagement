@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.IdentityModel.Tokens;
 using RestaurantManagement.Areas.Dashboard.IServices;
+using RestaurantManagement.Areas.Dashboard.Services;
 using RestaurantManagement.Areas.Dashboard.ViewModels;
+using RestaurantManagement.Extensions;
 using RestaurantManagement.Models;
 using System.Security.Claims;
-using RestaurantManagement.Extensions;
 
 namespace RestaurantManagement.Areas.Dashboard.Controllers
 {
@@ -18,34 +19,34 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
     {
         [Authorize(Roles = nameof(UserRole.AccessEmployees))]
         [HttpGet("")]
-        public async Task<IActionResult> Employees()
+        public async Task<IActionResult> Employees(CancellationToken cancellationToken)
         {
-            var emps = await employeesService.GetAllEmployeesAsync();
+            var emps = await employeesService.GetAllEmployeesAsync(cancellationToken);
             return View(emps);
         }
 
         [Authorize(Roles = nameof(UserRole.ManageEmployees))]
         [HttpGet("EditEmployee/{id:guid}")]
-        public async Task<IActionResult> EditEmployee(Guid id)
+        public async Task<IActionResult> EditEmployee(Guid id,CancellationToken cancellationToken)
         {
-            ViewBag.groups = await employeesService.ShowCreateEmployeeAsync();
-            var emps = await employeesService.GetEmployeeByIdAsync(id);
-            return View(emps);
+            ViewBag.groups = await employeesService.ShowCreateEmployeeAsync(cancellationToken);
+            var emp = await employeesService.GetEmployeeByIdAsync(id,cancellationToken);
+            return View(emp);
         }
         [Authorize(Roles = nameof(UserRole.ManageEmployees))]
         [HttpPost("EditEmployee")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditEmployee(ManageEmployeeViewModel model)
         {
-            var cloendModelState = new ModelStateDictionary(ModelState);
+            var clonedModelState = new ModelStateDictionary(ModelState);
                 ModelState.Remove(nameof(model.Password));
                 ModelState.Remove(nameof(model.ConfirmPassword));
             if (!ModelState.IsValid)
             {
-                ViewBag.groups = await employeesService.ShowCreateEmployeeAsync();
+                ViewBag.groups = await employeesService.ShowCreateEmployeeAsync(model.CancellationToken);
                 return View(model);
             }
-            if (!cloendModelState.IsValid && !string.IsNullOrEmpty(model.Password) && !string.IsNullOrEmpty(model.ConfirmPassword))
+            if (!clonedModelState.IsValid && !string.IsNullOrEmpty(model.Password) && !string.IsNullOrEmpty(model.ConfirmPassword))
             {                             
                     return View(model);
             }
@@ -63,45 +64,56 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
 
         [Authorize(Roles = nameof(UserRole.ManageEmployees))]
         [HttpGet("TerminateEmployee/{id:guid}")]
-        public async Task<IActionResult> TerminateEmployee(Guid id)
+        public async Task<IActionResult> TerminateEmployee(Guid id, CancellationToken cancellationToken)
         {
-            var emp = await employeesService.GetEmployeeByIdAsync(id);
+            var emp = await employeesService.GetEmployeeByIdAsync(id,cancellationToken);
             return View(emp);
         }
         [ValidateAntiForgeryToken]
         [Authorize(Roles = nameof(UserRole.ManageEmployees))]
         [HttpPost("ConfirmedTerminateEmployee/{id:guid}")]
-        public async Task<IActionResult> ConfirmedTerminateEmployee(Guid id)
+        public async Task<IActionResult> ConfirmedTerminateEmployee(Guid id,CancellationToken cancellationToken)
         {
-            var result = await employeesService.TerminateEmployeeAsync(id);
-            if (!result) return RedirectToAction("AccessDenied", "Auth", new {area="",returnUrl="/Dashboard"});
-            TempData.SuccessMessage(
+            var result = await employeesService.TerminateEmployeeAsync(id,cancellationToken);
+
+                if (!result)
+                {
+                    var employee = await employeesService.GetEmployeeByIdAsync(id,cancellationToken);
+                    ModelState.AddModelError(string.Empty, "This employee could not be terminated.");
+                    return View("TerminateEmployee", employee);
+                }
+                TempData.SuccessMessage(
                 NotificationExtensions.ActionType.Delete,
                 NotificationExtensions.EntityType.Employee);
             return RedirectToAction(nameof(Employees));
         } 
         [Authorize(Roles = nameof(UserRole.ManageEmployees))]
         [HttpGet("DeleteEmployee/{id:guid}")]
-        public async Task<IActionResult> DeleteEmployee(Guid id)
+        public async Task<IActionResult> DeleteEmployee(Guid id, CancellationToken cancellationToken)
         {
-            var emp = await employeesService.GetEmployeeByIdAsync(id);
+            var emp = await employeesService.GetEmployeeByIdAsync(id,cancellationToken);
             return View(emp);
         }
         [ValidateAntiForgeryToken]
         [Authorize(Roles = nameof(UserRole.ManageEmployees))]
         [HttpPost("ConfirmedDeleteEmployee/{id:guid}")]
-        public async Task<IActionResult> ConfirmedDeleteEmployee(Guid id)
+        public async Task<IActionResult> ConfirmedDeleteEmployee(Guid id, CancellationToken cancellationToken)
         {
-            var result = await employeesService.DeleteEmployeeAsync(id);
-            if (!result) return RedirectToAction("AccessDenied", "Auth", new {area="",returnUrl="/Dashboard"});
+            var result = await employeesService.DeleteEmployeeAsync(id,cancellationToken);
+            if (!result)
+            {
+                var employee = await employeesService.GetEmployeeByIdAsync(id, cancellationToken);
+                ModelState.AddModelError(string.Empty, "This employee could not be deleted.");
+                return View("DeleteEmployee", employee);
+            }
             return RedirectToAction(nameof(Employees));
         }
         [Authorize(Roles = nameof(UserRole.ManageEmployees))]
         [HttpGet("CreateEmployee")]
-        public async Task<IActionResult> CreateEmployee()
+        public async Task<IActionResult> CreateEmployee(CancellationToken cancellationToken)
         {
 
-            ViewBag.groups = await employeesService.ShowCreateEmployeeAsync();
+            ViewBag.groups = await employeesService.ShowCreateEmployeeAsync(cancellationToken);
             return View();
         }
 
@@ -112,14 +124,14 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.groups = await employeesService.ShowCreateEmployeeAsync();
+                ViewBag.groups = await employeesService.ShowCreateEmployeeAsync(model.CancellationToken);
                 return View(model);
             }
             var result = await employeesService.CreateEmployeeAsync(model);
             if(result is false)
             {
                 ModelState.AddModelError("","The User is Registered");
-                ViewBag.groups = await employeesService.ShowCreateEmployeeAsync();
+                ViewBag.groups = await employeesService.ShowCreateEmployeeAsync(model.CancellationToken);
                 return View(model);
             }
             TempData.SuccessMessage(

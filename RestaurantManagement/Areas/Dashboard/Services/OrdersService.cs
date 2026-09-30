@@ -4,6 +4,7 @@ using RestaurantManagement.Areas.Dashboard.ViewModels;
 using RestaurantManagement.IRepositories;
 using RestaurantManagement.Migrations;
 using RestaurantManagement.Models;
+using RestaurantManagement.Extensions;
 using RestaurantManagement.Repositories;
 using RestaurantManagement.ViewModels;
 using System.Net.NetworkInformation;
@@ -287,7 +288,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
             order.OrderStatus = model.OrderStatus;
             order.TableId = model.TableId;
-            order.OrderDate = model.OrderDate.AddHours(-3);
+            order.OrderDate = model.OrderDate.ToUtc();
             order.TotalPrice = newItemsTotal;
             unitOfWork.Orders.Update(order);
             return await unitOfWork.SaveChangesAsync(model.CancellationToken) > 0;

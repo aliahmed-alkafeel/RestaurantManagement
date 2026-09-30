@@ -37,8 +37,9 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                     FirstName = emp.FirstName,
                     LastName = emp.LastName,
                     PhoneNumber = emp.PhoneNumber,
-                    EmployeeStartingDate = emp.EmployeeStartingDate,
-                    EmployeeEndingDate = emp.EmployeeEndingDate,
+                    EmployeeStartingDate = emp.EmployeeStartingDate.ToUtc(),
+                    EmployeeEndingDate = emp.EmployeeEndingDate.HasValue?
+                        emp.EmployeeEndingDate.Value.ToUtc() : null,
                     Username = emp.Username,
                     Email = emp.Email,
                     Group = emp.Group!.GroupName
@@ -49,7 +50,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             CancellationToken cancellationToken = default)
         {
             var emp = await _unitOfWork.Employees.NoTrackingSelect()
-                .Include(e => e.Group).Where(e=>e.Group != null && !e.Group.IsDeleted)
+                .Include(e => e.Group).Where(e=> e.Group != null && !e.Group.IsDeleted)
                 .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
             if (emp is null) throw new ArgumentNullException(nameof(emp));
             var groups = await _unitOfWork.Groups.NoTrackingSelect().Select(g =>
@@ -58,6 +59,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                     Value = g.GroupName,
                     Text = g.GroupName
                 }).ToListAsync(cancellationToken);
+            Console.WriteLine(emp.EmployeeStartingDate.ToUtc());
             return new ManageEmployeeViewModel
             {
                 Id = emp.Id,
@@ -193,8 +195,8 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             employee.Email = model.Email;
             employee.FirstName = model.FirstName;
             employee.LastName = model.LastName;
-            employee.EmployeeStartingDate = model.EmployeeStartingDate.AddHours(-3);
-            employee.EmployeeEndingDate = model.EmployeeEndingDate?.AddHours(-3);
+            employee.EmployeeStartingDate = model.EmployeeStartingDate;
+            employee.EmployeeEndingDate = model.EmployeeEndingDate;
             employee.PhoneNumber = model.PhoneNumber;
             employee.GroupId = model.Group;
 

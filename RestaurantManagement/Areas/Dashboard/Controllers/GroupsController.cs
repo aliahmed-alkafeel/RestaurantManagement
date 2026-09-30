@@ -17,12 +17,12 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Groups(CancellationToken cancellationToken)
         {
-            var groupsVm = await groupsService.GetAllGroupsAsync(cancellationToken);
-            return View(groupsVm);
+            var groups = await groupsService.GetAllGroupsAsync(cancellationToken);
+            return View(groups);
         }
         [Authorize(Roles = nameof(UserRole.ManageGroups))]
         [HttpGet("CreateGroup")]
-        public async Task<IActionResult> CreateGroup()
+        public  IActionResult CreateGroup()
         {
             return View("ManageGroup", new GroupViewModel());
         }
@@ -33,7 +33,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         {
             if (!ModelState.IsValid) return View("ManageGroup",model);
             var result = await groupsService.CreateGroupAsync(model);
-            if (result is false)
+            if (!result)
             {
                 ModelState.AddModelError("", "The Group is Registered");
                 return View("ManageGroup",model);
@@ -80,6 +80,7 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditGroup(GroupViewModel model)
         {
+            if (!ModelState.IsValid) return View("ManageGroup", model);
             var result = await groupsService.UpdateGroupAsync(model);
             if (!result)
             {

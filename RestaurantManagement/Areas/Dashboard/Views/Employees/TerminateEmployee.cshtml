@@ -160,7 +160,7 @@
         </label>
         <input disabled
                name="EmployeeStartingDate"
-               value="@(DateTime.SpecifyKind(Model.EmployeeStartingDate, DateTimeKind.Utc)
+               value="@(Model.EmployeeStartingDate
                           .ToLocalTime()
                           .ToString("yyyy-MM-ddTHH:mm"))"
                type="datetime-local"
@@ -181,7 +181,7 @@
 
         <input disabled name="EmployeeEndingDate"
                value="@(Model.EmployeeEndingDate.HasValue
-                          ? DateTime.SpecifyKind(Model.EmployeeEndingDate.Value, DateTimeKind.Utc)
+                          ? Model.EmployeeEndingDate.Value
                               .ToLocalTime()
                               .ToString("yyyy-MM-ddTHH:mm")
                           : "")"

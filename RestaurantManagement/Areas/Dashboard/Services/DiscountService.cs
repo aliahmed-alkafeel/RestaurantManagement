@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Areas.Dashboard.IServices;
 using RestaurantManagement.Areas.Dashboard.ViewModels;
+using RestaurantManagement.Extensions;
 using RestaurantManagement.IRepositories;
 using RestaurantManagement.Models;
 using RestaurantManagement.Repositories;
@@ -17,8 +18,8 @@ namespace RestaurantManagement.Areas.Dashboard.Services
             {
                 Id = Guid.NewGuid(),
                 DiscountPercentage = model.DiscountPercentage,
-                DiscountStartingDate = model.DiscountStartingDate,
-                DiscountEndingDate = model.DiscountEndingDate,
+                DiscountStartingDate = model.DiscountStartingDate.ToUtc(),
+                DiscountEndingDate = model.DiscountEndingDate.ToUtc(),
             };
             var items = await unitOfWork.Items.Select().Where(i => model.ItemIds.Contains(i.Id)).ToListAsync(model.CancellationToken);
             discount.Items.AddRange(items);
@@ -55,7 +56,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 DiscountEndingDate = discount.DiscountEndingDate,
                 Items = discount.Items
             };
-             
+         
         }
 
         public async Task<bool> DeleteDiscountAsync(Guid id, CancellationToken cancellationToken)
@@ -75,8 +76,8 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 .FirstOrDefaultAsync(model.CancellationToken);
             if (discount is null) return false;
             discount.DiscountPercentage = model.DiscountPercentage;
-            discount.DiscountEndingDate = model.DiscountEndingDate;
-            discount.DiscountStartingDate = model.DiscountStartingDate;
+            discount.DiscountEndingDate = model.DiscountEndingDate.ToUtc();
+            discount.DiscountStartingDate = model.DiscountStartingDate.ToUtc();
             var existingItems = discount.Items.ToList();
             var toRemove = existingItems
                 .Where(i => !model.ItemIds.Contains(i.Id)).ToHashSet();

@@ -96,16 +96,16 @@
                     @emp.Username
                 </td>
                 <td>
-                        <span class="order-date"
-                              data-utc="@DateTime.SpecifyKind(emp.EmployeeStartingDate, DateTimeKind.Utc).ToString("O")">
+                        <span class="employee-date"
+                              data-utc="@emp.EmployeeStartingDate.ToString("O")">
                         </span>
                 </td>
                 <td>
                     @if (emp.EmployeeEndingDate.HasValue)
                     {
 
-            <span class="order-date"
-            data-utc="@DateTime.SpecifyKind(emp.EmployeeEndingDate.Value, DateTimeKind.Utc).ToString("O")">
+                            <span class="employee-date"
+            data-utc="@emp.EmployeeEndingDate.Value.ToLocalTime().ToString("O")">
                 </span>
                     }
                 </td>
@@ -142,7 +142,7 @@
     searchInput.addEventListener("input", function() {
         list.search(this.value)
     });
-    document.querySelectorAll('.order-date').forEach(element => {
+    document.querySelectorAll('.employee-date').forEach(element => {
         const utcDate = new Date(element.dataset.utc);
 
         element.textContent = utcDate.toLocaleString();

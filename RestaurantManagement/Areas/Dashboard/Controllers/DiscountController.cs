@@ -84,13 +84,13 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             [HttpPost("ConfirmedDeleteDiscount/{id:guid}")]
             public async Task<IActionResult> ConfirmedDeleteDiscount(Guid id,CancellationToken cancellationToken)
             {
-                await discountsService.DeleteDiscountAsync(id, cancellationToken);
-                //if (!result)
-                //{
-                //    var category = await discountsService.GetDiscountByIdAsync(id, cancellationToken);
-                //    ModelState.AddModelError(string.Empty, "The category could not be deleted.");
-                //    return View("DeleteDiscount", category);
-                //}
+                var result = await discountsService.DeleteDiscountAsync(id, cancellationToken);
+            if (!result)
+            {
+                var discount = await discountsService.GetDiscountByIdAsync(id, cancellationToken);
+                ModelState.AddModelError(string.Empty, "The discount could not be deleted.");
+                return View("DeleteDiscount", discount);
+            }
             TempData.SuccessMessage(
                     NotificationExtensions.ActionType.Delete,
                     NotificationExtensions.EntityType.Discount);

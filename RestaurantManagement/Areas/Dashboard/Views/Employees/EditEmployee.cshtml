@@ -1,4 +1,5 @@
-﻿@model ManageEmployeeViewModel
+﻿@using RestaurantManagement.Extensions
+@model ManageEmployeeViewModel
 
 @{
 }
@@ -38,265 +39,274 @@
                     <!-- Card Body -->
                     <div class="card-body px-4 pb-4">
 
-                        <form asp-area="Dashboard" asp-controller="Employees"
-                              asp-action="EditEmployee"
-                              asp-route-id=""
-                              method="post">
-                              @Html.AntiForgeryToken()
-                            <!-- Validation -->
-                            <div asp-validation-summary="ModelOnly"
-                                 class="text-danger mb-3">
-                            </div>
+                    <form asp-area="Dashboard" asp-controller="Employees"
+                          asp-action="EditEmployee" 
+                              asp-route-id="" data-utc-form
+                          method="post">
+                    
+                    @Html.AntiForgeryToken()
+                    <!-- Validation -->
+                    <div asp-validation-summary="ModelOnly"
+                         class="text-danger mb-3">
+                    </div>
 
 
-                            <!-- Personal Information -->
+                    <!-- Personal Information -->
 
-                            <div class="section-title">
-                                <i class="ti ti-user"></i>
-                                <span>Personal Information</span>
-                            </div>
+                    <div class="section-title">
+                        <i class="ti ti-user"></i>
+                        <span>Personal Information</span>
+                    </div>
 
-                            <div class="row">
-                                <input asp-for="Id"
-                                        type="hidden"/>
-                                <!-- First Name -->
-                                <div class="col-md-6 mb-3">
+                    <div class="row">
+                        <input asp-for="Id"
+                               type="hidden"/>
+                        <!-- First Name -->
+                        <div class="col-md-6 mb-3">
 
-                                    <label asp-for="FirstName"
-                                           class="form-label fw-semibold">
-                                        First Name
-                                    </label>
+                            <label asp-for="FirstName"
+                                   class="form-label fw-semibold">
+                                First Name
+                            </label>
 
-                                    <input asp-for="FirstName"
-                                           class="form-control"
-                                           placeholder="Enter first name" />
+                            <input asp-for="FirstName"
+                                   class="form-control"
+                                   placeholder="Enter first name"/>
 
-                                    <span asp-validation-for="FirstName"
-                                          class="text-danger small">
-                                    </span>
+                            <span asp-validation-for="FirstName"
+                                  class="text-danger small">
+                            </span>
 
-                                </div>
+                        </div>
 
 
-                                <!-- Last Name -->
-                                <div class="col-md-6 mb-3">
+                        <!-- Last Name -->
+                        <div class="col-md-6 mb-3">
 
-                                    <label asp-for="LastName"
-                                           class="form-label fw-semibold">
-                                        Last Name
-                                    </label>
-
-                                    <input asp-for="LastName"
-                                           class="form-control"
-                                           placeholder="Enter last name" />
-
-                                    <span asp-validation-for="LastName"
-                                          class="text-danger small">
-                                    </span>
+                            <label asp-for="LastName"
+                                   class="form-label fw-semibold">
+                                Last Name
+                            </label>
 
-                                </div>
+                            <input asp-for="LastName"
+                                   class="form-control"
+                                   placeholder="Enter last name"/>
 
+                            <span asp-validation-for="LastName"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
 
-                                <!-- Phone -->
-                                <div class="col-md-6 mb-3">
 
-                                    <label asp-for="PhoneNumber"
-                                           class="form-label fw-semibold">
-                                        Phone Number
-                                    </label>
+                        <!-- Phone -->
+                        <div class="col-md-6 mb-3">
 
-                                    <input asp-for="PhoneNumber"
-                                           class="form-control"
-                                           placeholder="Enter phone number" />
+                            <label asp-for="PhoneNumber"
+                                   class="form-label fw-semibold">
+                                Phone Number
+                            </label>
 
-                                    <span asp-validation-for="PhoneNumber"
-                                          class="text-danger small">
-                                    </span>
+                            <input asp-for="PhoneNumber"
+                                   class="form-control"
+                                   placeholder="Enter phone number"/>
 
-                                </div>
+                            <span asp-validation-for="PhoneNumber"
+                                  class="text-danger small">
+                            </span>
 
+                        </div>
 
-                                <!-- Email -->
-                                <div class="col-md-6 mb-3">
 
-                                    <label asp-for="Email"
-                                           class="form-label fw-semibold">
-                                        Email Address
-                                    </label>
+                        <!-- Email -->
+                        <div class="col-md-6 mb-3">
 
-                                    <input asp-for="Email"
-                                           type="email"
-                                           class="form-control"
-                                           placeholder="example@email.com" />
+                            <label asp-for="Email"
+                                   class="form-label fw-semibold">
+                                Email Address
+                            </label>
 
-                                    <span asp-validation-for="Email"
-                                          class="text-danger small">
-                                    </span>
+                            <input asp-for="Email"
+                                   type="email"
+                                   class="form-control"
+                                   placeholder="example@email.com"/>
 
-                                </div>
+                            <span asp-validation-for="Email"
+                                  class="text-danger small">
+                            </span>
 
-                                <div class="col-md-6 mb-3">
-                                    <label asp-for="Group" class="form-label fw-semibold">
-                                        Group
-                                    </label>
+                        </div>
 
-   
-                                    <select asp-for="Group"
-                                            asp-items="@ViewBag.groups"
-                                            class="form-select">
-                                        <option value="">Select Group</option>
-                                    </select>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Group" class="form-label fw-semibold">
+                                Group
+                            </label>
 
-                                    <span asp-validation-for="Group"
-                                          class="text-danger small">
-                                    </span>
-                                </div>
 
-                                <div class="col-md-6 mb-3">
+                            <select asp-for="Group"
+                                    asp-items="@ViewBag.groups"
+                                    class="form-select">
+                                <option value="">Select Group</option>
+                            </select>
 
-                                    <label asp-for="EmployeeStartingDate"
-                                           class="form-label fw-semibold">
-                                        Starting Date
-                                    </label>
+                            <span asp-validation-for="Group"
+                                  class="text-danger small">
+                            </span>
+                        </div>
 
-                                    <input name="EmployeeStartingDate"
-                                           value="@DateTime.SpecifyKind(Model.EmployeeStartingDate, DateTimeKind.Utc).ToLocalTime().ToString("yyyy-MM-ddTHH:mm")" 
-                                           type="datetime-local"
-                                           class="form-control" />
+                        <div class="col-md-6 mb-3">
 
-                                    <span asp-validation-for="EmployeeStartingDate"
-                                          class="text-danger small">
-                                    </span>
+                            <label asp-for="EmployeeStartingDate"
+                                   class="form-label fw-semibold">
+                                Starting Date
+                            </label>
 
-                                </div>
+                            <input name="EmployeeStartingDate" id="startDate"
+                                   data-utc-field
+                                   data-utc="@(Model.EmployeeStartingDate.ToUtc().ToString("o"))"
+                                   value="@Model.EmployeeStartingDate.ToLocalTime().ToString("yyyy-MM-ddTHH:mm:ss")"
+                                   type="datetime-local"
+                                   step="1"
+                                   class="form-control"/>
 
-                                <div class="col-md-6 mb-3">
+                            <span asp-validation-for="EmployeeStartingDate"
+                                  class="text-danger small">
+                            </span>
 
-                                    <label asp-for="EmployeeEndingDate"
-                                           class="form-label fw-semibold">
-                                        Ending Date
-                                    </label>
-                                  
-                                        <input name="EmployeeEndingDate"
-                                               value="@(Model.EmployeeEndingDate.HasValue
-                                                          ? DateTime.SpecifyKind(Model.EmployeeEndingDate.Value, DateTimeKind.Utc)
-                                                              .ToLocalTime()
-                                                              .ToString("yyyy-MM-ddTHH:mm")
-                                                          : "")"
-                                               type="datetime-local"
-                                               class="form-control"/>
-                                    
+                        </div>
 
-                                    <span asp-validation-for="EmployeeEndingDate"
-                                          class="text-danger small">
-                                    </span>
+                        <div class="col-md-6 mb-3">
 
-                                </div>
+                            <label asp-for="EmployeeEndingDate"
+                                   class="form-label fw-semibold">
+                                Ending Date
+                            </label>
 
-                            </div>
+                            <input name="EmployeeEndingDate" id="endDate"
+                                   data-utc-field
+                                   data-utc="@(Model.EmployeeEndingDate.HasValue?
+                                Model.EmployeeEndingDate.Value.ToUtc().ToString("o") :""
+                                             )"
+                                   value="@(Model.EmployeeEndingDate.HasValue
+                                              ? Model.EmployeeEndingDate.Value
+                                                  .ToLocalTime()
+                                                  .ToString("yyyy-MM-ddTHH:mm:ss")
+                                              : "")"
+                                           step="1"
+                                   type="datetime-local"
+                                   class="form-control"/>
 
 
-                            <hr class="my-4">
+                            <span asp-validation-for="EmployeeEndingDate"
+                                  class="text-danger small">
+                            </span>
 
+                        </div>
 
-                            <!-- Account Information -->
-                            <div class="section-title">
-                                <i class="ti ti-lock"></i>
-                                <span>Account Information</span>
-                            </div>
+                    </div>
 
-                            <div class="row">
 
-                                <!-- Username -->
-                                <div class="col-md-6 mb-3">
+                    <hr class="my-4">
 
-                                    <label asp-for="Username"
-                                           class="form-label fw-semibold">
-                                        Username
-                                    </label>
 
-                                    <input asp-for="Username"
-                                           class="form-control"
-                                           placeholder="Enter username"
-                                           autocomplete="username" />
+                    <!-- Account Information -->
+                    <div class="section-title">
+                        <i class="ti ti-lock"></i>
+                        <span>Account Information</span>
+                    </div>
 
-                                    <span asp-validation-for="Username"
-                                          class="text-danger small">
-                                    </span>
+                    <div class="row">
 
-                                </div>
+                        <!-- Username -->
+                        <div class="col-md-6 mb-3">
 
+                            <label asp-for="Username"
+                                   class="form-label fw-semibold">
+                                Username
+                            </label>
 
-                                <!-- Password -->
-                                <div class="col-md-6 mb-3">
+                            <input asp-for="Username"
+                                   class="form-control"
+                                   placeholder="Enter username"
+                                   autocomplete="username"/>
 
-                                    <label asp-for="Password"
-                                           class="form-label fw-semibold">
-                                        New Password
-                                    </label>
+                            <span asp-validation-for="Username"
+                                  class="text-danger small">
+                            </span>
 
-                                    <input asp-for="Password"
-                                           type="password"
-                                           class="form-control"
-                                           placeholder="Enter password"
-                                           autocomplete="new-password" />
+                        </div>
 
-                                    <span asp-validation-for="Password"
-                                          class="text-danger small">
-                                    </span>
 
-                                </div>
+                        <!-- Password -->
+                        <div class="col-md-6 mb-3">
 
+                            <label asp-for="Password"
+                                   class="form-label fw-semibold">
+                                New Password
+                            </label>
 
-                                <!-- Confirm Password -->
-                                <div class="col-md-6 mb-3">
+                            <input asp-for="Password"
+                                   type="password"
+                                   class="form-control"
+                                   placeholder="Enter password"
+                                   autocomplete="new-password"/>
 
-                                    <label asp-for="ConfirmPassword"
-                                           class="form-label fw-semibold">
-                                        Confirm Password
-                                    </label>
+                            <span asp-validation-for="Password"
+                                  class="text-danger small">
+                            </span>
 
-                                    <input asp-for="ConfirmPassword"
-                                           type="password"
-                                           class="form-control"
-                                           placeholder="Confirm password"
-                                           autocomplete="new-password" />
+                        </div>
 
-                                    <span asp-validation-for="ConfirmPassword"
-                                          class="text-danger small">
-                                    </span>
 
-                                </div>
+                        <!-- Confirm Password -->
+                        <div class="col-md-6 mb-3">
 
-                              
-                            </div>
+                            <label asp-for="ConfirmPassword"
+                                   class="form-label fw-semibold">
+                                Confirm Password
+                            </label>
 
+                            <input asp-for="ConfirmPassword"
+                                   type="password"
+                                   class="form-control"
+                                   placeholder="Confirm password"
+                                   autocomplete="new-password"/>
 
-                            <hr class="my-4">
+                            <span asp-validation-for="ConfirmPassword"
+                                  class="text-danger small">
+                            </span>
 
+                        </div>
 
-                            <!-- Actions -->
-                            <div class="d-flex justify-content-end gap-2">
 
-                                <a asp-controller="Employees"
-                                   asp-action="Employees"
-                                   class="btn btn-light border px-4">
-                                    Cancel
-                                </a>
+                    </div>
 
-                                <button type="submit" class="btn btn-primary px-4">
 
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill-gear" viewBox="0 0 16 16">
-                                        <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4m9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0" />
-                                    </svg>
+                    <hr class="my-4">
 
-                                    Edit Employee
 
-                                </button>
+                    <!-- Actions -->
+                    <div class="d-flex justify-content-end gap-2">
 
-                            </div>
+                        <a asp-controller="Employees"
+                           asp-action="Employees"
+                           class="btn btn-light border px-4">
+                            Cancel
+                        </a>
 
-                        </form>
+                        <button type="submit" class="btn btn-primary px-4">
+
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill-gear" viewBox="0 0 16 16">
+                                <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4m9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0"/>
+                            </svg>
+
+                            Edit Employee
+
+                        </button>
+
+                    </div>
+
+                    </form>
 
                     </div>
                 </div>
@@ -311,5 +321,6 @@
 
 
 @section Scripts {
+    <script src="~/js/dateTime.js"></script>
     <partial name="_ValidationScriptsPartial" />
 }

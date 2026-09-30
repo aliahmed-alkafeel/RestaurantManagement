@@ -10,6 +10,7 @@ namespace RestaurantManagement.Areas.Dashboard.ViewModels
         [Required(ErrorMessage = "Category is required.")]
         public Guid CategoryId { get; set; }
         [Required(ErrorMessage ="Price is required.")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0.")]
         public decimal Price { get; set; }
         public decimal? DiscountPercentage { get; set; }
         [Required]

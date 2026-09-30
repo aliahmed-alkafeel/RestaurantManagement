@@ -432,7 +432,7 @@
                 }
 
             },
-            250
+            150
         );
 
     }
@@ -632,6 +632,14 @@
 
                 event.stopPropagation();
 
+
+                // Close Sort
+                document
+                    .getElementById("sortFilter")
+                    ?.classList.remove("open");
+
+
+                // Toggle Status
                 statusFilter.classList.toggle("open");
 
             }
@@ -662,13 +670,17 @@
                     .querySelectorAll(".status-option")
                     .forEach(item => {
 
-                        item.classList.remove("selected");
+                        item.classList.remove(
+                            "selected"
+                        );
 
                     });
 
 
                 // Select clicked option
-                option.classList.add("selected");
+                option.classList.add(
+                    "selected"
+                );
 
 
                 // Update text
@@ -700,7 +712,9 @@
 
 
                 // Close
-                statusFilter.classList.remove("open");
+                statusFilter.classList.remove(
+                    "open"
+                );
 
 
                 // Load orders
@@ -715,9 +729,15 @@
             "click",
             function (event) {
 
-                if (!statusFilter.contains(event.target)) {
+                if (
+                    !statusFilter.contains(
+                        event.target
+                    )
+                ) {
 
-                    statusFilter.classList.remove("open");
+                    statusFilter.classList.remove(
+                        "open"
+                    );
 
                 }
 
@@ -725,6 +745,8 @@
         );
 
     }
+
+
     // =====================================================
     // SORT
     // =====================================================
@@ -1221,36 +1243,137 @@
     formatOrderDates();
 
 });
+
+
 (function () {
-    const dropdown = document.getElementById("sortFilter");
-    if (!dropdown) return;
 
-    const button = dropdown.querySelector(".sort-select-button");
-    const input = document.getElementById("ordersSort");
-    const text = document.getElementById("selectedSortText");
-    const options = dropdown.querySelectorAll(".sort-option");
+    const dropdown =
+        document.getElementById("sortFilter");
 
-    button.addEventListener("click", function (e) {
-        e.stopPropagation();
-        dropdown.classList.toggle("open");
-    });
+    if (!dropdown)
+        return;
 
-    options.forEach(function (option) {
-        option.addEventListener("click", function () {
-            options.forEach(function (o) { o.classList.remove("selected"); });
-            option.classList.add("selected");
 
-            text.textContent = option.textContent.trim();
-            input.value = option.dataset.sort;
-            dropdown.classList.remove("open");
+    const button =
+        dropdown.querySelector(
+            ".sort-select-button"
+        );
 
-            input.dispatchEvent(new Event("change", { bubbles: true }));
-        });
-    });
+    const input =
+        document.getElementById("ordersSort");
 
-    document.addEventListener("click", function (e) {
-        if (!dropdown.contains(e.target)) {
-            dropdown.classList.remove("open");
+    const text =
+        document.getElementById("selectedSortText");
+
+    const options =
+        dropdown.querySelectorAll(
+            ".sort-option"
+        );
+
+
+    // =====================================================
+    // Open / Close Sort
+    // =====================================================
+
+    button.addEventListener(
+        "click",
+        function (e) {
+
+            e.stopPropagation();
+
+
+            // Close Status
+            document
+                .getElementById("statusFilter")
+                ?.classList.remove("open");
+
+
+            // Toggle Sort
+            dropdown.classList.toggle(
+                "open"
+            );
+
         }
-    });
+    );
+
+
+    // =====================================================
+    // Select Sort Option
+    // =====================================================
+
+    options.forEach(
+        function (option) {
+
+            option.addEventListener(
+                "click",
+                function () {
+
+                    options.forEach(
+                        function (o) {
+
+                            o.classList.remove(
+                                "selected"
+                            );
+
+                        }
+                    );
+
+
+                    option.classList.add(
+                        "selected"
+                    );
+
+
+                    text.textContent =
+                        option.textContent.trim();
+
+
+                    input.value =
+                        option.dataset.sort;
+
+
+                    dropdown.classList.remove(
+                        "open"
+                    );
+
+
+                    input.dispatchEvent(
+                        new Event(
+                            "change",
+                            {
+                                bubbles: true
+                            }
+                        )
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    // =====================================================
+    // Click Outside
+    // =====================================================
+
+    document.addEventListener(
+        "click",
+        function (e) {
+
+            if (
+                !dropdown.contains(
+                    e.target
+                )
+            ) {
+
+                dropdown.classList.remove(
+                    "open"
+                );
+
+            }
+
+        }
+    );
+
 })();

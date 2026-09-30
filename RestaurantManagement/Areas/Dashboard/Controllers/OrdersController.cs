@@ -77,8 +77,15 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [HttpPost("ConfirmedDeleteOrder/{id:guid}")]
         public async Task<IActionResult> ConfirmedDeleteOrder(Guid id, CancellationToken cancellationToken)
         {
-            await ordersService.DeleteOrderAsync(id, cancellationToken);
-            TempData.SuccessMessage(
+            var result = await ordersService.DeleteOrderAsync(id, cancellationToken);
+
+                if (!result)
+                {
+                    var category = await ordersService.GetOrderByIdAsync(id, cancellationToken);
+                    ModelState.AddModelError(string.Empty, "The order could not be deleted.");
+                    return View("DeleteOrder", category);
+                }
+                TempData.SuccessMessage(
                 NotificationExtensions.ActionType.Delete,
                 NotificationExtensions.EntityType.Order);
             return RedirectToAction(nameof(Orders));
