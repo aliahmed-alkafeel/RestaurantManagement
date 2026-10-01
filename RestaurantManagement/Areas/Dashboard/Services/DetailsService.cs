@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Areas.Dashboard.IServices;
 using RestaurantManagement.Areas.Dashboard.ViewModels;
-using RestaurantManagement.Data;
 using RestaurantManagement.IRepositories;
 
-namespace RestaurantManagement.Areas.Details.Services
+namespace RestaurantManagement.Areas.Dashboard.Services
 {
     public class DetailsService(IUnitOfWork unitOfWork) : IDetailsService
     {

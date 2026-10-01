@@ -48,7 +48,45 @@
 
             </div>
 
-            <div class="status-select" id="statusFilter">
+
+            <!-- =================================================
+                 SORT
+            ================================================== -->
+            @{
+                var sortOptions = new[]
+                {
+                    (Value: "oldest", Text: "Oldest"),
+                    (Value: "newest", Text: "Newest"),
+                    (Value: "price-high", Text: "Highest Price"),
+                    (Value: "price-low", Text: "Lowest Price")
+                };
+
+                var currentSort = string.IsNullOrEmpty(Model.Filter.Sort) ? "oldest" : Model.Filter.Sort;
+                var currentSortText = sortOptions.FirstOrDefault(o => o.Value == currentSort).Text ?? "Oldest";
+            }
+
+            <div class="sort-select" id="sortFilter">
+
+                <input type="hidden" id="ordersSort" value="@currentSort" />
+
+                <button type="button" class="sort-select-button">
+                    <span id="selectedSortText">@currentSortText</span>
+                    <span class="sort-arrow"></span>
+                </button>
+
+                <div class="sort-select-menu">
+                    @foreach (var option in sortOptions)
+                    {
+                        <button type="button"
+                                class="sort-option @(option.Value == currentSort ? "selected" : "")"
+                                data-sort="@option.Value">
+                            @option.Text
+                        </button>
+                    }
+                </div>
+
+            </div>
+                        <div class="status-select" id="statusFilter">
 
     @{
         string selectedText;
@@ -132,43 +170,6 @@
     </div>
 
 </div>
-            <!-- =================================================
-                 SORT
-            ================================================== -->
-            @{
-                var sortOptions = new[]
-                {
-                    (Value: "oldest", Text: "Oldest"),
-                    (Value: "newest", Text: "Newest"),
-                    (Value: "price-high", Text: "Highest Price"),
-                    (Value: "price-low", Text: "Lowest Price")
-                };
-
-                var currentSort = string.IsNullOrEmpty(Model.Filter.Sort) ? "oldest" : Model.Filter.Sort;
-                var currentSortText = sortOptions.FirstOrDefault(o => o.Value == currentSort).Text ?? "Oldest";
-            }
-
-            <div class="sort-select" id="sortFilter">
-
-                <input type="hidden" id="ordersSort" value="@currentSort" />
-
-                <button type="button" class="sort-select-button">
-                    <span id="selectedSortText">@currentSortText</span>
-                    <span class="sort-arrow"></span>
-                </button>
-
-                <div class="sort-select-menu">
-                    @foreach (var option in sortOptions)
-                    {
-                        <button type="button"
-                                class="sort-option @(option.Value == currentSort ? "selected" : "")"
-                                data-sort="@option.Value">
-                            @option.Text
-                        </button>
-                    }
-                </div>
-
-            </div>
             <div class="results-info">
 
                 <strong id="ordersTotalCount">
@@ -180,6 +181,7 @@
                 </span>
 
             </div>
+
             </div>
 
 

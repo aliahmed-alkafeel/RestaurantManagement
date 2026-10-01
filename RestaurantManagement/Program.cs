@@ -9,7 +9,6 @@ using RestaurantManagement.IServices;
 using RestaurantManagement.Services;
 using RestaurantManagement.Areas.Dashboard.Services;
 using RestaurantManagement.Areas.Dashboard.IServices;
-using RestaurantManagement.Areas.Details.Services;
 using RestaurantManagement.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);

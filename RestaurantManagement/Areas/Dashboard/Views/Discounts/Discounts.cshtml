@@ -63,14 +63,16 @@
         {
             <tr>
                 <td class="discount-name">
-                        <span class="discount-date"
-                              data-utc="@discount.DiscountStartingDate.ToLocalTime().ToString("O")">
+                    <span
+                          >
+                            @discount.DiscountStartingDate.ToLocalTime()
                     </span>
                     
                 </td>
                 <td>
-                        <span class="discount-date"
-                              data-utc="@discount.DiscountEndingDate.ToLocalTime().ToString("O")">
+                    <span 
+                        >
+                            @discount.DiscountEndingDate.ToLocalTime()
                     </span>
                     
                 </td>
@@ -108,9 +110,5 @@
     searchInput.addEventListener("input", function() {
         list.search(this.value)
     });
-    document.querySelectorAll('.discount-date').forEach(element => {
-        const utcDate = new Date(element.dataset.utc);
-        element.textContent = utcDate.toLocaleString();
-    });
-
+  
 </script>

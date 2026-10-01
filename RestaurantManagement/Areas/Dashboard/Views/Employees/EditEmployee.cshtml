@@ -166,7 +166,7 @@
                                    data-utc="@(Model.EmployeeStartingDate.ToUtc().ToString("o"))"
                                    value="@Model.EmployeeStartingDate.ToLocalTime().ToString("yyyy-MM-ddTHH:mm:ss")"
                                    type="datetime-local"
-                                   step="1"
+                                
                                    class="form-control"/>
 
                             <span asp-validation-for="EmployeeStartingDate"
@@ -192,7 +192,7 @@
                                                   .ToLocalTime()
                                                   .ToString("yyyy-MM-ddTHH:mm:ss")
                                               : "")"
-                                           step="1"
+                                        
                                    type="datetime-local"
                                    class="form-control"/>
 
@@ -323,4 +323,17 @@
 @section Scripts {
     <script src="~/js/dateTime.js"></script>
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        $("form").on("submit", function () {
+
+    const password = $("#Password");
+    const confirmPassword = $("#ConfirmPassword");
+
+    if (password.val() === "" && confirmPassword.val() === "") {
+        password.rules("remove");
+        confirmPassword.rules("remove");
+    }
+        });
+    </script>
+
 }

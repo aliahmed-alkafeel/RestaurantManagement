@@ -96,17 +96,15 @@
                     @emp.Username
                 </td>
                 <td>
-                        <span class="employee-date"
-                              data-utc="@emp.EmployeeStartingDate.ToString("O")">
-                        </span>
+
+                            @emp.EmployeeStartingDate.ToLocalTime()
+
                 </td>
                 <td>
                     @if (emp.EmployeeEndingDate.HasValue)
                     {
 
-                            <span class="employee-date"
-            data-utc="@emp.EmployeeEndingDate.Value.ToLocalTime().ToString("O")">
-                </span>
+                    @emp.EmployeeEndingDate.Value.ToLocalTime()
                     }
                 </td>
                 @if (User.IsInRole(nameof(UserRole.ManageEmployees)))
@@ -142,11 +140,7 @@
     searchInput.addEventListener("input", function() {
         list.search(this.value)
     });
-    document.querySelectorAll('.employee-date').forEach(element => {
-        const utcDate = new Date(element.dataset.utc);
 
-        element.textContent = utcDate.toLocaleString();
-    });
 </script>
 
 

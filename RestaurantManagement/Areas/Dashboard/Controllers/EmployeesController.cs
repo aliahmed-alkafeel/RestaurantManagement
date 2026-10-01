@@ -38,30 +38,42 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditEmployee(ManageEmployeeViewModel model)
         {
-            var clonedModelState = new ModelStateDictionary(ModelState);
+            var passwordIsEmpty =
+                string.IsNullOrEmpty(model.Password) &&
+                string.IsNullOrEmpty(model.ConfirmPassword);
+
+            if (passwordIsEmpty)
+            {
                 ModelState.Remove(nameof(model.Password));
                 ModelState.Remove(nameof(model.ConfirmPassword));
+            }
+
             if (!ModelState.IsValid)
             {
-                ViewBag.groups = await employeesService.ShowCreateEmployeeAsync(model.CancellationToken);
+                ViewBag.groups = await employeesService
+                    .ShowCreateEmployeeAsync(model.CancellationToken);
+
                 return View(model);
             }
-            if (!clonedModelState.IsValid && !string.IsNullOrEmpty(model.Password) && !string.IsNullOrEmpty(model.ConfirmPassword))
-            {                             
-                    return View(model);
-            }
+
             var result = await employeesService.UpdateEmployeeAsync(model);
-            if(!result)
+
+            if (!result)
             {
-                ModelState.AddModelError("","This update is not allowed");
+                ModelState.AddModelError("", "This update is not allowed");
+
+                ViewBag.groups = await employeesService
+                    .ShowCreateEmployeeAsync(model.CancellationToken);
+
                 return View(model);
             }
+
             TempData.SuccessMessage(
                 NotificationExtensions.ActionType.Update,
                 NotificationExtensions.EntityType.Employee);
+
             return RedirectToAction(nameof(Employees));
         }
-
         [Authorize(Roles = nameof(UserRole.ManageEmployees))]
         [HttpGet("TerminateEmployee/{id:guid}")]
         public async Task<IActionResult> TerminateEmployee(Guid id, CancellationToken cancellationToken)

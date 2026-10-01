@@ -66,7 +66,7 @@
                                         <input asp-for="DiscountPercentage"
                                                class="form-control"
                                                type="number"
-                                               value=@(isEdit ? Model.DiscountPercentage :"")
+                                               value="@(isEdit ? Model.DiscountPercentage :"")"
                                                min="0"
                                                max="100"
                                                step="1"
@@ -94,7 +94,7 @@
                                     <input name="DiscountStartingDate" id="startDate"
                                            type="datetime-local"
                                            data-utc-field
-                                           step="1"
+                           
                                            data-utc="@(isEdit ? Model.DiscountStartingDate.ToUtc().ToString("o") : "")"
                                            value="@(isEdit? Model.DiscountStartingDate.ToLocalTime().ToString("yyyy-MM-ddTHH:mm:ss")
                                                                                   :Model.DiscountStartingDate.ToString("yyyy-MM-ddTHH:mm:ss"))"
@@ -121,8 +121,7 @@
                                     <input name="DiscountEndingDate" id="endDate"
                                            type="datetime-local"
                                            data-utc-field
-                                           step="1"
-                                           data-utc="@(isEdit ? Model.DiscountEndingDate.ToUtc().ToString("o") : "")"
+                                           data-utc="@(isEdit ? Model.DiscountEndingDate.ToUtc().ToString("O") : "")"
                                            value="@(isEdit? Model.DiscountEndingDate.ToLocalTime().ToString("yyyy-MM-ddTHH:mm:ss"):
                                                     Model.DiscountEndingDate.ToString("yyyy-MM-ddTHH:mm:ss"))"
                                            class="form-control" />
