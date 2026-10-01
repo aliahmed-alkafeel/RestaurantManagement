@@ -46,7 +46,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 }).ToListAsync(cancellationToken);
         }
 
-        public async Task<ManageEmployeeViewModel> GetEmployeeByIdAsync(Guid id,
+        public async Task<CreateEmployeeViewModel> GetCreateEmployeeByIdAsync(Guid id,
             CancellationToken cancellationToken = default)
         {
             var emp = await _unitOfWork.Employees.NoTrackingSelect()
@@ -60,7 +60,37 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                     Text = g.GroupName
                 }).ToListAsync(cancellationToken);
             Console.WriteLine(emp.EmployeeStartingDate.ToUtc());
-            return new ManageEmployeeViewModel
+            return new CreateEmployeeViewModel
+            {
+                Id = emp.Id,
+                FirstName = emp.FirstName,
+                LastName = emp.LastName,
+                PhoneNumber = emp.PhoneNumber,
+                EmployeeStartingDate = emp.EmployeeStartingDate,
+                EmployeeEndingDate = emp.EmployeeEndingDate,
+                Username = emp.Username,
+                Email = emp.Email,
+                Group = emp.GroupId,
+                GroupName = emp.Group!.GroupName,
+                Groups = groups
+            };
+        }
+
+        public async Task<UpdateEmployeeViewModel> GetUpdateEmployeeByIdAsync(Guid id,
+            CancellationToken cancellationToken = default)
+        {
+            var emp = await _unitOfWork.Employees.NoTrackingSelect()
+                .Include(e => e.Group).Where(e=> e.Group != null && !e.Group.IsDeleted)
+                .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
+            if (emp is null) throw new ArgumentNullException(nameof(emp));
+            var groups = await _unitOfWork.Groups.NoTrackingSelect().Select(g =>
+                new SelectListItem
+                {
+                    Value = g.GroupName,
+                    Text = g.GroupName
+                }).ToListAsync(cancellationToken);
+            Console.WriteLine(emp.EmployeeStartingDate.ToUtc());
+            return new UpdateEmployeeViewModel()
             {
                 Id = emp.Id,
                 FirstName = emp.FirstName,
@@ -86,7 +116,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
                 }).ToListAsync(cancellationToken);
         }
     
-        public async Task<bool> CreateEmployeeAsync(ManageEmployeeViewModel model)
+        public async Task<bool> CreateEmployeeAsync(CreateEmployeeViewModel model)
         {
             if (model is null)
                 throw new ArgumentNullException(nameof(model));
@@ -132,7 +162,7 @@ namespace RestaurantManagement.Areas.Dashboard.Services
 
         }
 
-        public async Task<bool> UpdateEmployeeAsync(ManageEmployeeViewModel model)
+        public async Task<bool> UpdateEmployeeAsync(UpdateEmployeeViewModel model)
         {
             if (model is null)
                 throw new ArgumentNullException(nameof(model));

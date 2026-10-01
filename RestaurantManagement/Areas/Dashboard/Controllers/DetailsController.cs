@@ -14,7 +14,6 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         public async Task<IActionResult> Details(CancellationToken cancellationToken)
         {
             var model = await DetailsService.GetDetailsAsync(cancellationToken);
-
             return View(model);
         }
     }

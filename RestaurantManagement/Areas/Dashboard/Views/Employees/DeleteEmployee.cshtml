@@ -1,4 +1,4 @@
-﻿@model ManageEmployeeViewModel
+﻿@model CreateEmployeeViewModel
 
 @{
 }
@@ -159,7 +159,7 @@
                                     </label>
 
                                     <input disabled name="EmployeeStartingDate"
-                                           value="@Model.EmployeeStartingDate.ToLocalTime().ToString("yyyy-MM-ddTHH:mm")"
+                                           value="@Model.EmployeeStartingDate.ToLocalTime().ToString("yyyy-MM-ddTHH:mm:ss")"
                                            type="datetime-local"
                                            class="form-control" />
 
@@ -181,7 +181,7 @@
                                                value="@(Model.EmployeeEndingDate.HasValue
                                                           ? Model.EmployeeEndingDate.Value
                                                               .ToLocalTime()
-                                                              .ToString("yyyy-MM-ddTHH:mm")
+                                                              .ToString("yyyy-MM-ddTHH:mm:ss")
                                                           : "")"
                                                type="datetime-local"
                                                class="form-control"/>

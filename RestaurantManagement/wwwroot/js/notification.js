@@ -1,17 +1,21 @@
 ﻿document.addEventListener("DOMContentLoaded", () => {
 
-    const notification = document.getElementById("success-notification");
+    const notifications = document.querySelectorAll(
+        "#success-notification, #warning-notification"
+    );
 
-    if (!notification)
-        return;
-
-    setTimeout(() => {
-
-        notification.classList.add("hide");
+    notifications.forEach(notification => {
 
         setTimeout(() => {
-            notification.remove();
-        }, 300);
 
-    }, 3000);
+            notification.classList.add("hide");
+
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+
+        }, 3000);
+
+    });
+
 });

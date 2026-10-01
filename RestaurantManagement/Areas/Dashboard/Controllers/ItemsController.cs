@@ -122,7 +122,6 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         public async Task<IActionResult> GetItemsByType(CategoryType type)
         {
             var items = await itemsService.GetItemsByType(type);
-
             return Json(items);
         }
 

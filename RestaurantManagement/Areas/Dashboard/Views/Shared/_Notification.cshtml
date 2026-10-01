@@ -5,3 +5,13 @@
         <span>@message</span>
     </div>
 }
+
+@if (TempData["WarningMessage"] is string warningMessage)
+{
+    <div id="warning-notification" class="warning-notification">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <span>@warningMessage</span>
+    </div>
+}
+
+

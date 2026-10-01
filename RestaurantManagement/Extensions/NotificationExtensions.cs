@@ -5,25 +5,59 @@ namespace RestaurantManagement.Extensions
     public static class NotificationExtensions
     {
         public static void SuccessMessage(
-                this ITempDataDictionary tempData,
-                ActionType action,
-                EntityType entity)
+            this ITempDataDictionary tempData,
+            ActionType action,
+            EntityType entity)
+        {
+            string message = action switch
             {
-                string message = action switch
-                {
-                    ActionType.Create => $"{entity.ToString()} created successfully.",
-                    ActionType.Update => $"{entity.ToString()} updated successfully.",
-                    ActionType.Delete => $"{entity.ToString()} deleted successfully.",
-                    _ => "Operation completed successfully."
-                };
+                ActionType.Create =>
+                    $"The {entity} created successfully.",
 
-                tempData["SuccessMessage"] = message;
-            }
+                ActionType.Update =>
+                    $"The {entity} updated successfully.",
+
+                ActionType.Delete =>
+                    $"The {entity} deleted successfully.",
+
+                ActionType.Terminate =>
+                    $"The {entity} terminated successfully.",
+
+                _ =>
+                    "Operation completed successfully."
+            };
+
+            tempData["SuccessMessage"] = message;
+        }
+
+        public static void WarningMessage(
+            this ITempDataDictionary tempData,
+            ActionType action,
+            EntityType entity)
+        {
+            string message = action switch
+            {
+                ActionType.CantDelete =>
+                    $"The {entity} can't be deleted.",
+
+                ActionType.CantTerminate =>
+                    $"The {entity} can't be terminated.",
+
+                _ =>
+                    "Operation could not be completed."
+            };
+
+            tempData["WarningMessage"] = message;
+        }
+
         public enum ActionType
         {
             Create,
             Update,
-            Delete
+            Delete,
+            Terminate,
+            CantDelete,
+            CantTerminate
         }
 
         public enum EntityType
