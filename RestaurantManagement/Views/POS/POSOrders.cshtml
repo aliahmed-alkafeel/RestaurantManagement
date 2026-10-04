@@ -24,7 +24,9 @@
         <div id="ordersFilterToolbar"
              class="orders-toolbar">
 
-            <!-- Search -->
+            <!-- =================================================
+                 SEARCH
+            ================================================== -->
 
             <div class="search-box">
 
@@ -52,6 +54,7 @@
             <!-- =================================================
                  SORT
             ================================================== -->
+
             @{
                 var sortOptions = new[]
                 {
@@ -61,115 +64,162 @@
                     (Value: "price-low", Text: "Lowest Price")
                 };
 
-                var currentSort = string.IsNullOrEmpty(Model.Filter.Sort) ? "oldest" : Model.Filter.Sort;
-                var currentSortText = sortOptions.FirstOrDefault(o => o.Value == currentSort).Text ?? "Oldest";
+                var currentSort =
+                    string.IsNullOrEmpty(Model.Filter.Sort)
+                        ? "oldest"
+                        : Model.Filter.Sort;
+
+                var currentSortText =
+                    sortOptions
+                        .FirstOrDefault(o => o.Value == currentSort)
+                        .Text ?? "Oldest";
             }
 
-            <div class="sort-select" id="sortFilter">
+            <div class="sort-select"
+                 id="sortFilter">
 
-                <input type="hidden" id="ordersSort" value="@currentSort" />
+                <input type="hidden"
+                       id="ordersSort"
+                       value="@currentSort" />
 
-                <button type="button" class="sort-select-button">
-                    <span id="selectedSortText">@currentSortText</span>
+                <button type="button"
+                        class="sort-select-button">
+
+                    <span id="selectedSortText">
+                        @currentSortText
+                    </span>
+
                     <span class="sort-arrow"></span>
+
                 </button>
 
+
                 <div class="sort-select-menu">
+
                     @foreach (var option in sortOptions)
                     {
                         <button type="button"
                                 class="sort-option @(option.Value == currentSort ? "selected" : "")"
                                 data-sort="@option.Value">
+
                             @option.Text
+
                         </button>
                     }
+
                 </div>
 
             </div>
-                        <div class="status-select" id="statusFilter">
-
-    @{
-        string selectedText;
-        string selectedClass;
-
-        if (Model.Filter.ShowAllStatuses)
-        {
-            selectedText = "All";
-            selectedClass = "status-all";
-        }
-        else if (Model.Filter.Status is null)
-        {
-            selectedText = "Default";
-            selectedClass = "status-default";
-        }
-        else
-        {
-            selectedText = Model.Filter.Status.ToString();
-            selectedClass =
-                $"status-{Model.Filter.Status.ToString().ToLower()}";
-        }
-    }
-
-    <button type="button"
-            class="status-select-button">
-
-        <span class="status-dot @selectedClass"></span>
-
-        <span id="selectedStatusText">
-            @selectedText
-        </span>
-
-        <span class="status-arrow">⌄</span>
-
-    </button>
 
 
-    <div class="status-select-menu">
+            <!-- =================================================
+                 STATUS FILTER
+            ================================================== -->
 
-        <button type="button"
-                class="status-option status-default
-                       @(Model.Filter.Status is null && !Model.Filter.ShowAllStatuses ? "selected" : "")"
-                data-status="default">
+            <div class="status-select"
+                 id="statusFilter">
 
-            <span class="status-dot"></span>
-            Default
+                @{
+                    string selectedText;
+                    string selectedClass;
 
-        </button>
+                    if (Model.Filter.ShowAllStatuses)
+                    {
+                        selectedText = "All";
+                        selectedClass = "status-all";
+                    }
+                    else if (Model.Filter.Status is null)
+                    {
+                        selectedText = "Default";
+                        selectedClass = "status-default";
+                    }
+                    else
+                    {
+                        selectedText =
+                            Model.Filter.Status.ToString();
+
+                        selectedClass =
+                            $"status-{Model.Filter.Status.ToString().ToLowerInvariant()}";
+                    }
+                }
 
 
-        <button type="button"
-                class="status-option status-all
-                       @(Model.Filter.ShowAllStatuses ? "selected" : "")"
-                data-status="all">
+                <button type="button"
+                        class="status-select-button">
 
-            <span class="status-dot"></span>
-            All
+                    <span class="status-dot @selectedClass"></span>
 
-        </button>
+                    <span id="selectedStatusText">
+                        @selectedText
+                    </span>
+
+                    <span class="status-arrow">
+                        ⌄
+                    </span>
+
+                </button>
 
 
-        @foreach (var status in Enum.GetValues<OrderStatus>())
-        {
-            var statusClass =
-                $"status-{status.ToString().ToLower()}";
+                <div class="status-select-menu">
 
-            var isActive =
-                Model.Filter.Status == status;
+                    <!-- Default -->
 
-            <button type="button"
-                    class="status-option @statusClass @(isActive ? "selected" : "")"
-                    data-status="@((int)status)">
+                    <button type="button"
+                            class="status-option status-default
+                                   @(Model.Filter.Status is null && !Model.Filter.ShowAllStatuses ? "selected" : "")"
+                            data-status="default">
 
-                <span class="status-dot"></span>
+                        <span class="status-dot"></span>
 
-                @status
+                        Default
 
-            </button>
-        }
+                    </button>
 
-    </div>
 
-</div>
+                    <!-- All -->
+
+                    <button type="button"
+                            class="status-option status-all
+                                   @(Model.Filter.ShowAllStatuses ? "selected" : "")"
+                            data-status="all">
+
+                        <span class="status-dot"></span>
+
+                        All
+
+                    </button>
+
+
+                    <!-- Order Statuses -->
+
+                    @foreach (var status in Enum.GetValues<OrderStatus>())
+                    {
+                        var statusClass =
+                            $"status-{status.ToString().ToLowerInvariant()}";
+
+                        var isActive =
+                            Model.Filter.Status == status;
+
+                        <button type="button"
+                                class="status-option @statusClass @(isActive ? "selected" : "")"
+                                data-status="@((int)status)">
+
+                            <span class="status-dot"></span>
+
+                            @status
+
+                        </button>
+                    }
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 RESULTS
+            ================================================== -->
+
             <div class="results-info">
 
                 <strong id="ordersTotalCount">
@@ -182,7 +232,7 @@
 
             </div>
 
-            </div>
+        </div>
 
 
         <!-- =================================================
@@ -192,10 +242,14 @@
         @Html.AntiForgeryToken()
 
     </div>
-        <!-- =================================================
-             TABLE
-        ================================================== -->
-        <div class="orders-table-card">
+
+
+    <!-- =================================================
+         TABLE
+    ================================================== -->
+
+    <div class="orders-table-card">
+
         <div id="ordersTableWrapper"
              class="orders-table-wrapper">
 
@@ -205,10 +259,7 @@
 
         </div>
 
-
-        </div>
-
-
+    </div>
 
 </div>
 

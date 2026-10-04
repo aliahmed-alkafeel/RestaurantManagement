@@ -36,10 +36,6 @@
 
     // =====================================================
     // Current Status Filter
-    //
-    // default = active orders only
-    // all     = all orders
-    // number  = specific status
     // =====================================================
 
     let currentStatus =
@@ -62,6 +58,10 @@
     let currentStatusButton = null;
 
 
+    // =====================================================
+    // Order Statuses
+    // =====================================================
+
     const orderStatuses = [
 
         {
@@ -69,18 +69,18 @@
             name: "Pending",
             className: "status-pending"
         },
+
         {
             value: 1,
             name: "Confirmed",
             className: "status-confirmed"
         },
+
         {
             value: 2,
             name: "Preparing",
             className: "status-preparing"
         },
-
-
 
         {
             value: 3,
@@ -101,6 +101,22 @@
         }
 
     ];
+
+
+    // =====================================================
+    // Status Classes
+    // =====================================================
+
+    const statusClasses = {
+
+        0: "status-pending",
+        1: "status-confirmed",
+        2: "status-preparing",
+        3: "status-ready",
+        4: "status-completed",
+        5: "status-cancelled"
+
+    };
 
 
     // =====================================================
@@ -140,9 +156,11 @@
             return;
         }
 
+
         statusPopup.classList.remove(
             "show"
         );
+
 
         if (currentStatusButton) {
 
@@ -154,7 +172,9 @@
             currentStatusButton.classList.remove(
                 "status-popup-open"
             );
+
         }
+
 
         currentStatusButton = null;
     }
@@ -169,49 +189,90 @@
         const popup =
             createStatusPopup();
 
+
         const orderCurrentStatus =
             parseInt(
                 button.dataset.status
             );
 
-        currentStatusButton = button;
 
-        button.classList.add("status-popup-open");
+        if (
+            Number.isNaN(
+                orderCurrentStatus
+            )
+        ) {
+            return;
+        }
+
+
+        currentStatusButton =
+            button;
+
+
+        button.classList.add(
+            "status-popup-open"
+        );
+
 
         popup.innerHTML = "";
 
 
         // =================================================
-        // Create Options
+        // Create ALL Status Options
+        //
+        // Current status stays visible and selected
         // =================================================
 
-        orderStatuses
-            .filter(status =>
-                status.value !==
-                orderCurrentStatus
-            )
-            .forEach(status => {
+        orderStatuses.forEach(
+            function (status) {
 
                 const option =
                     document.createElement("button");
 
+
                 option.type =
                     "button";
+
 
                 option.className =
                     `status-option ${status.className}`;
 
+
                 option.dataset.status =
                     status.value;
 
+
                 option.textContent =
                     status.name;
+
+
+                // =================================================
+                // Current Status = Selected
+                // =================================================
+
+                if (
+                    status.value ===
+                    orderCurrentStatus
+                ) {
+
+                    option.classList.add(
+                        "selected"
+                    );
+
+
+                    // Prevent unnecessary update
+                    option.disabled =
+                        true;
+
+                }
+
 
                 popup.appendChild(
                     option
                 );
 
-            });
+            }
+        );
 
 
         // =================================================
@@ -225,13 +286,16 @@
         popup.style.minWidth =
             `${Math.max(rect.width, 125)}px`;
 
+
         let top =
             rect.bottom + 6;
+
 
         let left =
             rect.left +
             (rect.width / 2) -
             (popup.offsetWidth / 2);
+
 
         // =================================================
         // Prevent Right Overflow
@@ -246,6 +310,20 @@
                 window.innerWidth -
                 popup.offsetWidth -
                 10;
+
+        }
+
+
+        // =================================================
+        // Prevent Left Overflow
+        // =================================================
+
+        if (
+            left < 10
+        ) {
+
+            left = 10;
+
         }
 
 
@@ -262,6 +340,7 @@
                 rect.top -
                 popup.offsetHeight -
                 6;
+
         }
 
 
@@ -281,6 +360,7 @@
             "aria-expanded",
             "true"
         );
+
     }
 
 
@@ -353,6 +433,7 @@
 
             totalCountElement.textContent =
                 count;
+
         }
 
     }
@@ -394,40 +475,46 @@
 
 
                     if (table) {
+
                         table.remove();
+
                     }
 
 
-                    tableWrapper.innerHTML = `
-                        <div class="empty-orders">
+                    if (tableWrapper) {
 
-                            <div class="empty-icon">
+                        tableWrapper.innerHTML = `
+                            <div class="empty-orders">
 
-                                <svg viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="2">
+                                <div class="empty-icon">
 
-                                    <circle cx="12"
-                                            cy="12"
-                                            r="9" />
+                                    <svg viewBox="0 0 24 24"
+                                         fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="2">
 
-                                    <path d="M8 12h8" />
+                                        <circle cx="12"
+                                                cy="12"
+                                                r="9" />
 
-                                </svg>
+                                        <path d="M8 12h8" />
+
+                                    </svg>
+
+                                </div>
+
+                                <h3>
+                                    No orders found
+                                </h3>
+
+                                <p>
+                                    Try changing your search or filters.
+                                </p>
 
                             </div>
+                        `;
 
-                            <h3>
-                                No orders found
-                            </h3>
-
-                            <p>
-                                Try changing your search or filters.
-                            </p>
-
-                        </div>
-                    `;
+                    }
 
                 }
 
@@ -438,6 +525,925 @@
     }
 
 
+    // =====================================================
+    // Update Order Status
+    // =====================================================
+
+    async function updateOrderStatus(
+        button,
+        newStatus,
+        sourceButton = null
+    ) {
+
+        const orderId =
+            button.dataset.orderId;
+
+
+        if (
+            !orderId ||
+            Number.isNaN(newStatus)
+        ) {
+            return;
+        }
+
+
+        const row =
+            button.closest(
+                ".order-row"
+            );
+
+
+        if (!row) {
+            return;
+        }
+
+
+        if (sourceButton) {
+
+            sourceButton.disabled =
+                true;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    updateStatusUrl,
+                    {
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json",
+
+                            "RequestVerificationToken":
+                                antiForgeryToken
+
+                        },
+
+                        body: JSON.stringify({
+
+                            orderId:
+                                orderId,
+
+                            status:
+                                newStatus
+
+                        })
+
+                    }
+                );
+
+
+            const responseText =
+                await response.text();
+
+
+            if (!response.ok) {
+
+                let message =
+                    `Request failed (${response.status})`;
+
+
+                if (
+                    responseText.trim()
+                ) {
+
+                    try {
+
+                        const errorResult =
+                            JSON.parse(
+                                responseText
+                            );
+
+
+                        message =
+                            errorResult.message ??
+                            message;
+
+                    }
+                    catch {
+
+                        message =
+                            responseText;
+
+                    }
+
+                }
+
+
+                throw new Error(
+                    message
+                );
+
+            }
+
+
+            // =================================================
+            // Filters
+            // =================================================
+
+            const isAllFilter =
+                currentStatus === "all";
+
+
+            const isDefaultFilter =
+                currentStatus === "default";
+
+
+            const isSpecificStatusFilter =
+                !isAllFilter &&
+                !isDefaultFilter;
+
+
+            // =================================================
+            // SPECIFIC STATUS FILTER
+            // =================================================
+
+            if (
+                isSpecificStatusFilter
+            ) {
+
+                const selectedFilterStatus =
+                    parseInt(
+                        currentStatus
+                    );
+
+
+                if (
+                    selectedFilterStatus !==
+                    newStatus
+                ) {
+
+                    removeOrderRow(
+                        row
+                    );
+
+
+                    closeStatusPopup();
+
+                    return;
+
+                }
+
+            }
+
+
+            // =================================================
+            // DEFAULT FILTER
+            //
+            // Completed / Cancelled disappear
+            // =================================================
+
+            if (
+                isDefaultFilter &&
+                (
+                    newStatus === 4 ||
+                    newStatus === 5
+                )
+            ) {
+
+                removeOrderRow(
+                    row
+                );
+
+
+                closeStatusPopup();
+
+                return;
+
+            }
+
+
+            // =================================================
+            // Update Row Status Class
+            // =================================================
+
+            row.classList.remove(
+                "status-pending",
+                "status-confirmed",
+                "status-preparing",
+                "status-ready",
+                "status-completed",
+                "status-cancelled"
+            );
+
+
+            const newClass =
+                statusClasses[newStatus];
+
+
+            if (newClass) {
+
+                row.classList.add(
+                    newClass
+                );
+
+            }
+
+
+            // =================================================
+            // Update Current Status Button
+            // =================================================
+
+            const selectedStatus =
+                orderStatuses.find(
+                    status =>
+                        status.value ===
+                        newStatus
+                );
+
+
+            if (selectedStatus) {
+
+                button.classList.remove(
+                    "status-pending",
+                    "status-confirmed",
+                    "status-preparing",
+                    "status-ready",
+                    "status-completed",
+                    "status-cancelled"
+                );
+
+
+                button.classList.add(
+                    selectedStatus.className
+                );
+
+
+                button.dataset.status =
+                    newStatus;
+
+
+                const text =
+                    button.querySelector(
+                        "span:first-child"
+                    );
+
+
+                if (text) {
+
+                    text.textContent =
+                        selectedStatus.name;
+
+                }
+
+
+         // =================================================
+// UPDATE / REMOVE / CREATE NEXT BUTTON
+// =================================================
+
+let nextButton =
+    row.querySelector(
+        ".next-status-button"
+    );
+
+
+// =================================================
+// Completed / Cancelled
+// No Next button
+// =================================================
+
+if (newStatus >= 4) {
+
+    if (nextButton) {
+
+        nextButton.remove();
+
+    }
+
+}
+
+
+// =================================================
+// Pending / Confirmed / Preparing / Ready
+// Next button must exist
+// =================================================
+
+else {
+
+    if (!nextButton) {
+
+        nextButton =
+            document.createElement("button");
+
+
+        nextButton.type =
+            "button";
+
+
+        nextButton.className =
+            "next-status-button";
+
+
+        nextButton.dataset.orderId =
+            orderId;
+
+
+        nextButton.dataset.status =
+            newStatus;
+
+
+        nextButton.title =
+            "Move to next status";
+
+
+        nextButton.setAttribute(
+            "aria-label",
+            "Move order to next status"
+        );
+
+
+        const arrow =
+            document.createElement("span");
+
+
+        arrow.className =
+            "next-arrow";
+
+
+        nextButton.appendChild(
+            arrow
+        );
+
+
+        // Add it directly after Current Status button
+        button.insertAdjacentElement(
+            "afterend",
+            nextButton
+        );
+
+    }
+    else {
+
+        nextButton.dataset.status =
+            newStatus;
+
+    }
+
+}
+
+                // =================================================
+                // Success Effect
+                // =================================================
+
+                button.classList.add(
+                    "status-updated"
+                );
+
+
+                setTimeout(
+                    function () {
+
+                        button.classList.remove(
+                            "status-updated"
+                        );
+
+                    },
+                    700
+                );
+
+            }
+
+
+            closeStatusPopup();
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+
+            alert(
+                error.message ??
+                "Could not update order status."
+            );
+
+        }
+        finally {
+
+            if (sourceButton) {
+
+                sourceButton.disabled =
+                    false;
+
+            }
+
+        }
+
+    }
+
+
+    // =====================================================
+    // STATUS BUTTON + POPUP + NEXT
+    // =====================================================
+
+    document.addEventListener(
+        "click",
+        async function (event) {
+
+            // =================================================
+            // NEXT STATUS
+            // =================================================
+
+            const nextButton =
+                event.target.closest(
+                    ".next-status-button"
+                );
+
+
+            if (nextButton) {
+
+                event.stopPropagation();
+
+
+                const row =
+                    nextButton.closest(
+                        ".order-row"
+                    );
+
+
+                if (!row) {
+                    return;
+                }
+
+
+                const currentButton =
+                    row.querySelector(
+                        ".current-status-button"
+                    );
+
+
+                if (!currentButton) {
+                    return;
+                }
+
+
+                const currentStatusValue =
+                    parseInt(
+                        currentButton.dataset.status
+                    );
+
+
+                if (
+                    Number.isNaN(
+                        currentStatusValue
+                    )
+                ) {
+                    return;
+                }
+
+
+                // =================================================
+                // Completed = final
+                // Cancelled = final
+                // =================================================
+
+                if (
+                    currentStatusValue >= 4
+                ) {
+                    return;
+                }
+
+
+                const nextStatus =
+                    currentStatusValue + 1;
+
+
+                await updateOrderStatus(
+                    currentButton,
+                    nextStatus,
+                    nextButton
+                );
+
+
+                return;
+            }
+
+
+            // =================================================
+            // OPEN / CLOSE STATUS POPUP
+            // =================================================
+
+            const currentButton =
+                event.target.closest(
+                    ".current-status-button"
+                );
+
+
+            if (currentButton) {
+
+                if (
+                    currentStatusButton ===
+                    currentButton
+                ) {
+
+                    closeStatusPopup();
+
+                    return;
+                }
+
+
+                closeStatusPopup();
+
+
+                openStatusPopup(
+                    currentButton
+                );
+
+
+                return;
+            }
+
+
+            // =================================================
+            // STATUS OPTION
+            // =================================================
+
+            const option =
+                event.target.closest(
+                    ".status-popup .status-option"
+                );
+
+
+            if (!option) {
+
+                if (
+                    statusPopup &&
+                    !event.target.closest(
+                        ".status-popup"
+                    )
+                ) {
+
+                    closeStatusPopup();
+
+                }
+
+                return;
+            }
+
+
+            // Current selected status is disabled
+            if (option.disabled) {
+                return;
+            }
+
+
+            const button =
+                currentStatusButton;
+
+
+            if (!button) {
+                return;
+            }
+
+
+            const newStatus =
+                parseInt(
+                    option.dataset.status
+                );
+
+
+            if (
+                Number.isNaN(
+                    newStatus
+                )
+            ) {
+                return;
+            }
+
+
+            option.disabled =
+                true;
+
+
+            await updateOrderStatus(
+                button,
+                newStatus,
+                option
+            );
+
+        }
+    );
+
+
+    // =====================================================
+    // STATUS FILTER
+    // =====================================================
+
+    if (statusFilter) {
+
+        const selectButton =
+            statusFilter.querySelector(
+                ".status-select-button"
+            );
+
+        const selectMenu =
+            statusFilter.querySelector(
+                ".status-select-menu"
+            );
+
+        const selectedText =
+            statusFilter.querySelector(
+                "#selectedStatusText"
+            );
+
+
+        // =================================================
+        // Open / Close
+        // =================================================
+
+        selectButton.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+
+                document
+                    .getElementById("sortFilter")
+                    ?.classList.remove("open");
+
+
+                statusFilter.classList.toggle(
+                    "open"
+                );
+
+            }
+        );
+
+
+        // =================================================
+        // Select Status
+        // =================================================
+
+        selectMenu.addEventListener(
+            "click",
+            function (event) {
+
+                const option =
+                    event.target.closest(
+                        ".status-option"
+                    );
+
+
+                if (!option) {
+                    return;
+                }
+
+
+                currentStatus =
+                    option.dataset.status;
+
+
+                // Remove selected
+                selectMenu
+                    .querySelectorAll(".status-option")
+                    .forEach(item => {
+
+                        item.classList.remove(
+                            "selected"
+                        );
+
+                    });
+
+
+                // Add selected
+                option.classList.add(
+                    "selected"
+                );
+
+
+                // Update text
+                selectedText.textContent =
+                    option.textContent.trim();
+
+
+                // Update color
+                const optionClass =
+                    [...option.classList]
+                        .find(className =>
+                            className.startsWith("status-") &&
+                            className !== "status-option"
+                        );
+
+
+                const dot =
+                    selectButton.querySelector(
+                        ".status-dot"
+                    );
+
+
+                if (optionClass) {
+
+                    dot.className =
+                        `status-dot ${optionClass}`;
+
+                }
+
+
+                statusFilter.classList.remove(
+                    "open"
+                );
+
+
+                loadOrders();
+
+            }
+        );
+
+
+        // =================================================
+        // Click Outside
+        // =================================================
+
+        document.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    !statusFilter.contains(
+                        event.target
+                    )
+                ) {
+
+                    statusFilter.classList.remove(
+                        "open"
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    // =====================================================
+    // SORT
+    // =====================================================
+
+    const sortDropdown =
+        document.getElementById("sortFilter");
+
+
+    if (sortDropdown) {
+
+        const button =
+            sortDropdown.querySelector(
+                ".sort-select-button"
+            );
+
+        const input =
+            document.getElementById("ordersSort");
+
+        const text =
+            document.getElementById("selectedSortText");
+
+        const options =
+            sortDropdown.querySelectorAll(
+                ".sort-option"
+            );
+
+
+        // =================================================
+        // Open / Close
+        // =================================================
+
+        button.addEventListener(
+            "click",
+            function (e) {
+
+                e.stopPropagation();
+
+
+                document
+                    .getElementById("statusFilter")
+                    ?.classList.remove("open");
+
+
+                sortDropdown.classList.toggle(
+                    "open"
+                );
+
+            }
+        );
+
+
+        // =================================================
+        // Select Sort
+        // =================================================
+
+        options.forEach(
+            function (option) {
+
+                option.addEventListener(
+                    "click",
+                    function () {
+
+                        options.forEach(
+                            function (o) {
+
+                                o.classList.remove(
+                                    "selected"
+                                );
+
+                            }
+                        );
+
+
+                        option.classList.add(
+                            "selected"
+                        );
+
+
+                        text.textContent =
+                            option.textContent.trim();
+
+
+                        input.value =
+                            option.dataset.sort;
+
+
+                        sortDropdown.classList.remove(
+                            "open"
+                        );
+
+
+                        input.dispatchEvent(
+                            new Event(
+                                "change",
+                                {
+                                    bubbles: true
+                                }
+                            )
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        // =================================================
+        // Click Outside
+        // =================================================
+
+        document.addEventListener(
+            "click",
+            function (e) {
+
+                if (
+                    !sortDropdown.contains(
+                        e.target
+                    )
+                ) {
+
+                    sortDropdown.classList.remove(
+                        "open"
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    // =====================================================
+    // SEARCH
+    // =====================================================
+
+    if (searchInput) {
+
+        searchInput.addEventListener(
+            "input",
+            function () {
+
+                clearTimeout(
+                    searchTimeout
+                );
+
+
+                searchTimeout =
+                    setTimeout(
+                        function () {
+
+                            loadOrders();
+
+                        },
+                        400
+                    );
+
+            }
+        );
+
+    }
 
 
     // =====================================================
@@ -506,7 +1512,9 @@
         // Sort
         // =================================================
 
-        if (sortSelect?.value) {
+        if (
+            sortSelect?.value
+        ) {
 
             params.append(
                 "Sort",
@@ -560,7 +1568,7 @@
 
 
             // =================================================
-            // Replace Only Partial View
+            // Replace Partial
             // =================================================
 
             tableWrapper.innerHTML =
@@ -568,7 +1576,7 @@
 
 
             // =================================================
-            // Format New Dates
+            // Format Dates
             // =================================================
 
             formatOrderDates();
@@ -601,610 +1609,6 @@
         }
 
     }
-
-
-    // =====================================================
-    // STATUS FILTER - CUSTOM SELECT
-    // =====================================================
-
-    if (statusFilter) {
-
-        const selectButton =
-            statusFilter.querySelector(
-                ".status-select-button"
-            );
-
-        const selectMenu =
-            statusFilter.querySelector(
-                ".status-select-menu"
-            );
-
-        const selectedText =
-            statusFilter.querySelector(
-                "#selectedStatusText"
-            );
-
-
-        // Open / Close
-        selectButton.addEventListener(
-            "click",
-            function (event) {
-
-                event.stopPropagation();
-
-
-                // Close Sort
-                document
-                    .getElementById("sortFilter")
-                    ?.classList.remove("open");
-
-
-                // Toggle Status
-                statusFilter.classList.toggle("open");
-
-            }
-        );
-
-
-        // Select status
-        selectMenu.addEventListener(
-            "click",
-            function (event) {
-
-                const option =
-                    event.target.closest(
-                        ".status-option"
-                    );
-
-                if (!option) {
-                    return;
-                }
-
-
-                currentStatus =
-                    option.dataset.status;
-
-
-                // Remove selected from all
-                selectMenu
-                    .querySelectorAll(".status-option")
-                    .forEach(item => {
-
-                        item.classList.remove(
-                            "selected"
-                        );
-
-                    });
-
-
-                // Select clicked option
-                option.classList.add(
-                    "selected"
-                );
-
-
-                // Update text
-                selectedText.textContent =
-                    option.textContent.trim();
-
-
-                // Update color
-                const optionClass =
-                    [...option.classList]
-                        .find(className =>
-                            className.startsWith("status-") &&
-                            className !== "status-option"
-                        );
-
-
-                const dot =
-                    selectButton.querySelector(
-                        ".status-dot"
-                    );
-
-
-                if (optionClass) {
-
-                    dot.className =
-                        `status-dot ${optionClass}`;
-
-                }
-
-
-                // Close
-                statusFilter.classList.remove(
-                    "open"
-                );
-
-
-                // Load orders
-                loadOrders();
-
-            }
-        );
-
-
-        // Click outside
-        document.addEventListener(
-            "click",
-            function (event) {
-
-                if (
-                    !statusFilter.contains(
-                        event.target
-                    )
-                ) {
-
-                    statusFilter.classList.remove(
-                        "open"
-                    );
-
-                }
-
-            }
-        );
-
-    }
-
-
-    // =====================================================
-    // SORT
-    // =====================================================
-
-    if (sortSelect) {
-
-        sortSelect.addEventListener(
-            "change",
-            function () {
-
-                loadOrders();
-
-            }
-        );
-
-    }
-
-
-    // =====================================================
-    // SEARCH
-    // =====================================================
-
-    if (searchInput) {
-
-        searchInput.addEventListener(
-            "input",
-            function () {
-
-                clearTimeout(
-                    searchTimeout
-                );
-
-
-                searchTimeout =
-                    setTimeout(
-                        function () {
-
-                            loadOrders();
-
-                        },
-                        400
-                    );
-
-            }
-        );
-
-    }
-
-
-    // =====================================================
-    // STATUS BUTTON + POPUP
-    // =====================================================
-
-    document.addEventListener(
-        "click",
-        async function (event) {
-
-            // =================================================
-            // OPEN STATUS POPUP
-            // =================================================
-
-            const currentButton =
-                event.target.closest(
-                    ".current-status-button"
-                );
-
-
-            if (currentButton) {
-
-                if (
-                    currentStatusButton ===
-                    currentButton
-                ) {
-
-                    closeStatusPopup();
-
-                    return;
-                }
-
-
-                closeStatusPopup();
-
-
-                openStatusPopup(
-                    currentButton
-                );
-
-
-                return;
-            }
-
-
-            // =================================================
-            // CLICK STATUS OPTION
-            // =================================================
-
-            const option =
-                event.target.closest(
-                    ".status-popup .status-option"
-                );
-
-
-            if (!option) {
-
-                // Click outside popup
-                if (
-                    statusPopup &&
-                    !event.target.closest(
-                        ".status-popup"
-                    )
-                ) {
-
-                    closeStatusPopup();
-
-                }
-
-                return;
-            }
-
-
-            const button =
-                currentStatusButton;
-
-
-            if (!button) {
-                return;
-            }
-
-
-            const orderId =
-                button.dataset.orderId;
-
-
-            const newStatus =
-                parseInt(
-                    option.dataset.status
-                );
-
-
-            if (
-                !orderId ||
-                Number.isNaN(newStatus)
-            ) {
-                return;
-            }
-
-
-            const row =
-                button.closest(
-                    ".order-row"
-                );
-
-
-            if (!row) {
-                return;
-            }
-
-
-            option.disabled =
-                true;
-
-
-            try {
-
-                const response =
-                    await fetch(
-                        updateStatusUrl,
-                        {
-                            method: "POST",
-
-                            headers: {
-
-                                "Content-Type":
-                                    "application/json",
-
-                                "RequestVerificationToken":
-                                    antiForgeryToken
-
-                            },
-
-                            body: JSON.stringify({
-
-                                orderId:
-                                    orderId,
-
-                                status:
-                                    newStatus
-
-                            })
-
-                        }
-                    );
-
-
-                const responseText =
-                    await response.text();
-
-
-                if (!response.ok) {
-
-                    let message =
-                        `Request failed (${response.status})`;
-
-
-                    if (
-                        responseText.trim()
-                    ) {
-
-                        try {
-
-                            const errorResult =
-                                JSON.parse(
-                                    responseText
-                                );
-
-
-                            message =
-                                errorResult.message ??
-                                message;
-
-                        }
-                        catch {
-
-                            message =
-                                responseText;
-
-                        }
-
-                    }
-
-
-                    throw new Error(
-                        message
-                    );
-
-                }
-
-
-                // =================================================
-                // SHOULD REMOVE ROW?
-                // =================================================
-
-                const isAllFilter =
-                    currentStatus === "all";
-
-
-                const isDefaultFilter =
-                    currentStatus === "default";
-
-
-                const isSpecificStatusFilter =
-                    !isAllFilter &&
-                    !isDefaultFilter;
-
-
-                // =================================================
-                // ALL
-                // =================================================
-
-                if (isAllFilter) {
-
-                    // Keep the row
-
-                }
-
-
-                // =================================================
-                // SPECIFIC STATUS
-                // =================================================
-
-                else if (
-                    isSpecificStatusFilter
-                ) {
-
-                    const selectedStatus =
-                        parseInt(
-                            currentStatus
-                        );
-
-
-                    if (
-                        selectedStatus !==
-                        newStatus
-                    ) {
-
-                        removeOrderRow(
-                            row
-                        );
-
-
-                        closeStatusPopup();
-
-
-                        return;
-                    }
-
-                }
-
-
-                // =================================================
-                // DEFAULT
-                // =================================================
-
-                else if (
-                    isDefaultFilter
-                ) {
-
-                    if (
-                        newStatus === 4 ||
-                        newStatus === 5
-                    ) {
-
-                        removeOrderRow(
-                            row
-                        );
-
-
-                        closeStatusPopup();
-
-
-                        return;
-                    }
-
-                }
-
-
-                // =================================================
-                // UPDATE ROW COLOR
-                // =================================================
-
-                row.classList.remove(
-                    "status-pending",
-                    "status-confirmed",
-                    "status-preparing",
-                    "status-ready",
-                    "status-completed",
-                    "status-cancelled"
-                );
-
-
-                const statusClasses = {
-
-                    0: "status-pending",
-                    1: "status-confirmed",
-                    2: "status-preparing",
-                    3: "status-ready",
-                    4: "status-completed",
-                    5: "status-cancelled"
-
-                };
-
-
-                const newClass =
-                    statusClasses[newStatus];
-
-
-                if (newClass) {
-
-                    row.classList.add(
-                        newClass
-                    );
-
-                }
-
-
-                // =================================================
-                // UPDATE MAIN STATUS BUTTON
-                // =================================================
-
-                const selectedStatus =
-                    orderStatuses.find(
-                        status =>
-                            status.value ===
-                            newStatus
-                    );
-
-
-                if (selectedStatus) {
-
-                    button.classList.remove(
-                        "status-pending",
-                        "status-preparing",
-                        "status-confirmed",
-                        "status-ready",
-                        "status-completed",
-                        "status-cancelled"
-                    );
-
-
-                    button.classList.add(
-                        selectedStatus.className
-                    );
-
-
-                    button.dataset.status =
-                        newStatus;
-
-
-                    const text =
-                        button.querySelector(
-                            "span:first-child"
-                        );
-
-
-                    if (text) {
-
-                        text.textContent =
-                            selectedStatus.name;
-
-                    }
-
-
-                    // =================================================
-                    // Success Effect
-                    // =================================================
-
-                    button.classList.add(
-                        "status-updated"
-                    );
-
-
-                    setTimeout(
-                        function () {
-
-                            button.classList.remove(
-                                "status-updated"
-                            );
-
-                        },
-                        700
-                    );
-
-                }
-
-
-                closeStatusPopup();
-
-            }
-            catch (error) {
-
-                console.error(error);
-
-
-                alert(
-                    error.message ??
-                    "Could not update order status."
-                );
-
-            }
-            finally {
-
-                option.disabled =
-                    false;
-
-            }
-
-        }
-    );
 
 
     // =====================================================
@@ -1243,137 +1647,3 @@
     formatOrderDates();
 
 });
-
-
-(function () {
-
-    const dropdown =
-        document.getElementById("sortFilter");
-
-    if (!dropdown)
-        return;
-
-
-    const button =
-        dropdown.querySelector(
-            ".sort-select-button"
-        );
-
-    const input =
-        document.getElementById("ordersSort");
-
-    const text =
-        document.getElementById("selectedSortText");
-
-    const options =
-        dropdown.querySelectorAll(
-            ".sort-option"
-        );
-
-
-    // =====================================================
-    // Open / Close Sort
-    // =====================================================
-
-    button.addEventListener(
-        "click",
-        function (e) {
-
-            e.stopPropagation();
-
-
-            // Close Status
-            document
-                .getElementById("statusFilter")
-                ?.classList.remove("open");
-
-
-            // Toggle Sort
-            dropdown.classList.toggle(
-                "open"
-            );
-
-        }
-    );
-
-
-    // =====================================================
-    // Select Sort Option
-    // =====================================================
-
-    options.forEach(
-        function (option) {
-
-            option.addEventListener(
-                "click",
-                function () {
-
-                    options.forEach(
-                        function (o) {
-
-                            o.classList.remove(
-                                "selected"
-                            );
-
-                        }
-                    );
-
-
-                    option.classList.add(
-                        "selected"
-                    );
-
-
-                    text.textContent =
-                        option.textContent.trim();
-
-
-                    input.value =
-                        option.dataset.sort;
-
-
-                    dropdown.classList.remove(
-                        "open"
-                    );
-
-
-                    input.dispatchEvent(
-                        new Event(
-                            "change",
-                            {
-                                bubbles: true
-                            }
-                        )
-                    );
-
-                }
-            );
-
-        }
-    );
-
-
-    // =====================================================
-    // Click Outside
-    // =====================================================
-
-    document.addEventListener(
-        "click",
-        function (e) {
-
-            if (
-                !dropdown.contains(
-                    e.target
-                )
-            ) {
-
-                dropdown.classList.remove(
-                    "open"
-                );
-
-            }
-
-        }
-    );
-
-})();

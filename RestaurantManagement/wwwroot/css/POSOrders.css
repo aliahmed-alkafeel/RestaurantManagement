@@ -3,7 +3,7 @@
 ========================================================= */
 
 .pos-orders {
-    padding: 95px 24px 24px 24px;
+    padding: 95px 24px 24px;
     width: 100%;
 }
 
@@ -102,13 +102,13 @@
 
     .search-box svg {
         position: absolute;
-        width: 17px;
-        height: 17px;
         left: 12px;
         top: 50%;
-        transform: translateY(-50%);
+        width: 17px;
+        height: 17px;
         color: #8a8a8a;
         pointer-events: none;
+        transform: translateY(-50%);
     }
 
     .search-box input {
@@ -117,10 +117,10 @@
         padding: 0 13px 0 38px;
         border: 1px solid #dedede;
         border-radius: 9px;
+        outline: none;
         background: #fff;
         color: #333;
         font-size: 13px;
-        outline: none;
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
@@ -143,16 +143,16 @@
 ========================================================= */
 
 .filter-select {
-    height: 40px;
     min-width: 145px;
+    height: 40px;
     padding: 10px 12px;
     border: 1px solid #dedede;
     border-radius: 9px;
+    outline: none;
     background: #fff;
     color: #333;
-    font-size: 13px;
-    outline: none;
     cursor: pointer;
+    font-size: 13px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -177,9 +177,9 @@
     border-radius: 9px;
     background: #635bff;
     color: #fff;
+    cursor: pointer;
     font-size: 13px;
     font-weight: 600;
-    cursor: pointer;
     transition: background 0.2s ease, transform 0.15s ease;
 }
 
@@ -568,7 +568,6 @@
 
 /* =========================================================
    STATUS COLOR VARIABLES
-   (used by .status-dot via var(--status-color))
 ========================================================= */
 
 .status-default {
@@ -606,8 +605,6 @@
 
 /* =========================================================
    STATUS DOT
-   Works whether the status class is on the dot itself
-   or on any parent element.
 ========================================================= */
 
 .status-dot {
@@ -616,44 +613,113 @@
 
 
 /* =========================================================
-   CURRENT STATUS BUTTON (inside table rows)
+   STATUS ACTIONS
 ========================================================= */
 
+.status-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+
+/* =========================================================
+   CURRENT STATUS BUTTON
+========================================================= */
 .current-status-button {
-    min-width: 105px;
+    position: relative;
+    width: 116px;
+    min-width: 116px;
     height: 34px;
     display: inline-flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    padding: 0 10px;
+    justify-content: flex-start;
+    padding: 0 30px 0 27px;
     border: 1px solid transparent;
-    border-radius: 8px;
+    border-radius: 9px;
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+    white-space: nowrap;
+    transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, transform 0.16s ease;
 }
+    /* =========================================================
+   CURRENT STATUS DOT
+========================================================= */
 
-    .current-status-button:hover {
-        transform: translateY(-1px);
+    .current-status-button::before {
+        content: "";
+        position: absolute;
+        left: 11px;
+        top: 50%;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: currentColor;
+        transform: translateY(-50%);
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.55);
     }
 
-    .current-status-button:disabled {
-        opacity: 0.6;
-        cursor: wait;
-    }
 
-    .current-status-button.status-popup-open {
-        transform: translateY(-1px);
-        border-color: currentColor;
-        box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.12);
-    }
-
+/* =========================================================
+   CURRENT STATUS CHEVRON
+========================================================= */
 .status-chevron {
-    font-size: 11px;
-    line-height: 1;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 0;
+    opacity: 0.62;
+    transform: translateY(-50%);
 }
+    .status-chevron::before {
+        content: "";
+        width: 5.5px;
+        height: 5.5px;
+        border-right: 1.7px solid currentColor;
+        border-bottom: 1.7px solid currentColor;
+        border-radius: 1px;
+        transform: rotate(45deg);
+        margin-top: -3px;
+        transition: transform 0.2s ease, margin 0.2s ease;
+    }
+
+.current-status-button.status-popup-open
+.status-chevron::before {
+    transform: rotate(-135deg);
+    margin-top: 3px;
+}
+
+
+/* =========================================================
+   CURRENT STATUS OPEN
+========================================================= */
+
+.current-status-button.status-popup-open {
+    transform: translateY(-1px);
+    box-shadow: 0 0 0 2px currentColor, 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+
+/* =========================================================
+   CURRENT STATUS COLORS
+========================================================= */
+
+.current-status-button.status-pending {
+    color: rgb(37, 99, 235);
+    background: rgba(59, 130, 246, 0.10);
+}
+
+    .current-status-button.status-pending:hover {
+        background: rgba(59, 130, 246, 0.17);
+        border-color: rgba(37, 99, 235, 0.22);
+    }
 
 .current-status-button.status-confirmed {
     color: rgb(192, 38, 211);
@@ -661,8 +727,8 @@
 }
 
     .current-status-button.status-confirmed:hover {
-        background: rgba(217, 70, 239, 0.20);
-        border-color: rgba(217, 70, 239, 0.35);
+        background: rgba(217, 70, 239, 0.17);
+        border-color: rgba(192, 38, 211, 0.22);
     }
 
 .current-status-button.status-preparing {
@@ -671,18 +737,8 @@
 }
 
     .current-status-button.status-preparing:hover {
-        background: rgba(249, 115, 22, 0.20);
-        border-color: rgba(249, 115, 22, 0.35);
-    }
-
-.current-status-button.status-pending {
-    color: rgb(37, 99, 235);
-    background: rgba(59, 130, 246, 0.10);
-}
-
-    .current-status-button.status-pending:hover {
-        background: rgba(59, 130, 246, 0.20);
-        border-color: rgba(59, 130, 246, 0.35);
+        background: rgba(249, 115, 22, 0.18);
+        border-color: rgba(234, 88, 12, 0.23);
     }
 
 .current-status-button.status-ready {
@@ -691,8 +747,8 @@
 }
 
     .current-status-button.status-ready:hover {
-        background: rgba(20, 184, 166, 0.20);
-        border-color: rgba(20, 184, 166, 0.35);
+        background: rgba(20, 184, 166, 0.18);
+        border-color: rgba(13, 148, 136, 0.23);
     }
 
 .current-status-button.status-completed {
@@ -701,8 +757,8 @@
 }
 
     .current-status-button.status-completed:hover {
-        background: rgba(139, 92, 246, 0.20);
-        border-color: rgba(139, 92, 246, 0.35);
+        background: rgba(139, 92, 246, 0.17);
+        border-color: rgba(124, 58, 237, 0.23);
     }
 
 .current-status-button.status-cancelled {
@@ -711,13 +767,199 @@
 }
 
     .current-status-button.status-cancelled:hover {
-        background: rgba(239, 68, 68, 0.20);
-        border-color: rgba(239, 68, 68, 0.35);
+        background: rgba(239, 68, 68, 0.17);
+        border-color: rgba(220, 38, 38, 0.23);
     }
 
 
 /* =========================================================
-   STATUS POPUP (change order status from table row)
+   NEXT STATUS BUTTON
+========================================================= */
+
+.next-status-button {
+    position: relative;
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    background: var(--next-bg);
+    color: var(--next-color);
+    border-color: var(--next-border);
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+    cursor: pointer;
+    transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+
+    /* =========================================================
+   NEXT STATUS COLORS
+   0 = Pending      → Confirmed
+   1 = Confirmed    → Preparing
+   2 = Preparing    → Ready
+   3 = Ready        → Completed
+========================================================= */
+
+    .next-status-button[data-status="0"] {
+        --next-color: #c026d3;
+        --next-bg: rgba(217, 70, 239, 0.10);
+        --next-border: rgba(192, 38, 211, 0.18);
+    }
+
+    .next-status-button[data-status="1"] {
+        --next-color: #ea580c;
+        --next-bg: rgba(249, 115, 22, 0.11);
+        --next-border: rgba(234, 88, 12, 0.18);
+    }
+
+    .next-status-button[data-status="2"] {
+        --next-color: #0d9488;
+        --next-bg: rgba(20, 184, 166, 0.11);
+        --next-border: rgba(13, 148, 136, 0.18);
+    }
+
+    .next-status-button[data-status="3"] {
+        --next-color: #7c3aed;
+        --next-bg: rgba(139, 92, 246, 0.10);
+        --next-border: rgba(124, 58, 237, 0.18);
+    }
+
+
+    /* =========================================================
+   NEXT STATUS HOVER
+========================================================= */
+
+    .next-status-button[data-status="0"]:hover {
+        background: rgba(217, 70, 239, 0.18);
+        border-color: rgba(192, 38, 211, 0.30);
+        box-shadow: 0 5px 14px rgba(192, 38, 211, 0.11);
+        transform: translateY(-1px);
+    }
+
+    .next-status-button[data-status="1"]:hover {
+        background: rgba(249, 115, 22, 0.18);
+        border-color: rgba(234, 88, 12, 0.30);
+        box-shadow: 0 5px 14px rgba(234, 88, 12, 0.11);
+        transform: translateY(-1px);
+    }
+
+    .next-status-button[data-status="2"]:hover {
+        background: rgba(20, 184, 166, 0.18);
+        border-color: rgba(13, 148, 136, 0.30);
+        box-shadow: 0 5px 14px rgba(13, 148, 136, 0.11);
+        transform: translateY(-1px);
+    }
+
+    .next-status-button[data-status="3"]:hover {
+        background: rgba(139, 92, 246, 0.18);
+        border-color: rgba(124, 58, 237, 0.30);
+        box-shadow: 0 5px 14px rgba(124, 58, 237, 0.11);
+        transform: translateY(-1px);
+    }
+
+
+    /* =========================================================
+   NEXT STATUS ACTIVE
+========================================================= */
+
+    .next-status-button:active {
+        transform: scale(0.94);
+    }
+
+
+    /* =========================================================
+   NEXT STATUS FOCUS
+========================================================= */
+
+    .next-status-button:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.13), 0 4px 12px rgba(15, 23, 42, 0.06);
+    }
+
+
+    /* =========================================================
+   NEXT STATUS DISABLED
+========================================================= */
+
+    .next-status-button:disabled {
+        opacity: 0.5;
+        cursor: wait;
+        transform: none;
+        box-shadow: none;
+    }
+
+
+/* =========================================================
+   NEXT ARROW
+========================================================= */
+
+.next-arrow {
+    position: relative;
+    width: 15px;
+    height: 15px;
+    display: block;
+    color: currentColor;
+}
+
+
+    /* =========================================================
+   NEXT ARROW SHAFT
+========================================================= */
+
+    .next-arrow::before {
+        content: "";
+        position: absolute;
+        left: 1px;
+        top: 50%;
+        width: 9px;
+        height: 1.6px;
+        border-radius: 999px;
+        background: currentColor;
+        transform: translateY(-50%);
+        transition: width 0.2s ease;
+    }
+
+
+    /* =========================================================
+   NEXT ARROW HEAD
+========================================================= */
+
+    .next-arrow::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        right: 1px;
+        width: 6px;
+        height: 6px;
+        border-top: 1.7px solid currentColor;
+        border-right: 1.7px solid currentColor;
+        border-radius: 1px;
+        transform: translateY(-50%) rotate(45deg);
+        transition: right 0.2s ease;
+    }
+
+
+/* =========================================================
+   NEXT ARROW HOVER
+========================================================= */
+
+.next-status-button:hover
+.next-arrow::before {
+    width: 11px;
+}
+
+.next-status-button:hover
+.next-arrow::after {
+    right: 0;
+}
+
+
+/* =========================================================
+   STATUS POPUP
 ========================================================= */
 
 .status-popup {
@@ -727,107 +969,220 @@
     align-items: center;
     gap: 5px;
     min-width: max-content;
-    padding: 6px;
-    background: #fff;
-    border: 1px solid #e8e8e8;
-    border-radius: 10px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12), 0 3px 8px rgba(0, 0, 0, 0.06);
+    max-width: calc(100vw - 260px);
+    max-height: calc(100vh - 260px);
+    flex-wrap: wrap;
+    overflow-y: auto;
+    padding: 7px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(15, 23, 42, 0.07);
+    border-radius: 13px;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.13), 0 4px 12px rgba(15, 23, 42, 0.06);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     z-index: 9999;
     opacity: 0;
-    transform: translateY(-4px);
+    transform: translateY(-5px) scale(0.985);
     pointer-events: none;
-    transition: opacity 0.15s ease, transform 0.15s ease;
+    transition: opacity 0.16s ease, transform 0.16s ease;
 }
+
 
     .status-popup.show {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
         pointer-events: auto;
     }
 
+
+    /* =========================================================
+   STATUS POPUP OPTIONS
+========================================================= */
+
     .status-popup .status-option {
+        position: relative;
         width: auto;
         min-width: 105px;
-        display: inline-block;
+        min-height: 35px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 7px 30px 7px 26px;
         border: 1px solid transparent;
-        border-radius: 7px;
-        padding: 7px 10px;
+        border-radius: 8px;
         font-size: 12px;
         font-weight: 600;
         text-align: center;
         cursor: pointer;
         white-space: nowrap;
-        transition: background 0.2s ease, border-color 0.2s ease;
+        transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, transform 0.16s ease;
     }
 
+
+        .status-popup .status-option:hover {
+            transform: translateY(-1px);
+        }
+
+
         .status-popup .status-option:disabled {
-            opacity: 0.6;
-            cursor: wait;
+            opacity: 1;
+            cursor: default;
         }
 
-        .status-popup .status-option.status-confirmed {
-            color: rgb(192, 38, 211);
-            background: rgba(217, 70, 239, 0.10);
+
+        /* =========================================================
+   NORMAL STATUS DOT
+========================================================= */
+
+        .status-popup .status-option::before {
+            content: "";
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            opacity: 0.80;
+            transform: translateY(-50%);
         }
 
-            .status-popup .status-option.status-confirmed:hover {
-                background: rgba(217, 70, 239, 0.25);
-                border-color: rgba(217, 70, 239, 0.35);
+
+        /* =========================================================
+   SELECTED CURRENT STATUS
+========================================================= */
+
+        .status-popup .status-option.selected {
+            background: rgba(255, 255, 255, 0.98);
+            border-color: currentColor;
+            box-shadow: 0 3px 10px rgba(15, 23, 42, 0.06);
+            transform: none;
+        }
+
+
+            /* =========================================================
+   SELECTED STATUS RING
+========================================================= */
+
+            .status-popup
+            .status-option.selected::before {
+                left: 9px;
+                width: 11px;
+                height: 11px;
+                background: transparent;
+                border: 1.5px solid currentColor;
+                opacity: 1;
+                box-sizing: border-box;
             }
 
-        .status-popup .status-option.status-preparing {
-            color: rgb(234, 88, 12);
-            background: rgba(249, 115, 22, 0.11);
-        }
 
-            .status-popup .status-option.status-preparing:hover {
-                background: rgba(249, 115, 22, 0.25);
-                border-color: rgba(249, 115, 22, 0.35);
+            /* =========================================================
+   SELECTED STATUS INNER DOT
+========================================================= */
+
+            .status-popup
+            .status-option.selected::after {
+                content: "";
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                width: 5px;
+                height: 5px;
+                border-radius: 50%;
+                background: currentColor;
+                transform: translateY(-50%);
+                z-index: 1;
             }
+
+
+            /* =========================================================
+   SELECTED SHOULD NOT MOVE
+========================================================= */
+
+            .status-popup
+            .status-option.selected:hover {
+                transform: none;
+            }
+
+
+        /* =========================================================
+   POPUP STATUS COLORS
+========================================================= */
 
         .status-popup .status-option.status-pending {
             color: rgb(37, 99, 235);
             background: rgba(59, 130, 246, 0.10);
         }
 
-            .status-popup .status-option.status-pending:hover {
-                background: rgba(59, 130, 246, 0.25);
-                border-color: rgba(59, 130, 246, 0.35);
+            .status-popup
+            .status-option.status-pending:hover {
+                background: rgba(59, 130, 246, 0.18);
+                border-color: rgba(37, 99, 235, 0.22);
             }
+
+
+        .status-popup .status-option.status-confirmed {
+            color: rgb(192, 38, 211);
+            background: rgba(217, 70, 239, 0.10);
+        }
+
+            .status-popup
+            .status-option.status-confirmed:hover {
+                background: rgba(217, 70, 239, 0.18);
+                border-color: rgba(192, 38, 211, 0.22);
+            }
+
+
+        .status-popup .status-option.status-preparing {
+            color: rgb(234, 88, 12);
+            background: rgba(249, 115, 22, 0.11);
+        }
+
+            .status-popup
+            .status-option.status-preparing:hover {
+                background: rgba(249, 115, 22, 0.19);
+                border-color: rgba(234, 88, 12, 0.22);
+            }
+
 
         .status-popup .status-option.status-ready {
             color: rgb(13, 148, 136);
             background: rgba(20, 184, 166, 0.11);
         }
 
-            .status-popup .status-option.status-ready:hover {
-                background: rgba(20, 184, 166, 0.25);
-                border-color: rgba(20, 184, 166, 0.35);
+            .status-popup
+            .status-option.status-ready:hover {
+                background: rgba(20, 184, 166, 0.19);
+                border-color: rgba(13, 148, 136, 0.22);
             }
+
 
         .status-popup .status-option.status-completed {
             color: rgb(124, 58, 237);
             background: rgba(139, 92, 246, 0.10);
         }
 
-            .status-popup .status-option.status-completed:hover {
-                background: rgba(139, 92, 246, 0.25);
-                border-color: rgba(139, 92, 246, 0.35);
+            .status-popup
+            .status-option.status-completed:hover {
+                background: rgba(139, 92, 246, 0.18);
+                border-color: rgba(124, 58, 237, 0.22);
             }
+
 
         .status-popup .status-option.status-cancelled {
             color: rgb(220, 38, 38);
             background: rgba(239, 68, 68, 0.10);
         }
 
-            .status-popup .status-option.status-cancelled:hover {
-                background: rgba(239, 68, 68, 0.25);
-                border-color: rgba(239, 68, 68, 0.35);
+            .status-popup
+            .status-option.status-cancelled:hover {
+                background: rgba(239, 68, 68, 0.18);
+                border-color: rgba(220, 38, 38, 0.22);
             }
 
 
 /* =========================================================
-   STATUS FILTER DROPDOWN (toolbar) — modern
+   STATUS FILTER
 ========================================================= */
 
 .status-select {
@@ -854,23 +1209,29 @@
     transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
 }
 
+
     .status-select-button:hover {
         border-color: rgba(0, 0, 0, 0.14);
         box-shadow: 0 2px 6px rgba(16, 24, 40, 0.08);
     }
 
+
     .status-select-button:active {
         transform: scale(0.985);
     }
 
+
     .status-select-button:focus-visible,
-    .status-select.open .status-select-button {
+    .status-select.open
+    .status-select-button {
         outline: none;
         box-shadow: 0 0 0 4px rgba(99, 91, 255, 0.14);
     }
 
-/* Arrow: the "⌄" text glyph is hidden and a CSS chevron is drawn instead,
-   so it is always vertically centered */
+
+/* =========================================================
+   STATUS FILTER ARROW
+========================================================= */
 
 .status-arrow {
     margin-left: auto;
@@ -886,6 +1247,7 @@
     opacity: 0.7;
 }
 
+
     .status-arrow::before {
         content: "";
         width: 7px;
@@ -898,13 +1260,17 @@
         transition: transform 0.25s ease, margin 0.25s ease;
     }
 
-.status-select.open .status-arrow::before {
+
+.status-select.open
+.status-arrow::before {
     margin-top: 3px;
     transform: rotate(-135deg);
 }
 
 
-/* ---------- Menu ---------- */
+/* =========================================================
+   STATUS FILTER MENU
+========================================================= */
 
 .status-select-menu {
     position: absolute;
@@ -921,12 +1287,16 @@
     transform-origin: top center;
 }
 
-.status-select.open .status-select-menu {
+
+.status-select.open
+.status-select-menu {
     display: block;
     animation: statusMenuIn 0.18s ease-out;
 }
 
+
 @keyframes statusMenuIn {
+
     from {
         opacity: 0;
         transform: translateY(-6px) scale(0.97);
@@ -939,15 +1309,18 @@
 }
 
 
-/* ---------- Options ---------- */
+/* =========================================================
+   STATUS FILTER OPTIONS
+========================================================= */
 
-.status-select-menu .status-option {
+.status-select-menu
+.status-option {
     width: 100%;
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 4px;
-    padding: 10px 12px;
+    padding: 10px 34px 10px 12px;
     border: none;
     border-radius: 10px;
     background: var(--opt-bg, #f2f2f4);
@@ -959,32 +1332,67 @@
     transition: background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
 }
 
-    .status-select-menu .status-option:last-child {
+
+    .status-select-menu
+    .status-option:last-child {
         margin-bottom: 0;
     }
 
-    .status-select-menu .status-option:hover {
+
+    .status-select-menu
+    .status-option:hover {
         background: var(--opt-bg-hover, #e7e7ea);
         transform: translateX(3px);
     }
 
-    /* check mark on the selected option */
-    .status-select-menu .status-option.selected {
-        box-shadow: inset 0 0 0 1.5px var(--opt-color, #333);
+
+    /* =========================================================
+   STATUS FILTER SELECTED
+========================================================= */
+
+    .status-select-menu
+    .status-option.selected {
+        box-shadow: inset 3px 0 0 var(--opt-color, #333);
+        transform: none;
     }
 
-        .status-select-menu .status-option.selected::after {
+
+        /* =========================================================
+   FILTER SELECTED INDICATOR
+========================================================= */
+
+        .status-select-menu
+        .status-option.selected::after {
             content: "";
-            margin-left: auto;
-            width: 16px;
-            height: 16px;
-            background: currentColor;
-            -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / contain no-repeat;
-            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / contain no-repeat;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            width: 11px;
+            height: 11px;
+            border: 1.5px solid var(--opt-color, #333);
+            border-radius: 50%;
+            transform: translateY(-50%);
         }
 
 
-/* Option colors (same as order row colors) */
+        .status-select-menu
+        .status-option.selected::before {
+            content: "";
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--opt-color, #333);
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+
+/* =========================================================
+   STATUS FILTER OPTION COLORS
+========================================================= */
 
 .status-select-menu .status-default {
     --opt-bg: #f2f2f4;
@@ -1035,7 +1443,9 @@
 }
 
 
-/* Selected status: the main button takes the same color */
+/* =========================================================
+   STATUS FILTER BUTTON COLORS
+========================================================= */
 
 .status-select-button:has(.status-default) {
     background: #f2f2f4;
@@ -1087,6 +1497,189 @@
 
 
 /* =========================================================
+   SORT DROPDOWN
+========================================================= */
+
+.sort-select {
+    position: relative;
+    width: 170px;
+}
+
+.sort-select-button {
+    width: 100%;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    background: #fff;
+    color: #333;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+
+    .sort-select-button:hover {
+        border-color: rgba(0, 0, 0, 0.14);
+        box-shadow: 0 2px 6px rgba(16, 24, 40, 0.08);
+    }
+
+
+    .sort-select-button:active {
+        transform: scale(0.985);
+    }
+
+
+    .sort-select-button:focus-visible,
+    .sort-select.open
+    .sort-select-button {
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(99, 91, 255, 0.14);
+    }
+
+
+/* =========================================================
+   SORT ARROW
+========================================================= */
+
+.sort-arrow {
+    margin-left: auto;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+}
+
+
+    .sort-arrow::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        margin-top: -3px;
+        border-right: 2px solid currentColor;
+        border-bottom: 2px solid currentColor;
+        border-radius: 1px;
+        transform: rotate(45deg);
+        transition: transform 0.25s ease, margin 0.25s ease;
+    }
+
+
+.sort-select.open
+.sort-arrow::before {
+    margin-top: 3px;
+    transform: rotate(-135deg);
+}
+
+
+/* =========================================================
+   SORT MENU
+========================================================= */
+
+.sort-select-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 100%;
+    display: none;
+    padding: 6px;
+    background: rgba(255, 255, 255, 0.98);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 14px;
+    box-shadow: 0 16px 36px rgba(16, 24, 40, 0.14), 0 3px 8px rgba(16, 24, 40, 0.06);
+    z-index: 1000;
+    transform-origin: top center;
+}
+
+
+.sort-select.open
+.sort-select-menu {
+    display: block;
+    animation: statusMenuIn 0.18s ease-out;
+}
+
+
+/* =========================================================
+   SORT OPTIONS
+========================================================= */
+
+.sort-option {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+    padding: 10px 34px 10px 12px;
+    border: none;
+    border-radius: 10px;
+    background: #f5f5f8;
+    color: #444;
+    cursor: pointer;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+
+    .sort-option:last-child {
+        margin-bottom: 0;
+    }
+
+
+    .sort-option:hover {
+        background: #ebeaff;
+        color: #635bff;
+        transform: translateX(3px);
+    }
+
+
+    .sort-option.selected {
+        background: #ebeaff;
+        color: #635bff;
+        box-shadow: inset 3px 0 0 #635bff;
+        transform: none;
+    }
+
+
+        .sort-option.selected::after {
+            content: "";
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            width: 11px;
+            height: 11px;
+            border: 1.5px solid #635bff;
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+
+
+        .sort-option.selected::before {
+            content: "";
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #635bff;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+
+/* =========================================================
    RESPONSIVE — 1200px
 ========================================================= */
 
@@ -1108,6 +1701,24 @@
     .filter-btn {
         flex-shrink: 0;
     }
+}
+
+
+/* =========================================================
+   RESPONSIVE — 1000px
+========================================================= */
+
+@media (max-width: 1000px) {
+
+    .status-popup {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(110px, 1fr));
+        width: min(420px, calc(100vw - 16px));
+    }
+
+        .status-popup .status-option {
+            min-width: 0;
+        }
 }
 
 
@@ -1169,6 +1780,10 @@
         width: 100%;
     }
 
+    .sort-select {
+        width: 100%;
+    }
+
     .orders-table {
         min-width: 850px;
     }
@@ -1176,189 +1791,17 @@
     .orders-footer {
         padding: 13px;
     }
-}
-/* =========================================================
-   SORT DROPDOWN
-========================================================= */
-
-.sort-select {
-    position: relative;
-    width: 170px;
-}
-
-.sort-select-button {
-    width: 100%;
-    height: 42px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 0 14px;
-    background: #fff;
-    color: #333;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
-}
-
-    .sort-select-button:hover {
-        border-color: rgba(0, 0, 0, 0.14);
-        box-shadow: 0 2px 6px rgba(16, 24, 40, 0.08);
-    }
-
-    .sort-select-button:active {
-        transform: scale(0.985);
-    }
-
-    .sort-select-button:focus-visible,
-    .sort-select.open .sort-select-button {
-        outline: none;
-        box-shadow: 0 0 0 4px rgba(99, 91, 255, 0.14);
-    }
-
-.sort-arrow {
-    margin-left: auto;
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.7;
-}
-
-    .sort-arrow::before {
-        content: "";
-        width: 7px;
-        height: 7px;
-        margin-top: -3px;
-        border-right: 2px solid currentColor;
-        border-bottom: 2px solid currentColor;
-        border-radius: 1px;
-        transform: rotate(45deg);
-        transition: transform 0.25s ease, margin 0.25s ease;
-    }
-
-.sort-select.open .sort-arrow::before {
-    margin-top: 3px;
-    transform: rotate(-135deg);
-}
-
-.sort-select-menu {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    min-width: 100%;
-    display: none;
-    padding: 6px;
-    background: rgba(255, 255, 255, 0.98);
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    border-radius: 14px;
-    box-shadow: 0 16px 36px rgba(16, 24, 40, 0.14), 0 3px 8px rgba(16, 24, 40, 0.06);
-    z-index: 1000;
-    transform-origin: top center;
-}
-
-.sort-select.open .sort-select-menu {
-    display: block;
-    animation: statusMenuIn 0.18s ease-out;
-}
-
-.sort-option {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 4px;
-    padding: 10px 12px;
-    border: none;
-    border-radius: 10px;
-    background: #f5f5f8;
-    color: #444;
-    cursor: pointer;
-    text-align: left;
-    font-size: 13px;
-    font-weight: 600;
-    white-space: nowrap;
-    transition: background 0.18s ease, transform 0.18s ease;
-}
-
-    .sort-option:last-child {
-        margin-bottom: 0;
-    }
-
-    .sort-option:hover {
-        background: #ebeaff;
-        color: #635bff;
-        transform: translateX(3px);
-    }
-
-    .sort-option.selected {
-        background: #ebeaff;
-        color: #635bff;
-        box-shadow: inset 0 0 0 1.5px #635bff;
-    }
-
-        .sort-option.selected::after {
-            content: "";
-            margin-left: auto;
-            width: 16px;
-            height: 16px;
-            background: currentColor;
-            -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / contain no-repeat;
-            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / contain no-repeat;
-        }
-
-@media (max-width: 600px) {
-    .sort-select {
-        width: 100%;
-    }
-}
-/* =========================================================
-   STATUS POPUP — FULL RESPONSIVE
-========================================================= */
-
-/* كل الأحجام: لا يخرج عن الشاشة أبداً */
-.status-popup {
-    max-width: calc(100vw - 260px);
-    max-height: calc(100vh - 260px);
-    flex-wrap: wrap;
-    overflow-y: auto;
-}
-
-    .status-popup .status-option {
-        flex: 1 1 105px;
-    }
 
 
-/* لابتوب صغير / تابلت: شبكة 3 أعمدة */
-@media (max-width: 1000px) {
-
-    .status-popup {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(110px, 1fr));
-        width: min(420px, calc(100vw - 16px));
-    }
-
-        .status-popup .status-option {
-            min-width: 0;
-            padding: 9px 10px;
-        }
-}
-
-
-/* موبايل: ورقة سفلية بخيارات عمودية */
-@media (max-width: 600px) {
+    /* =====================================================
+       MOBILE STATUS POPUP
+    ===================================================== */
 
     .status-popup {
         left: 12px !important;
         right: 12px !important;
         top: auto !important;
-        bottom: calc(12px + env(safe-area-inset-bottom)) !important;
+        bottom: calc( 12px + env(safe-area-inset-bottom) ) !important;
         width: auto !important;
         max-width: none;
         max-height: 70vh;
@@ -1370,22 +1813,49 @@
         padding: 10px;
         border-radius: 16px;
         box-shadow: 0 0 0 100vmax rgba(15, 23, 42, 0.35), 0 -8px 30px rgba(0, 0, 0, 0.15);
-        transform: translateY(16px);
+        transform: translateY(16px) scale(0.985);
     }
+
+
+        .status-popup.show {
+            transform: translateY(0) scale(1);
+        }
+
 
         .status-popup .status-option {
             flex: 0 0 auto;
-            display: block;
             width: 100%;
             min-height: 44px;
-            padding: 12px;
+            justify-content: flex-start;
+            padding: 12px 36px 12px 30px;
             border-radius: 10px;
             font-size: 14px;
         }
+
+
+            .status-popup
+            .status-option::before {
+                left: 13px;
+            }
+
+
+            .status-popup
+            .status-option.selected::before {
+                left: 12px;
+            }
+
+
+            .status-popup
+            .status-option.selected::after {
+                left: 15px;
+            }
 }
 
 
-/* موبايل بالعرض (ارتفاع قصير): عمودين حتى لا تحتاج سكرول */
+/* =========================================================
+   MOBILE LANDSCAPE
+========================================================= */
+
 @media (max-width: 900px) and (max-height: 500px) {
 
     .status-popup {
@@ -1400,8 +1870,45 @@
         max-height: calc(100vh - 16px);
     }
 
+
         .status-popup .status-option {
             min-height: 38px;
-            padding: 8px;
+            padding: 8px 34px 8px 30px;
+            font-size: 12px;
         }
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+.current-status-button:focus-visible,
+.next-status-button:focus-visible,
+.status-select-button:focus-visible,
+.sort-select-button:focus-visible {
+    outline: none;
+}
+
+
+/* =========================================================
+   REDUCE MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .current-status-button,
+    .next-status-button,
+    .next-arrow::before,
+    .next-arrow::after,
+    .status-popup,
+    .status-popup .status-option,
+    .status-select-menu,
+    .status-select-button,
+    .status-arrow::before,
+    .sort-select-menu,
+    .sort-option {
+        transition: none !important;
+        animation: none !important;
+    }
 }

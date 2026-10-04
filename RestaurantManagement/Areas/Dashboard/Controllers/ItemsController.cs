@@ -93,13 +93,13 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             return RedirectToAction(nameof(Items));
         }
 
-        [Authorize(Roles = nameof(UserRole.ManageItems))]
-        [HttpGet("DeleteItem/{id:guid}")]
-        public async Task<IActionResult> DeleteItem(Guid id)
-        {
-            var item = await itemsService.GetItemByIdAsync(id);
-            return View(item);
-        }
+        //[Authorize(Roles = nameof(UserRole.ManageItems))]
+        //[HttpGet("DeleteItem/{id:guid}")]
+        //public async Task<IActionResult> DeleteItem(Guid id)
+        //{
+        //    var item = await itemsService.GetItemByIdAsync(id);
+        //    return View(item);
+        //}
 
         [ValidateAntiForgeryToken]
         [Authorize(Roles = nameof(UserRole.ManageItems))]

@@ -72,13 +72,13 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             return RedirectToAction(nameof(Discounts));
             }
 
-            [Authorize(Roles = nameof(UserRole.ManageDiscounts))]
-            [HttpGet("DeleteDiscount/{id:guid}")]
-            public async Task<IActionResult> DeleteDiscount(Guid id,CancellationToken cancellationToken)
-            {
-                var discount = await discountsService.GetDiscountByIdAsync(id, cancellationToken);
-                return View(discount);
-            }
+            //[Authorize(Roles = nameof(UserRole.ManageDiscounts))]
+            //[HttpGet("DeleteDiscount/{id:guid}")]
+            //public async Task<IActionResult> DeleteDiscount(Guid id,CancellationToken cancellationToken)
+            //{
+            //    var discount = await discountsService.GetDiscountByIdAsync(id, cancellationToken);
+            //    return View(discount);
+            //}
             [ValidateAntiForgeryToken]
             [Authorize(Roles = nameof(UserRole.ManageDiscounts))]
             [HttpPost("ConfirmedDeleteDiscount/{id:guid}")]

@@ -75,13 +75,13 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             return RedirectToAction(nameof(Categories));
         }
 
-        [Authorize(Roles = nameof(UserRole.ManageCategories))]
-        [HttpGet("DeleteCategory/{id:guid}")]
-        public async Task<IActionResult> DeleteCategory(Guid id, CancellationToken cancellationToken)
-        {
-            var category = await categoriesService.GetCategoryByIdAsync(id, cancellationToken);
-            return View(category);
-        }
+        //[Authorize(Roles = nameof(UserRole.ManageCategories))]
+        //[HttpGet("DeleteCategory/{id:guid}")]
+        //public async Task<IActionResult> DeleteCategory(Guid id, CancellationToken cancellationToken)
+        //{
+        //    var category = await categoriesService.GetCategoryByIdAsync(id, cancellationToken);
+        //    return View(category);
+        //}
         [ValidateAntiForgeryToken]
         [Authorize(Roles = nameof(UserRole.ManageCategories))]
         [HttpPost("ConfirmedDeleteCategory/{id:guid}")]

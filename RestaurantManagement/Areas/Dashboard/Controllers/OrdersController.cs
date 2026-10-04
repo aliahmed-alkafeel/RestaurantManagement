@@ -68,13 +68,13 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
         }
 
 
-        [Authorize(Roles = nameof(UserRole.ManageOrders))]
-        [HttpGet("DeleteOrder/{id:guid}")]
-        public async Task<IActionResult> DeleteOrder(Guid id, CancellationToken cancellationToken)
-        {
-            var emps = await ordersService.GetOrderByIdAsync(id, cancellationToken);
-            return View(emps);
-        }
+        //[Authorize(Roles = nameof(UserRole.ManageOrders))]
+        //[HttpGet("DeleteOrder/{id:guid}")]
+        //public async Task<IActionResult> DeleteOrder(Guid id, CancellationToken cancellationToken)
+        //{
+        //    var emps = await ordersService.GetOrderByIdAsync(id, cancellationToken);
+        //    return View(emps);
+        //}
         [ValidateAntiForgeryToken]
         [Authorize(Roles = nameof(UserRole.ManageOrders))]
         [HttpPost("ConfirmedDeleteOrder/{id:guid}")]

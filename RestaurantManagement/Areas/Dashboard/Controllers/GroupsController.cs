@@ -44,12 +44,12 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
             return RedirectToAction(nameof(Groups));
         }
         [Authorize(Roles = nameof(UserRole.ManageGroups))]
-        [HttpGet("DeleteGroup/{id:guid}")]
-        public async Task<IActionResult> DeleteGroup(Guid id, CancellationToken cancellationToken)
-        {
-            var group = await groupsService.GetGroupByIdAsync(id, cancellationToken);
-            return View(group);
-        }
+        //[HttpGet("DeleteGroup/{id:guid}")]
+        //public async Task<IActionResult> DeleteGroup(Guid id, CancellationToken cancellationToken)
+        //{
+        //    var group = await groupsService.GetGroupByIdAsync(id, cancellationToken);
+        //    return View(group);
+        //}
         [ValidateAntiForgeryToken]
         [Authorize(Roles = nameof(UserRole.ManageGroups))]
         [HttpPost("ConfirmedDeleteGroup/{id:guid}")]

@@ -164,7 +164,7 @@
                             <input name="EmployeeStartingDate" id="startDate"
                                    data-utc-field
                                    data-utc="@(Model.EmployeeStartingDate.ToUtc().ToString("o"))"
-                                   value="@Model.EmployeeStartingDate.ToLocalTime().ToString("yyyy-MM-ddTHH:mm:ss")"
+                                 
                                    type="datetime-local"
                                 
                                    class="form-control"/>
@@ -187,11 +187,7 @@
                                    data-utc="@(Model.EmployeeEndingDate.HasValue?
                                 Model.EmployeeEndingDate.Value.ToUtc().ToString("o") :""
                                              )"
-                                   value="@(Model.EmployeeEndingDate.HasValue
-                                              ? Model.EmployeeEndingDate.Value
-                                                  .ToLocalTime()
-                                                  .ToString("yyyy-MM-ddTHH:mm:ss")
-                                              : "")"
+                          
                                         
                                    type="datetime-local"
                                    class="form-control"/>

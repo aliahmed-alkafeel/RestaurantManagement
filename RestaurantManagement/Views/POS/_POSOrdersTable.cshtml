@@ -26,6 +26,7 @@
 
         </thead>
 
+
         <tbody>
 
             @foreach (var order in Model.Orders)
@@ -63,6 +64,7 @@
 
                             </span>
 
+
                             <div>
 
                                 <span class="table-label">
@@ -99,21 +101,45 @@
 
                     <td>
 
-                        <button type="button"
-                                class="current-status-button status-@order.OrderStatus.ToString().ToLowerInvariant()"
-                                data-order-id="@order.Id"
-                                data-status="@((int)order.OrderStatus)"
-                                aria-expanded="false">
+                        <div class="status-actions">
 
-                            <span>
-                                @order.OrderStatus
-                            </span>
+                            <!-- Current Status -->
 
-                            <span class="status-chevron">
-                                ▾
-                            </span>
+                            <button type="button"
+                                    class="current-status-button status-@order.OrderStatus.ToString().ToLowerInvariant()"
+                                    data-order-id="@order.Id"
+                                    data-status="@((int)order.OrderStatus)"
+                                    aria-expanded="false">
 
-                        </button>
+                                <span>
+                                    @order.OrderStatus
+                                </span>
+
+                                <span class="status-chevron">
+                                    ▾
+                                </span>
+
+                            </button>
+
+
+                            <!-- Next Status -->
+
+                            @if (order.OrderStatus != OrderStatus.Completed &&
+                                 order.OrderStatus != OrderStatus.Cancelled)
+                            {
+                                <button type="button"
+                                        class="next-status-button"
+                                        data-order-id="@order.Id"
+                                        data-status="@((int)order.OrderStatus)"
+                                        title="Move to next status"
+                                        aria-label="Move order to next status">
+
+                                    <span class="next-arrow"></span>
+
+                                </button>
+                            }
+
+                        </div>
 
                     </td>
 
@@ -154,9 +180,9 @@
 
                         <time class="order-date"
                               data-utc="@DateTime.SpecifyKind(
-                                                              order.OrderDate,
-                                                              DateTimeKind.Utc
-                                                          ).ToString("O")">
+                                  order.OrderDate,
+                                  DateTimeKind.Utc
+                              ).ToString("O")">
                         </time>
 
                     </td>
@@ -189,9 +215,11 @@ else
 
         </div>
 
+
         <h3>
             No orders found
         </h3>
+
 
         <p>
             Try changing your search or filters.
@@ -199,19 +227,3 @@ else
 
     </div>
 }
-
-<script>
-
-    document
-        .querySelectorAll(".order-date")
-        .forEach(element => {
-
-            const utcDate =
-                new Date(element.dataset.utc);
-
-            element.textContent =
-                utcDate.toLocaleString();
-
-        });
-
-</script>
