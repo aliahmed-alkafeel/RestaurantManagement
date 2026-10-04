@@ -60,7 +60,7 @@
         <tbody class="list">
         @foreach (var order in Model)
         {
-            <tr>
+            <tr class="data-row">
                 <td class="table-number">
                     @order.TableId
                 </td>
@@ -80,8 +80,25 @@
                 {
                     <td>
                         <a class="action edit-action" asp-area="Dashboard" asp-controller="Orders" asp-action="EditOrder" asp-route-id="@order.Id">Edit</a>
-                        <a class="action delete-action" asp-area="Dashboard" asp-controller="Orders"
-                           asp-action="DeleteOrder" asp-route-id="@order.Id">Delete</a>
+                       
+                        <!-- Delete -->
+
+                        <button type="button"
+                                class="action delete-action delete-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteModal"
+                                data-url="@Url.Action(
+                                              "ConfirmedDeleteOrder",
+                                              "Orders",
+                                              new
+                                              {
+                                                  area = "Dashboard",
+                                                  id = order.Id
+                                              })">
+
+                            Delete
+
+                        </button>
                     </td>
                 }
             </tr>
@@ -89,7 +106,81 @@
         </tbody>
     </table>
 </div>
+<!-- =====================================================
+Delete Modal
+===================================================== -->
 
+<div class="modal fade"
+     id="deleteModal"
+     tabindex="-1"
+     aria-labelledby="deleteModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h1 class="modal-title fs-5"
+                    id="deleteModalLabel">
+
+                    Delete Order
+
+                </h1>
+
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
+
+            </div>
+
+
+            <div class="modal-body">
+
+                Are you sure you want to delete this order?
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-light"
+                        data-bs-dismiss="modal">
+
+                    Cancel
+
+                </button>
+
+
+                <form id="deleteForm"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit"
+                            class="btn delete-action">
+
+                        Delete
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="~/js/DeleteRecord.js"></script>
 <script>
     const options = {
         valueNames: ["table-number"]

@@ -1937,3 +1937,7 @@ th.sort {
             transform: translateX(-50%) translateY(10px);
         }
 }
+
+.data-row.modal-selected > td {
+    background-color: #fff3cd !important;
+}

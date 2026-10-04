@@ -76,7 +76,7 @@
                                     <label asp-for="ItemImage" class="form-label fw-semibold">
                                         Image
                                     </label>
-                                    <input class="form-control" asp-for="ItemImage" type="file" accept="image/*" />
+                                    <input class="form-control" asp-for="ItemImage" type="file" accept=".jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif" />
 
                                     <span asp-validation-for="ItemImage"
                                           class="text-danger small">

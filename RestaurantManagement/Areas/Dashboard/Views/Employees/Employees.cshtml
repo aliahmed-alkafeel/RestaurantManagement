@@ -1,4 +1,5 @@
-﻿@model List<EmployeeViewModel>
+﻿
+@model List<EmployeeViewModel>
 
 @{
 }
@@ -14,14 +15,6 @@
         background-color: #e87558;
         color: #ffffff;
     }
-
-
-    /* =====================================================
-       Selected Employee Row
-       ===================================================== */
-.employee-row.modal-selected > td {
-    background-color: #fff3cd !important;
-}
 
 </style>
 
@@ -160,7 +153,7 @@
 
             @foreach (var emp in Model)
             {
-                <tr class="employee-row">
+                <tr class="data-row">
 
                     <td class="employee-name">
                         @emp.FirstName @emp.LastName
@@ -219,9 +212,10 @@
                             </a>
 
 
-                            @if (emp.Group != InitUserGroup.Administrator.ToString() )
+                            @if (emp.Group != InitUserGroup.Administrator.ToString())
                             {
                                 <!-- Terminate -->
+
                                 @if (!emp.EmployeeEndingDate.HasValue)
                                 {
                                     <button type="button"
@@ -240,13 +234,13 @@
                                         Terminate
 
                                     </button>
-
                                 }
+
 
                                 <!-- Delete -->
 
                                 <button type="button"
-                                        class="action delete-action delete-employee-btn"
+                                        class="action delete-action delete-btn"
                                         data-bs-toggle="modal"
                                         data-bs-target="#deleteModal"
                                         data-url="@Url.Action(
@@ -290,7 +284,6 @@
 
         <div class="modal-content">
 
-
             <div class="modal-header">
 
                 <h1 class="modal-title fs-5"
@@ -328,7 +321,7 @@
                 </button>
 
 
-                <form id="deleteEmployeeForm"
+                <form id="deleteForm"
                       method="post">
 
                     @Html.AntiForgeryToken()
@@ -364,7 +357,6 @@
     <div class="modal-dialog modal-dialog-centered">
 
         <div class="modal-content">
-
 
             <div class="modal-header">
 
@@ -430,49 +422,6 @@
 
     document.addEventListener("DOMContentLoaded", function () {
 
-
-        // =====================================================
-        // Selected Employee Row
-        // =====================================================
-
-        let selectedRow = null;
-
-
-        // =====================================================
-        // Delete Employee
-        // =====================================================
-
-        document.querySelectorAll(".delete-employee-btn")
-            .forEach(button => {
-
-                button.addEventListener("click", function () {
-
-                    // Remove previous selection
-                    if (selectedRow) {
-                        selectedRow.classList.remove("modal-selected");
-                    }
-
-
-                    // Get current employee row
-                    selectedRow = this.closest(".employee-row");
-
-
-                    // Highlight current row
-                    if (selectedRow) {
-                        selectedRow.classList.add("modal-selected");
-                    }
-
-
-                    // Set form action
-                    const url = this.dataset.url;
-
-                    document.getElementById("deleteEmployeeForm").action = url;
-
-                });
-
-            });
-
-
         // =====================================================
         // Terminate Employee
         // =====================================================
@@ -482,48 +431,9 @@
 
                 button.addEventListener("click", function () {
 
-                    // Remove previous selection
-                    if (selectedRow) {
-                        selectedRow.classList.remove("modal-selected");
-                    }
-
-
-                    // Get current employee row
-                    selectedRow = this.closest(".employee-row");
-
-
-                    // Highlight current row
-                    if (selectedRow) {
-                        selectedRow.classList.add("modal-selected");
-                    }
-
-
-                    // Set form action
                     const url = this.dataset.url;
 
                     document.getElementById("terminateEmployeeForm").action = url;
-
-                });
-
-            });
-
-
-        // =====================================================
-        // Remove Highlight When Modal Closes
-        // =====================================================
-
-        document.querySelectorAll(".modal")
-            .forEach(modal => {
-
-                modal.addEventListener("hidden.bs.modal", function () {
-
-                    if (selectedRow) {
-
-                        selectedRow.classList.remove("modal-selected");
-
-                        selectedRow = null;
-
-                    }
 
                 });
 
@@ -556,3 +466,7 @@
     });
 
 </script>
+
+
+<script src="~/js/DeleteRecord.js"></script>
+

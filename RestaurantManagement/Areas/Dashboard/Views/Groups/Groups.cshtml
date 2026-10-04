@@ -53,7 +53,7 @@
         <tbody class="list">
         @foreach(var group in Model)
         {
-            <tr>
+            <tr class="data-row">
                 <td class="group-name">
                     @group.GroupName.ToString()
                 </td>
@@ -71,8 +71,24 @@
                     @if (User.IsInRole(nameof(UserRole.ManageGroups)))
                     {
                         <a class="action edit-action" asp-area="Dashboard" asp-controller="Groups" asp-action="EditGroup" asp-route-id="@group.Id">Edit</a>
-                        <a class="action delete-action" asp-area="Dashboard" asp-controller="Groups"
-                           asp-action="DeleteGroup" asp-route-id="@group.Id">Delete</a>
+                        <!-- Delete -->
+
+                        <button type="button"
+                                class="action delete-action delete-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteModal"
+                                data-url="@Url.Action(
+                                              "ConfirmedDeleteGroup",
+                                              "Groups",
+                                              new
+                                              {
+                                                  area = "Dashboard",
+                                                  id = group.Id
+                                              })">
+
+                            Delete
+
+                        </button>
                     }
                 </td>                
             </tr>
@@ -81,6 +97,82 @@
     </table>
 
 </div>
+<!-- =====================================================
+Delete Modal
+===================================================== -->
+
+<div class="modal fade"
+     id="deleteModal"
+     tabindex="-1"
+     aria-labelledby="deleteModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h1 class="modal-title fs-5"
+                    id="deleteModalLabel">
+
+                    Delete Group
+
+                </h1>
+
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
+
+            </div>
+
+
+            <div class="modal-body">
+
+                Are you sure you want to delete this group?
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-light"
+                        data-bs-dismiss="modal">
+
+                    Cancel
+
+                </button>
+
+
+                <form id="deleteForm"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit"
+                            class="btn delete-action">
+
+                        Delete
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="~/js/DeleteRecord.js"></script>
+
 <script>
     const options = {
         valueNames: ["group-name"]

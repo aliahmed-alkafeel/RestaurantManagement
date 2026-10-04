@@ -53,7 +53,7 @@
         <tbody class="list">
         @foreach (var category in Model)
         {
-            <tr>
+            <tr class="data-row">
                 <td class="category-name">
                   
                     @category.CategoryName.ToString()
@@ -69,8 +69,24 @@
                 {
                     <td>
                         <a class="action edit-action" asp-area="Dashboard" asp-controller="Categories" asp-action="EditCategory" asp-route-id="@category.Id">Edit</a>
-                        <a class="action delete-action" asp-area="Dashboard" asp-controller="Categories"
-                           asp-action="DeleteCategory" asp-route-id="@category.Id">Delete</a>
+                        <!-- Delete -->
+
+                        <button type="button"
+                                class="action delete-action delete-btn"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteModal"
+                                data-url="@Url.Action(
+                                              "ConfirmedDeleteCategory",
+                                              "Categories",
+                                              new
+                                              {
+                                                  area = "Dashboard",
+                                                  id = category.Id
+                                              })">
+
+                            Delete
+
+                        </button>
                     </td>
                 }
             </tr>
@@ -78,6 +94,81 @@
         </tbody>
     </table>
 </div>
+<!-- =====================================================
+Delete Modal
+===================================================== -->
+
+<div class="modal fade"
+     id="deleteModal"
+     tabindex="-1"
+     aria-labelledby="deleteModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h1 class="modal-title fs-5"
+                    id="deleteModalLabel">
+
+                    Delete Category
+
+                </h1>
+
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                </button>
+
+            </div>
+
+
+            <div class="modal-body">
+
+                Are you sure you want to delete this category?
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-light"
+                        data-bs-dismiss="modal">
+
+                    Cancel
+
+                </button>
+
+
+                <form id="deleteForm"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit"
+                            class="btn delete-action">
+
+                        Delete
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="~/js/DeleteRecord.js"></script>
 
 
 <script>

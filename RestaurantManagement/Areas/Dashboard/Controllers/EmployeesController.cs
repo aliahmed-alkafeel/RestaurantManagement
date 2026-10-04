@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using System;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,8 @@ using RestaurantManagement.Areas.Dashboard.ViewModels;
 using RestaurantManagement.Extensions;
 using RestaurantManagement.Models;
 using System.Security.Claims;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace RestaurantManagement.Areas.Dashboard.Controllers
 {
@@ -74,13 +77,13 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
 
             return RedirectToAction(nameof(Employees));
         }
-        [Authorize(Roles = nameof(UserRole.ManageEmployees))]
-        [HttpGet("TerminateEmployee/{id:guid}")]
-        public async Task<IActionResult> TerminateEmployee(Guid id, CancellationToken cancellationToken)
-        {
-            var emp = await employeesService.GetCreateEmployeeByIdAsync(id,cancellationToken);
-            return View(emp);
-        }
+        //[Authorize(Roles = nameof(UserRole.ManageEmployees))]
+        //[HttpGet("TerminateEmployee/{id:guid}")]
+        //public async Task<IActionResult> TerminateEmployee(Guid id, CancellationToken cancellationToken)
+        //{
+        //    var emp = await employeesService.GetCreateEmployeeByIdAsync(id,cancellationToken);
+        //    return View(emp);
+        //}
         [ValidateAntiForgeryToken]
         [Authorize(Roles = nameof(UserRole.ManageEmployees))]
         [HttpPost("ConfirmedTerminateEmployee/{id:guid}")]
@@ -100,13 +103,13 @@ namespace RestaurantManagement.Areas.Dashboard.Controllers
                     NotificationExtensions.EntityType.Employee);
             return RedirectToAction(nameof(Employees));
         } 
-        [Authorize(Roles = nameof(UserRole.ManageEmployees))]
-        [HttpGet("DeleteEmployee/{id:guid}")]
-        public async Task<IActionResult> DeleteEmployee(Guid id, CancellationToken cancellationToken)
-        {
-            var emp = await employeesService.GetCreateEmployeeByIdAsync(id,cancellationToken);
-            return View(emp);
-        }
+        //[Authorize(Roles = nameof(UserRole.ManageEmployees))]
+        //[HttpGet("DeleteEmployee/{id:guid}")]
+        //public async Task<IActionResult> DeleteEmployee(Guid id, CancellationToken cancellationToken)
+        //{
+        //    var emp = await employeesService.GetCreateEmployeeByIdAsync(id,cancellationToken);
+        //    return View(emp);
+        //}
         [ValidateAntiForgeryToken]
         [Authorize(Roles = nameof(UserRole.ManageEmployees))]
         [HttpPost("ConfirmedDeleteEmployee/{id:guid}")]
